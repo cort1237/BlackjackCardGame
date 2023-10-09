@@ -2,6 +2,7 @@ package com.example.cardgametest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -27,6 +28,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         });
 
+        //button to open the options menu
+        Button optionsButton = findViewById(R.id.optionButton);
+        optionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), options.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -54,5 +64,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean isMoneyNegative() {
         return playerMoney < 0;
     }
+
 
 }
