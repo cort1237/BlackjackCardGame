@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Hit Button
+/*        //Hit Button
         Button hitButton = findViewById(R.id.hitButton);
         hitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("Button Test", "fold");
             }
-        });
+        });*/
 
 
     }
