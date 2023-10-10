@@ -35,7 +35,9 @@ public class Deck {
         if (cards.isEmpty()) {
             throw new IllegalStateException("Deck is empty.");
         }
-        return cards.remove(0);
+        Card topCard = cards.get(0);
+        cards.remove(0);
+        return topCard;
     }
 
     public void reset() {

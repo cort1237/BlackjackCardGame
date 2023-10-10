@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
+        currentHandText = findViewById(R.id.viewHand);
         updateMoneyText();
 
         //Example Button Implementation
@@ -48,26 +49,29 @@ public class MainActivity extends AppCompatActivity {
 
     //when hit button is clicked, this function will run
     //Hit button currently crashes the app
-    private void hit(){
+    public void hit(View view){
         hand.hit(deck.retrieveTop());
+        //System.out.println("Got Here.");
+        //System.out.println(hand.retrieveFirstCard().getRank());
         updateCurrentHand();
     }
 
     //when fold button is clicked, this function will run
     //Fold also currently crashes the app
-    private void foldHand(){
+    public void foldHand(View view){
         hand.foldHand();
         updateCurrentHand();
     }
-    
+
     //update the debug textview of current hand
     private void updateCurrentHand(){
-        ArrayList<Card> currentHand = hand.retrieveHand();
-        String hand = "";
+        String currentHand = "";
         for(int i = 0; i < sizeOfHand; i++){
-            hand += " " + currentHand.get(i).getRank();
+            System.out.println(hand.get(i).getRank());
+            currentHand += " " + hand.get(i).getRank();
         }
-        currentHandText.setText(hand);
+        System.out.println(currentHand);
+        currentHandText.setText(currentHand);
     }
 
     private void updateMoneyText() {

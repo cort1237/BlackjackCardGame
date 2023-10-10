@@ -33,6 +33,12 @@ public class CardHand {
     public ArrayList<Card> retrieveHand(){
         return hand;
     }
+    public Card retrieveFirstCard(){
+        return hand.get(0);
+    }
+    public Card get(int i){
+        return hand.get(i);
+    }
 
     public int size(){
         return size;
