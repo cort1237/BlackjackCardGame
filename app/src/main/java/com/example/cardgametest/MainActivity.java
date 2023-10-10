@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
@@ -30,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
         updateMoneyText();
 
         //Example Button Implementation
-        Button exampleButton = findViewById(R.id.buttonexample);
+        Button exampleButton = findViewById(R.id.buttonExample);
         exampleButton.setOnClickListener(view -> {
-            return;
+
         });
 
         //button to open the options menu
@@ -44,6 +45,25 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //Hit Button
+        Button hitButton = findViewById(R.id.hitButton);
+        hitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Button Test", "hit");
+            }
+        });
+
+        //Fold Button
+        Button foldButton = findViewById(R.id.foldButton);
+        foldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Button Test", "fold");
+            }
+        });
+
 
     }
 

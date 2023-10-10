@@ -7,10 +7,9 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/buttonexample"
+        android:id="@+id/buttonExample"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onButtonClick"
         android:text="Button"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,20 +21,19 @@
         android:id="@+id/moneyTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="92dp"
+        android:layout_marginBottom="684dp"
         android:text="Money: $1000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/optionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="154dp"
-        android:layout_marginTop="390dp"
-        android:onClick="hit"
+        android:layout_marginStart="296dp"
+        android:layout_marginTop="16dp"
         android:text="Options"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -46,7 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:gravity="center|center_horizontal"
-        android:onClick="hit"
         android:text="Hit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/buffer"
@@ -59,7 +56,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:gravity="center|center_horizontal"
-        android:onClick="foldHand"
         android:text="Fold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buffer"
