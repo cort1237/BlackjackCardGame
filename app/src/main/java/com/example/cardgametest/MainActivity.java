@@ -8,10 +8,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private int playerMoney = 1000; // Example initial money amount
     private TextView moneyTextView;
+    private TextView currentHandText;
+    private CardHand hand = new CardHand();
+    private int sizeOfHand = hand.size();
+    private Deck deck = new Deck();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //when hit button is clicked, this function will run
+    //Hit button currently crashes the app
+    private void hit(){
+        hand.hit(deck.retrieveTop());
+        updateCurrentHand();
+    }
+
+    //when fold button is clicked, this function will run
+    //Fold also currently crashes the app
+    private void foldHand(){
+        hand.foldHand();
+        updateCurrentHand();
+    }
+    
+    //update the debug textview of current hand
+    private void updateCurrentHand(){
+        ArrayList<Card> currentHand = hand.retrieveHand();
+        String hand = "";
+        for(int i = 0; i < sizeOfHand; i++){
+            hand += " " + currentHand.get(i).getRank();
+        }
+        currentHandText.setText(hand);
     }
 
     private void updateMoneyText() {
