@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         hand.hit(deck.retrieveTop());
         //System.out.println("Got Here.");
         //System.out.println(hand.retrieveFirstCard().getRank());
+        Log.d("Button Test", "hit");
         updateCurrentHand();
     }
 
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     //Fold also currently crashes the app
     public void foldHand(View view){
         hand.foldHand();
+        Log.d("Button Test", "fold");
         updateCurrentHand();
     }
 
