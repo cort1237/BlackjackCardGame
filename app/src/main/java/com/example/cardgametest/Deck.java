@@ -16,9 +16,10 @@ public class Deck {
         shuffle();
     }
 
+    // Creates 6 decks of 52 cards
     private void initializeDeck() {
         cards = new ArrayList<Card>();
-        for (int i = 0; i < 6; i++) { // Create 6 decks of 52 cards
+        for (int i = 0; i < 6; i++) {
             for (int rank = 1; rank <= 13; rank++) {
                 int value = rank;
                 if (rank > 9) {
@@ -31,6 +32,7 @@ public class Deck {
         }
     }
 
+    // Returns topmost card from deck
     public Card retrieveTop(){
         if (cards.isEmpty()) {
             throw new IllegalStateException("Deck is empty.");
@@ -40,6 +42,7 @@ public class Deck {
         return topCard;
     }
 
+    // Resets deck to be completely new
     public void reset() {
         cards.clear();
         initializeDeck();
@@ -50,6 +53,7 @@ public class Deck {
         return cards.size();
     }
 
+    // Reshuffles deck
     public void shuffle() {
         Collections.shuffle(cards);
     }
@@ -58,11 +62,11 @@ public class Deck {
         return cards;
     }
 
-    public void printCards() {
-        for (int i = 0; i<cards.size(); i++) {
-            System.out.println(cards.get(i).getRank() + " " + cards.get(i).getSuit() + " " + cards.get(i).getValue());
-        }
-    }
+//    public void printCards() {
+//        for (int i = 0; i<cards.size(); i++) {
+//            System.out.println(cards.get(i).getRank() + " " + cards.get(i).getSuit() + " " + cards.get(i).getValue());
+//        }
+//    }
 }
 
 class Card {
