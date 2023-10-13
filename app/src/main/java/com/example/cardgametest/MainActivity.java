@@ -17,16 +17,19 @@ public class MainActivity extends AppCompatActivity {
     private TextView moneyTextView;
     private TextView currentHandText;
     private CardHand playerHand = new CardHand();
-    private LinearLayout playerLayout = findViewById(R.id.main_player_hand);
+    private LinearLayout playerLayout;
 
     private CardHand dealerHand = new CardHand();
-    private LinearLayout dealerLayout = findViewById(R.id.dealer_hand);
+    private LinearLayout dealerLayout;
     private Deck deck = new Deck();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        playerLayout = findViewById(R.id.main_player_hand);
+        dealerLayout = findViewById(R.id.dealer_hand);
 
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
