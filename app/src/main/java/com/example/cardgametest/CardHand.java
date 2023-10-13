@@ -15,13 +15,11 @@ Create a CardHand class that will store the values of the players hand and imple
 public class CardHand {
     private ArrayList<Card> hand;
     private int size;
-    private int totalValue;
 
     //Initializes the hand passed in cards
     public CardHand(){
         hand = new ArrayList<Card>(2);
         size = 0;
-        totalValue = 0;
     }
 
     //When player hits, add a new card to their hand
@@ -34,7 +32,14 @@ public class CardHand {
     public void foldHand(){
         hand.clear();
         size = 0;
-        totalValue = 0;
+    }
+
+    public int getTotalValue() {
+        int value = 0;
+
+        //Calculate value
+
+        return value;
     }
 
     public ArrayList<Card> retrieveHand(){

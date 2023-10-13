@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class BlackjackGameActivity extends AppCompatActivity {
 
     private int playerMoney = 1000; // Example initial money amount
     private TextView moneyTextView;
@@ -52,6 +52,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Resumed", "Returned from settings");
+
+    }
+
+
+
 
     //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
