@@ -1,5 +1,8 @@
 package com.example.cardgametest;
 
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
 import java.util.*;
 
 
@@ -12,15 +15,17 @@ Create a CardHand class that will store the values of the players hand and imple
 public class CardHand {
     private ArrayList<Card> hand;
     private int size;
+    private int totalValue;
 
     //Initializes the hand passed in cards
     public CardHand(){
         hand = new ArrayList<Card>(2);
         size = 0;
+        totalValue = 0;
     }
 
     //When player hits, add a new card to their hand
-    public void hit(Card newCard){
+    public void addCard(Card newCard){
         hand.add(newCard);
         size += 1;
     }
@@ -28,6 +33,8 @@ public class CardHand {
     //When player fold, empty their hand
     public void foldHand(){
         hand.clear();
+        size = 0;
+        totalValue = 0;
     }
 
     public ArrayList<Card> retrieveHand(){

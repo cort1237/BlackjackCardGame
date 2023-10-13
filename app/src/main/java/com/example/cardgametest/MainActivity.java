@@ -6,18 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private int playerMoney = 1000; // Example initial money amount
     private TextView moneyTextView;
     private TextView currentHandText;
-    private CardHand hand = new CardHand();
-    private int sizeOfHand = hand.size();
+    private CardHand playerHand = new CardHand();
+    private LinearLayout playerLayout = findViewById(R.id.main_player_hand);
+
+    private CardHand dealerHand = new CardHand();
+    private LinearLayout dealerLayout = findViewById(R.id.dealer_hand);
     private Deck deck = new Deck();
 
     @Override
@@ -45,54 +48,47 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-/*        //Hit Button
-        Button hitButton = findViewById(R.id.hitButton);
-        hitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Button Test", "hit");
-            }
-        });
-
-        //Fold Button
-        Button foldButton = findViewById(R.id.foldButton);
-        foldButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Button Test", "fold");
-            }
-        });*/
-
-
     }
 
-    //when hit button is clicked, this function will run
-    //Hit button currently crashes the app
+    //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
-        hand.hit(deck.retrieveTop());
+        Card c = deck.retrieveTop();
+        playerHand.addCard(c);
+        addCardToHand(playerLayout, c);
         //System.out.println("Got Here.");
         //System.out.println(hand.retrieveFirstCard().getRank());
         Log.d("Button Test", "hit");
         updateCurrentHand();
     }
 
+    //Adds a card to the specified Hand Layout on the screen
+    private void addCardToHand(LinearLayout mainPlayerHand, Card c) {
+        ImageView cardView = new ImageView(this);
+        cardView.setImageResource(R.drawable.ace_of_diamond_test);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200,260);
+        params.setMargins(8,8,8,8);
+        cardView.setLayoutParams(params);
+        mainPlayerHand.addView(cardView);
+    }
+
     //when fold button is clicked, this function will run
     //Fold also currently crashes the app
     public void foldHand(View view){
-        hand.foldHand();
+        playerHand.foldHand();
         Log.d("Button Test", "fold");
         updateCurrentHand();
+        playerLayout.removeAllViews();
+
     }
 
     //update the debug textview of current hand
     private void updateCurrentHand(){
         String currentHand = "";
-        for(int i = 0; i < sizeOfHand; i++){
-            System.out.println(hand.get(i).getRank());
-            currentHand += " " + hand.get(i).getRank();
+        for(int i = 0; i < playerHand.size(); i++){
+            System.out.println(playerHand.get(i).getRank());
+            currentHand += " " + playerHand.get(i).getRank();
+            Log.d("card debug", "card #" + i + "| value: " + playerHand.get(i).getRank());
         }
-        System.out.println(currentHand);
         currentHandText.setText(currentHand);
     }
 

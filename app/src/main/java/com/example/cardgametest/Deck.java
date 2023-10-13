@@ -1,5 +1,8 @@
 package com.example.cardgametest;
 
+import android.content.Context;
+import android.widget.ImageView;
+
 import java.util.*;
 
 /*

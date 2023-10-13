@@ -6,6 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:id="@+id/dealer_hand"
+        android:layout_width="347dp"
+        android:layout_height="153dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="498dp"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonExample"
         android:layout_width="wrap_content"
@@ -79,11 +98,27 @@
         android:id="@+id/viewHand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="256dp"
+        android:layout_marginTop="536dp"
         android:text="Empty"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/main_player_hand"
+        android:layout_width="347dp"
+        android:layout_height="153dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="556dp"
+        android:layout_marginBottom="22dp"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
