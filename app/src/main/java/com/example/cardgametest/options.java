@@ -38,7 +38,6 @@ public class options extends AppCompatActivity {
             e.apply();
         }
         volumeValue = prefs.getFloat("volume",0);
-        Log.d("yeet", String.valueOf(volumeValue));
 
         Button returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(new View.OnClickListener() {
