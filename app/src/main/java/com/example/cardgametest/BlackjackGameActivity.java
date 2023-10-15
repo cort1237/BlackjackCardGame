@@ -51,6 +51,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        setup();
     }
 
     @Override
@@ -65,13 +66,20 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
+        hitHelper();
+    }
+    private void hitHelper() {
         Card c = deck.retrieveTop();
         playerHand.addCard(c);
+        Log.d("hitHelper Test", "Player Card: " + c.getRank());
         addCardToHand(playerLayout, c);
         //System.out.println("Got Here.");
         //System.out.println(hand.retrieveFirstCard().getRank());
-        Log.d("Button Test", "hit");
+        Log.d("Hit Button Test", "hit");
         updateCurrentHand();
+
+        if (playerHand.getTotalValue() >= 21)
+            dealerTurn();
     }
 
     //Adds a card to the specified Hand Layout on the screen
@@ -87,11 +95,15 @@ public class BlackjackGameActivity extends AppCompatActivity {
     //when fold button is clicked, this function will run
     //Fold also currently crashes the app
     public void foldHand(View view){
+        foldHandHelper();
+
         playerHand.foldHand();
-        Log.d("Button Test", "fold");
+        Log.d("Fold Button Test", "fold");
         updateCurrentHand();
         playerLayout.removeAllViews();
-
+    }
+    private void foldHandHelper() {
+        dealerTurn();
     }
 
     //update the debug textview of current hand
@@ -130,5 +142,55 @@ public class BlackjackGameActivity extends AppCompatActivity {
         return playerMoney < 0;
     }
 
+    //Will hand out two cards to each entity at the table
+    private void setup() {
 
+        for (int i=0; i<2; i++)  {
+            //for (Player player : playerList) {
+            hitHelper();
+            //}
+            dealCard(dealerHand);
+        }
+
+        Log.d("playerHand.getTotalValue", "" + playerHand.getTotalValue());
+        Log.d("dealer.getTotalValue", "" + dealerHand.getTotalValue());
+        updateCurrentHand();
+    }
+
+    //Returning Card until getValue is implemented
+    private Card dealCard(CardHand entity) {
+//private void dealCard(CardHand entity, boolean dealer) {
+        Card topCard = deck.retrieveTop();
+        entity.addCard(topCard);
+        Log.d("dealCard Test", "Dealer Card: " + topCard.getRank());
+        return topCard;
+    }
+
+    private void dealerTurn() {
+        int dealerTotal = dealerHand.getTotalValue(), playerTotal = playerHand.getTotalValue();
+        //dealerTotal = 16;
+
+
+        while(dealerTotal<17) {
+            Card card = dealCard(dealerHand);
+            dealerTotal+= card.getValue();
+            Log.d("dealerTurn Test", "Current Dealer Total: " + dealerTotal);
+        }
+
+        if (dealerTotal>21) {
+            Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal + " BUST");
+            if (playerTotal<=21)
+                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
+            else Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
+
+        }
+        else {
+            Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal);
+            if (playerTotal > dealerTotal && playerTotal<=21)
+                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
+            else Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
+            if (playerTotal == dealerTotal)
+                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
+        }
+    }
 }
