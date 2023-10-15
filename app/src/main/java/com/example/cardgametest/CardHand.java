@@ -34,10 +34,30 @@ public class CardHand {
         size = 0;
     }
 
+    //when called, sorts the hand in descending order so aces are last, then it adds the value of
+    //cards to a running total and if it hits an ace it checks
+    //to see if the running total is greater than 10, if it is than the ace is 1, else the ace is 11
     public int getTotalValue() {
         int value = 0;
+        hand.sort(new Comparator<Card>() {
+            @Override
+            public int compare(Card o1, Card o2) {
+                return Integer.compare(o1.getValue(), o2.getValue());
+            }
+        });
 
         //Calculate value
+        for(int i = 0; i < size; i++){
+            if(hand.get(i).getRank() != "Ace"){
+                value += hand.get(i).getValue();
+            }
+            else if (hand.get(i).getRank() == "Ace" && value > 10){
+                value += 1;
+            }
+            else{
+                value += 11;
+            }
+        }
 
         return value;
     }
