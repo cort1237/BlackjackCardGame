@@ -39,19 +39,20 @@ public class CardHand {
     //to see if the running total is greater than 10, if it is than the ace is 1, else the ace is 11
     public int getTotalValue() {
         int value = 0;
-        hand.sort(new Comparator<Card>() {
+        ArrayList<Card> temp = hand;
+        temp.sort(new Comparator<Card>() {
             @Override
             public int compare(Card o1, Card o2) {
-                return Integer.compare(o1.getValue(), o2.getValue());
+                return Integer.compare(o2.getValue(), o1.getValue());
             }
         });
 
         //Calculate value
         for(int i = 0; i < size; i++){
-            if(hand.get(i).getRank() != "Ace"){
-                value += hand.get(i).getValue();
+            if(temp.get(i).getRank() != "Ace"){
+                value += temp.get(i).getValue();
             }
-            else if (hand.get(i).getRank() == "Ace" && value > 10){
+            else if (temp.get(i).getRank() == "Ace" && value > 10){
                 value += 1;
             }
             else{

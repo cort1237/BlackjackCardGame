@@ -11,12 +11,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
 
+import org.w3c.dom.Text;
+
 public class BlackjackGameActivity extends AppCompatActivity {
 
     private int playerMoney = 1000; // Example initial money amount
     private TextView moneyTextView;
     private TextView currentHandText;
+    private TextView currentHandValue;
     private CardHand playerHand = new CardHand();
+    private int handValue = 0;
     private LinearLayout playerLayout;
 
     private CardHand dealerHand = new CardHand();
@@ -34,6 +38,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
         currentHandText = findViewById(R.id.viewHand);
+        currentHandValue = findViewById(R.id.debugHandValue);
         updateMoneyText();
 
         //Example Button Implementation
@@ -77,6 +82,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //System.out.println(hand.retrieveFirstCard().getRank());
         Log.d("Hit Button Test", "hit");
         updateCurrentHand();
+        updateHandValue();
 
         if (playerHand.getTotalValue() >= 21)
             dealerTurn();
@@ -101,6 +107,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("Fold Button Test", "fold");
         updateCurrentHand();
         playerLayout.removeAllViews();
+        updateHandValue();
     }
     private void foldHandHelper() {
         dealerTurn();
@@ -115,6 +122,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
             Log.d("card debug", "card #" + i + "| value: " + playerHand.get(i).getRank());
         }
         currentHandText.setText(currentHand);
+    }
+
+    //updates the debugHandValue TextView to show the current value of the hand.
+    private void updateHandValue(){
+        handValue = playerHand.getTotalValue();
+        String temp = Integer.toString(handValue);
+        currentHandValue.setText(temp);
     }
 
     private void updateMoneyText() {
