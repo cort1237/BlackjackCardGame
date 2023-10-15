@@ -68,6 +68,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
     public void hit(View view){
         hitHelper();
     }
+
+    public void resetGame(View view) {
+        //for each player
+        playerHand.clearHand();
+        playerLayout.removeAllViews();
+        dealerHand.clearHand();
+        dealerLayout.removeAllViews();
+        setup();
+    }
+
+
     private void hitHelper() {
         Card c = deck.retrieveTop();
         playerHand.addCard(c);
@@ -96,11 +107,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     //Fold also currently crashes the app
     public void foldHand(View view){
         foldHandHelper();
-
-        playerHand.foldHand();
         Log.d("Fold Button Test", "fold");
-        updateCurrentHand();
-        playerLayout.removeAllViews();
     }
     private void foldHandHelper() {
         dealerTurn();
@@ -146,6 +153,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     //Will hand out two cards to each entity at the table
     private void setup() {
+        playerHand.clearHand();
+        playerLayout.removeAllViews();
+        dealerHand.clearHand();
+        dealerLayout.removeAllViews();
 
         for (int i=0; i<2; i++)  {
             //for (Player player : playerList) {
@@ -153,6 +164,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
             //}
             dealCard(dealerHand, dealerLayout);
         }
+
+        //Enable Player Controls
+        ((Button) findViewById(R.id.hitButton)).setEnabled(true);
+        ((Button) findViewById(R.id.foldButton)).setEnabled(true);
+        ((Button) findViewById(R.id.betButton)).setEnabled(true);
+        ((Button) findViewById(R.id.restart)).setEnabled(false);
+        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
 
         Log.d("playerHand.getTotalValue", "" + playerHand.getTotalValue());
         Log.d("dealer.getTotalValue", "" + dealerHand.getTotalValue());
@@ -172,6 +190,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private void dealerTurn() {
         int dealerTotal = dealerHand.getTotalValue(), playerTotal = playerHand.getTotalValue();
         //dealerTotal = 16;
+
+        //Disable Player controls
+        ((Button) findViewById(R.id.hitButton)).setEnabled(false);
+        ((Button) findViewById(R.id.foldButton)).setEnabled(false);
+        ((Button) findViewById(R.id.betButton)).setEnabled(false);
+        ((Button) findViewById(R.id.restart)).setEnabled(true);
+        ((Button) findViewById(R.id.restart)).setVisibility(View.VISIBLE);
 
 
         while(dealerTotal<17) {

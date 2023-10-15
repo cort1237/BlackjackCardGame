@@ -1,8 +1,5 @@
 package com.example.cardgametest;
 
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-
 import java.util.*;
 
 
@@ -29,7 +26,7 @@ public class CardHand {
     }
 
     //When player fold, empty their hand
-    public void foldHand(){
+    public void clearHand(){
         hand.clear();
         size = 0;
     }

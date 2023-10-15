@@ -59,6 +59,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"
         android:drawableLeft="@drawable/baseline_settings_24"
+        android:contentDescription="Settings"
         android:textAllCaps="false"
         android:textColorHighlight="#FFFFFF"
         android:textColorLink="#FFFFFF"
@@ -91,6 +92,21 @@
         app:layout_constraintStart_toEndOf="@+id/buffer"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.7" />
+
+    <Button
+        android:id="@+id/restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:gravity="center|center_horizontal"
+        android:visibility="invisible"
+        android:enabled="false"
+        android:onClick="resetGame"
+        android:text="Restart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buffer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6" />
 
     <Button
         android:id="@+id/betButton"
