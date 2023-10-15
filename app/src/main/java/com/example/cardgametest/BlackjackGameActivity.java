@@ -38,7 +38,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
         currentHandText = findViewById(R.id.viewHand);
-        currentHandValue = findViewById(R.id.debugHandValue);
         updateMoneyText();
 
         //Example Button Implementation
