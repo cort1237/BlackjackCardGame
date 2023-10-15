@@ -82,7 +82,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //System.out.println(hand.retrieveFirstCard().getRank());
         Log.d("Hit Button Test", "hit");
         updateCurrentHand();
-        updateHandValue();
 
         if (playerHand.getTotalValue() >= 21)
             dealerTurn();
@@ -107,7 +106,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("Fold Button Test", "fold");
         updateCurrentHand();
         playerLayout.removeAllViews();
-        updateHandValue();
     }
     private void foldHandHelper() {
         dealerTurn();
@@ -126,12 +124,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         currentHandText.setText(currentHand);
     }
 
-    //updates the debugHandValue TextView to show the current value of the hand.
-    private void updateHandValue(){
-        handValue = playerHand.getTotalValue();
-        String temp = Integer.toString(handValue);
-        currentHandValue.setText(temp);
-    }
 
     private void updateMoneyText() {
         moneyTextView.setText("" + playerMoney);
