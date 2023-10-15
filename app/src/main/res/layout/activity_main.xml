@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".BlackjackGameActivity">
 
+
     <LinearLayout
         android:id="@+id/dealer_hand"
         android:layout_width="347dp"
@@ -40,19 +41,15 @@
         android:id="@+id/moneyTextView"
         android:layout_width="80dp"
         android:layout_height="33dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="668dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="281dp"
         android:drawableStart="@drawable/baseline_attach_money_24"
         android:text="1000"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.151"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/optionButton"
@@ -112,12 +109,11 @@
         android:id="@+id/betTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="288dp"
-        android:text="Bet Amount: $100"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="301dp"
+        android:text="Bet: $100"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.775"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/buffer"

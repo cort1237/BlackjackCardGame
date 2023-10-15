@@ -28,6 +28,8 @@ public class TitleScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("rootasd", String.valueOf(isTaskRoot()));
+                Intent intent = new Intent(getApplicationContext(), BlackjackGameActivity.class);
+                startActivity(intent);
             }
         });
     }

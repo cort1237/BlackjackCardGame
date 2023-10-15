@@ -121,6 +121,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
             currentHand += " " + playerHand.get(i).getRank();
             Log.d("card debug", "card #" + i + "| value: " + playerHand.get(i).getRank());
         }
+
+        currentHand += " (" + playerHand.getTotalValue() + ")";
         currentHandText.setText(currentHand);
     }
 
@@ -132,7 +134,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     private void updateMoneyText() {
-        moneyTextView.setText("Money: $" + playerMoney);
+        moneyTextView.setText("" + playerMoney);
     }
 
     // Function to add money
@@ -163,7 +165,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             //for (Player player : playerList) {
             hitHelper();
             //}
-            dealCard(dealerHand);
+            dealCard(dealerHand, dealerLayout);
         }
 
         Log.d("playerHand.getTotalValue", "" + playerHand.getTotalValue());
@@ -172,10 +174,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     //Returning Card until getValue is implemented
-    private Card dealCard(CardHand entity) {
+    private Card dealCard(CardHand entity, LinearLayout handLayout) {
 //private void dealCard(CardHand entity, boolean dealer) {
         Card topCard = deck.retrieveTop();
         entity.addCard(topCard);
+        addCardToHand(handLayout, topCard);             //Added LinearLayout var to update the visual elements on screen
         Log.d("dealCard Test", "Dealer Card: " + topCard.getRank());
         return topCard;
     }
@@ -186,7 +189,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
 
         while(dealerTotal<17) {
-            Card card = dealCard(dealerHand);
+            Card card = dealCard(dealerHand, dealerLayout);
             dealerTotal+= card.getValue();
             Log.d("dealerTurn Test", "Current Dealer Total: " + dealerTotal);
         }
