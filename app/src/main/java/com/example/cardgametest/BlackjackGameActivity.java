@@ -11,12 +11,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
 
+import org.w3c.dom.Text;
+
 public class BlackjackGameActivity extends AppCompatActivity {
 
     private int playerMoney = 1000; // Example initial money amount
     private TextView moneyTextView;
     private TextView currentHandText;
+    private TextView currentHandValue;
     private CardHand playerHand = new CardHand();
+    private int handValue = 0;
     private LinearLayout playerLayout;
 
     private CardHand dealerHand = new CardHand();
@@ -34,6 +38,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
         currentHandText = findViewById(R.id.viewHand);
+        currentHandValue = findViewById(R.id.debugHandValue);
         updateMoneyText();
 
         //Example Button Implementation
@@ -125,6 +130,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         currentHand += " (" + playerHand.getTotalValue() + ")";
         currentHandText.setText(currentHand);
     }
+
 
     private void updateMoneyText() {
         moneyTextView.setText("" + playerMoney);
