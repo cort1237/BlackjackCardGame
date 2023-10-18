@@ -170,16 +170,23 @@ public class BlackjackGameActivity extends AppCompatActivity {
             dealCard(dealerHand, dealerLayout);
         }
 
-        //Enable Player Controls
-        ((Button) findViewById(R.id.hitButton)).setEnabled(true);
-        ((Button) findViewById(R.id.foldButton)).setEnabled(true);
-        ((Button) findViewById(R.id.betButton)).setEnabled(true);
-        ((Button) findViewById(R.id.restart)).setEnabled(false);
-        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
-
-        Log.d("playerHand.getTotalValue", "" + playerHand.getTotalValue());
         Log.d("dealer.getTotalValue", "" + dealerHand.getTotalValue());
-        updateCurrentHand();
+        Log.d("playerHand.getTotalValue", "" + playerHand.getTotalValue());
+
+        // Early version of standard Blackjack peek procedure (still needs to be tied to actual animation)
+        if(dealerHand.getTotalValue() == 21) {
+            dealerTurn();
+        }
+        else {
+            //Enable Player Controls
+            ((Button) findViewById(R.id.hitButton)).setEnabled(true);
+            ((Button) findViewById(R.id.foldButton)).setEnabled(true);
+            ((Button) findViewById(R.id.betButton)).setEnabled(true);
+            ((Button) findViewById(R.id.restart)).setEnabled(false);
+            ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+
+            updateCurrentHand();
+        }
     }
 
     //Returning Card until getValue is implemented
