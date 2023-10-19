@@ -18,11 +18,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private int playerMoney = 1000; // Example initial money amount
     private TextView moneyTextView;
     private TextView currentHandText;
-    private TextView currentHandValue;
     private CardHand playerHand = new CardHand();
     private int handValue = 0;
     private LinearLayout playerLayout;
-
     private CardHand dealerHand = new CardHand();
     private LinearLayout dealerLayout;
     private Deck deck = new Deck();
@@ -183,6 +181,12 @@ public class BlackjackGameActivity extends AppCompatActivity {
             ((Button) findViewById(R.id.foldButton)).setEnabled(true);
             ((Button) findViewById(R.id.betButton)).setEnabled(true);
             ((Button) findViewById(R.id.restart)).setEnabled(false);
+            if(playerHand.isPair()){
+                ((Button) findViewById(R.id.splitButton)).setEnabled(true);
+            }
+            else{
+                ((Button) findViewById(R.id.splitButton)).setEnabled(false);
+            }
             ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
 
             updateCurrentHand();
