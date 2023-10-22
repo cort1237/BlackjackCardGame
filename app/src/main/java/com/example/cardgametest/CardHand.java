@@ -69,6 +69,14 @@ public class CardHand {
     public Card get(int i){
         return hand.get(i);
     }
+    public boolean isPair(){
+        boolean pair = false;
+        if(hand.size() == 2 && hand.get(0).getValue() == hand.get(1).getValue()){
+            pair = true;
+        }
+        return pair;
+    }
+
 
     public int size(){
         return size;
