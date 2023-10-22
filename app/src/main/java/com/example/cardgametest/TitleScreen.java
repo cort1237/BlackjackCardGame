@@ -32,5 +32,14 @@ public class TitleScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button multiButton = findViewById(R.id.multiButton);
+        multiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), WifiDirectActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
