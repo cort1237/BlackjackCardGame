@@ -27,5 +27,6 @@
         android:layout_height="wrap_content"
         android:text="Return to Title Screen"
         android:id="@+id/returnButton"
-        android:onClick="returnToTitle" />
+        android:onClick="returnToTitle"
+        />
 </LinearLayout>

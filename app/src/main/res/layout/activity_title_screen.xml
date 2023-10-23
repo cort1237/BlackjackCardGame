@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    >
 
     <Button
         android:id="@+id/singleButton"
@@ -12,8 +14,10 @@
         android:layout_marginStart="140dp"
         android:layout_marginTop="384dp"
         android:text="Singleplayer"
+        android:background="@drawable/roundbutton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <Button
         android:id="@+id/multiButton"
@@ -22,8 +26,10 @@
         android:layout_marginStart="144dp"
         android:layout_marginTop="472dp"
         android:text="Multiplayer"
+        android:background="@drawable/roundbutton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/defaultButtonStyle"/>
 
     <Button
         android:id="@+id/optionButton"
@@ -32,8 +38,10 @@
         android:layout_marginStart="296dp"
         android:layout_marginTop="16dp"
         android:text="Options"
+        android:background="@drawable/roundbutton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/defaultButtonStyle"/>
 
     <TextView
         android:id="@+id/title"
@@ -43,6 +51,7 @@
         android:layout_marginTop="224dp"
         android:text="Blackjack Royale"
         android:textSize="32sp"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
