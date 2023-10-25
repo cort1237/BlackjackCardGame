@@ -2,6 +2,7 @@ package com.example.cardgametest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,13 +40,15 @@ public class BlackjackGameActivity extends AppCompatActivity {
         updateMoneyText();
 
         //Example Button Implementation
+        /*
         Button exampleButton = findViewById(R.id.buttonExample);
         exampleButton.setOnClickListener(view -> {
 
         });
+        */
 
         //button to open the options menu
-        Button optionsButton = findViewById(R.id.optionButton);
+        @SuppressLint("WrongViewCast") Button optionsButton = findViewById(R.id.optionButton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
