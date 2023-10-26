@@ -49,7 +49,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         */
 
         //button to open the options menu
-        @SuppressLint("WrongViewCast") ImageButton optionsButton = findViewById(R.id.optionButton);
+        /*@SuppressLint("WrongViewCast")*/ ImageButton optionsButton = findViewById(R.id.optionButton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,9 +187,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
             ((Button) findViewById(R.id.restart)).setEnabled(false);
             if(playerHand.isPair()){
                 ((Button) findViewById(R.id.splitButton)).setEnabled(true);
+                ((Button) findViewById(R.id.splitButton)).setVisibility(View.VISIBLE);
             }
             else{
                 ((Button) findViewById(R.id.splitButton)).setEnabled(false);
+                ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
             }
             ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
 
