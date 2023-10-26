@@ -119,7 +119,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     //update the debug textview of current hand
-    private void updateCurrentHand(){
+    /*private void updateCurrentHand(){
         String currentHand = "";
         for(int i = 0; i < playerHand.size(); i++){
             System.out.println(playerHand.get(i).getRank());
@@ -129,6 +129,36 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
         currentHand += " (" + playerHand.getTotalValue() + ")";
         currentHandText.setText(currentHand);
+    }*/
+
+    //new updateCurrentHand to handle split hands
+    private void updateCurrentHand(){
+        if(!playerHand.isSplit()){
+            String currentHand = "";
+            for(int i = 0; i < playerHand.size(); i++){
+                currentHand += " " + playerHand.get(i).getRank();
+                Log.d("card debug", "card #" + i + "| value: " + playerHand.get(i).getRank());
+            }
+
+            currentHand += " (" + playerHand.getTotalValue() + ")";
+            currentHandText.setText(currentHand);
+        }
+        else{
+            String hand1 = "";
+            String hand2 = "";
+            for(int i = 0; i < playerHand.retrieveHand(0).size(); i++){
+                hand1 += " " + playerHand.retrieveHand(0).get(i).getRank();
+                Log.d("hand 1 debug", "card #" + i + "| value: " + playerHand.retrieveHand(0).get(i).getRank());
+            }
+            for(int i = 0; i < playerHand.retrieveHand(1).size(); i++){
+                hand2 += " " + playerHand.retrieveHand(1).get(i).getRank();
+                Log.d("hand 2 debug", "card #" + i + "| value: " + playerHand.retrieveHand(1).get(i).getRank());
+            }
+
+            currentHandText.setText(hand1);
+            splitHandText.setText(hand2);
+
+        }
     }
 
     //when split button is pushed, split hand and make button invisible
@@ -139,7 +169,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         else{
             Log.d("split debug", "Player successfully split");
             ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
-            //updateCurrentHand();
+            ((TextView) findViewById(R.id.viewSplit)).setVisibility(View.VISIBLE);
+            updateCurrentHand();
         }
     }
 
@@ -203,6 +234,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
             }
             ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+            ((TextView) findViewById(R.id.viewSplit)).setVisibility(View.INVISIBLE);
 
             updateCurrentHand();
         }

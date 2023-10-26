@@ -24,7 +24,7 @@ public class CardHand {
     //When player hits, add a new card to their hand
     public void addCard(Card newCard){
         hand.add(newCard);
-        size += 1;
+        size = hand.size();
     }
 
     //When player fold, empty their hand
