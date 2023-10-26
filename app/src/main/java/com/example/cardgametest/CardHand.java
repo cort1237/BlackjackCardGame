@@ -11,7 +11,9 @@ Create a CardHand class that will store the values of the players hand and imple
  */
 public class CardHand {
     private ArrayList<Card> hand;
+    private ArrayList<Card> secondHand;
     private int size;
+    private boolean split = false;
 
     //Initializes the hand passed in cards
     public CardHand(){
@@ -63,6 +65,13 @@ public class CardHand {
     public ArrayList<Card> retrieveHand(){
         return hand;
     }
+    public ArrayList<Card> retrieveHand(int n){
+        if(n == 0){
+            return hand;
+        } else{
+            return secondHand;
+        }
+    }
     public Card retrieveFirstCard(){
         return hand.get(0);
     }
@@ -76,7 +85,20 @@ public class CardHand {
         }
         return pair;
     }
+    public boolean splitHand(){
+        if(isPair() && size == 2) {
+            secondHand = new ArrayList<Card>(2);
+            Card temp = hand.remove(0);
+            secondHand.add(temp);
+            split = true;
+            return true;
+        }
+        return false;
+    }
 
+    public boolean isSplit(){
+        return split;
+    }
 
     public int size(){
         return size;

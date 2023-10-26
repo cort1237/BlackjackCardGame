@@ -20,6 +20,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private int playerMoney = 1000; // Example initial money amount
     private TextView moneyTextView;
     private TextView currentHandText;
+    private TextView splitHandText;
     private CardHand playerHand = new CardHand();
     private int handValue = 0;
     private LinearLayout playerLayout;
@@ -38,6 +39,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
         currentHandText = findViewById(R.id.viewHand);
+        splitHandText = findViewById(R.id.viewSplit);
         updateMoneyText();
 
         //Example Button Implementation
@@ -66,9 +68,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("Resumed", "Returned from settings");
 
     }
-
-
-
 
     //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
@@ -132,6 +131,18 @@ public class BlackjackGameActivity extends AppCompatActivity {
         currentHandText.setText(currentHand);
     }
 
+    //when split button is pushed, split hand and make button invisible
+    public void splitButton(View view){
+        if(!playerHand.splitHand()){
+            Log.d("split debug", "Player cannot split hand");
+        }
+        else{
+            Log.d("split debug", "Player successfully split");
+            ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
+            //updateCurrentHand();
+        }
+    }
+
 
     private void updateMoneyText() {
         moneyTextView.setText("" + playerMoney);
@@ -186,11 +197,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
             ((Button) findViewById(R.id.betButton)).setEnabled(true);
             ((Button) findViewById(R.id.restart)).setEnabled(false);
             if(playerHand.isPair()){
-                ((Button) findViewById(R.id.splitButton)).setEnabled(true);
                 ((Button) findViewById(R.id.splitButton)).setVisibility(View.VISIBLE);
             }
             else{
-                ((Button) findViewById(R.id.splitButton)).setEnabled(false);
                 ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
             }
             ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
