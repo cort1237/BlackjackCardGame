@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -48,7 +49,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         */
 
         //button to open the options menu
-        @SuppressLint("WrongViewCast") Button optionsButton = findViewById(R.id.optionButton);
+        @SuppressLint("WrongViewCast") ImageButton optionsButton = findViewById(R.id.optionButton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

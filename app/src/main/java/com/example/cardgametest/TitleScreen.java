@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class TitleScreen extends AppCompatActivity {
 
@@ -15,7 +16,7 @@ public class TitleScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title_screen);
 
-        Button optionsButton = findViewById(R.id.optionButton);
+        ImageButton optionsButton = findViewById(R.id.optionButton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
