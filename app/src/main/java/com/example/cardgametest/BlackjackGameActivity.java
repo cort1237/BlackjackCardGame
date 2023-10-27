@@ -24,6 +24,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private CardHand playerHand = new CardHand();
     private int handValue = 0;
     private LinearLayout playerLayout;
+    private LinearLayout splitLayout;
     private CardHand dealerHand = new CardHand();
     private LinearLayout dealerLayout;
     private Deck deck = new Deck();
@@ -34,6 +35,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         playerLayout = findViewById(R.id.main_player_hand);
+        splitLayout = findViewById(R.id.split_player_hand);
         dealerLayout = findViewById(R.id.dealer_hand);
         tabLayout = findViewById(R.id.expandTab);
         // Money Text Field
@@ -109,23 +111,48 @@ public class BlackjackGameActivity extends AppCompatActivity {
         playerLayout.removeAllViews();
         dealerHand.clearHand();
         dealerLayout.removeAllViews();
+        if(playerHand.isSplit()){
+            splitLayout.removeAllViews();
+        }
         setup();
     }
 
 
     private void hitHelper() {
-        Card c = deck.retrieveTop();
-        playerHand.addCard(c);
-        Log.d("hitHelper Test", "Player Card: " + c.getRank());
-        addCardToHand(playerLayout, c);
-        //System.out.println("Got Here.");
-        //System.out.println(hand.retrieveFirstCard().getRank());
-        Log.d("Hit Button Test", "hit");
-        updateCurrentHand();
+        if(!playerHand.isSplit()) {
+            Card c = deck.retrieveTop();
+            playerHand.addCard(c);
+            Log.d("hitHelper Test", "Player Card: " + c.getRank());
+            addCardToHand(playerLayout, c);
+            //System.out.println("Got Here.");
+            //System.out.println(hand.retrieveFirstCard().getRank());
+            Log.d("Hit Button Test", "hit");
+            updateCurrentHand();
 
-        if (playerHand.getTotalValue() >= 21)
-            dealerTurn();
+            if (playerHand.getTotalValue() >= 21)
+                dealerTurn();
+        } else if(playerHand.getTotalValue(0) < 21) {
+            Card c = deck.retrieveTop();
+            playerHand.addCard(c, 0);
+            Log.d("hitHelper Test", "Player Card: " + c.getRank());
+            addCardToHand(playerLayout, c);
+            Log.d("Hit Button Test", "hit");
+            updateCurrentHand();
+        } else {
+            Log.d("hitHelper", "hits go to split hand");
+            Card c = deck.retrieveTop();
+            playerHand.addCard(c, 1);
+            Log.d("hitHelper Test", "Split Card: " + c.getRank());
+            addCardToHand(splitLayout, c);
+            Log.d("Hit Button Test", "hit");
+            updateCurrentHand();
+            if(playerHand.getTotalValue(1) >= 21){
+                dealerTurn();
+            }
+        }
+
     }
+
 
     //Adds a card to the specified Hand Layout on the screen
     private void addCardToHand(LinearLayout mainPlayerHand, Card c) {
