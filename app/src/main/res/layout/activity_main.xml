@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".BlackjackGameActivity">
 
 
@@ -164,6 +165,34 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.135"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <LinearLayout
+        android:id="@+id/expandTab"
+        android:layout_width="166dp"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/black"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/expandButton"
+        android:layout_width="31dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="276dp"
+        android:orientation="vertical"
+        android:text=" "
+
+
+        app:layout_constraintEnd_toStartOf="@+id/expandTab"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,7 +27,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private CardHand dealerHand = new CardHand();
     private LinearLayout dealerLayout;
     private Deck deck = new Deck();
-
+    private LinearLayout tabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
         playerLayout = findViewById(R.id.main_player_hand);
         dealerLayout = findViewById(R.id.dealer_hand);
-
+        tabLayout = findViewById(R.id.expandTab);
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
         currentHandText = findViewById(R.id.viewHand);
@@ -57,6 +57,35 @@ public class BlackjackGameActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), options.class);
                 startActivity(intent);
+            }
+        });
+
+        //expand button and tab to view other hands
+
+        Log.d("yeet", String.valueOf(tabLayout.getVisibility()));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200,260);
+        params.setMargins(8,8,8,8);
+
+        for(int i =0; i < 15; i ++){
+            ImageView cardView = new ImageView(this);
+            cardView.setImageResource(R.drawable.ace_of_diamond_test);
+            cardView.setLayoutParams(params);
+            tabLayout.addView(cardView);
+        }
+
+
+
+
+        findViewById(R.id.expandButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(tabLayout.getVisibility() == View.VISIBLE){
+                    tabLayout.setVisibility(View.GONE);
+                }
+                else{
+                    tabLayout.setVisibility(View.VISIBLE);
+                }
             }
         });
         setup();
