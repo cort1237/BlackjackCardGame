@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
 
@@ -27,7 +30,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private CardHand dealerHand = new CardHand();
     private LinearLayout dealerLayout;
     private Deck deck = new Deck();
-    private LinearLayout tabLayout;
+    private TableLayout tabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,23 +63,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
             }
         });
 
-        //expand button and tab to view other hands
 
-        Log.d("yeet", String.valueOf(tabLayout.getVisibility()));
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200,260);
-        params.setMargins(8,8,8,8);
-
-        for(int i =0; i < 15; i ++){
-            ImageView cardView = new ImageView(this);
-            cardView.setImageResource(R.drawable.ace_of_diamond_test);
-            cardView.setLayoutParams(params);
-            tabLayout.addView(cardView);
-        }
-
-
-
-
+        //expand tab and button
+        tabLayout.bringToFront();
         findViewById(R.id.expandButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -90,7 +79,29 @@ public class BlackjackGameActivity extends AppCompatActivity {
         });
         setup();
     }
-
+    // generate the hands for each row in the side bar
+    protected void generateHand(){
+        int NUM_PLAYERS = 2;
+        CardHand handList[] = new CardHand[NUM_PLAYERS];
+        handList[0] = playerHand;
+        handList[1] = dealerHand;
+        TableRow.LayoutParams params = new TableRow.LayoutParams(150,180);
+        params.setMargins(4,8,4,8);
+        TableRow tabLayout1 = findViewById(R.id.row1);
+        TableRow tabLayout2 = findViewById(R.id.row2);
+        TableRow t[] = new TableRow[2];
+        t[0] = tabLayout1;
+        t[1] = tabLayout2;
+        for(int x = 0; x < NUM_PLAYERS; x++) {
+            t[x].removeAllViews();
+            for (int i = 0; i < handList[x].size(); i++) {
+                ImageView cardView = new ImageView(this);
+                cardView.setImageResource(R.drawable.ace_of_diamond_test);
+                cardView.setLayoutParams(params);
+                t[x].addView(cardView);
+            }
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,6 +146,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         params.setMargins(8,8,8,8);
         cardView.setLayoutParams(params);
         mainPlayerHand.addView(cardView);
+        generateHand();
     }
 
     //when fold button is clicked, this function will run
@@ -183,6 +195,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 hand2 += " " + playerHand.retrieveHand(1).get(i).getRank();
                 Log.d("hand 2 debug", "card #" + i + "| value: " + playerHand.retrieveHand(1).get(i).getRank());
             }
+
 
             currentHandText.setText(hand1);
             splitHandText.setText(hand2);
