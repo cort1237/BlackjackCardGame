@@ -13,6 +13,7 @@ public class CardHand {
     private ArrayList<Card> hand;
     private ArrayList<Card> secondHand;
     private int size;
+    private int secondHandSize;
     private boolean split = false;
 
     //Initializes the hand passed in cards
@@ -26,6 +27,19 @@ public class CardHand {
         hand.add(newCard);
         size = hand.size();
     }
+
+    //modified addCard to be used when hands are split
+    public void addCard(Card newCard, int n){
+        if(n == 0){
+            hand.add(newCard);
+            size = hand.size();
+        }
+        else{
+            secondHand.add(newCard);
+            secondHandSize = secondHand.size();
+        }
+    }
+
 
     //When player fold, empty their hand
     public void clearHand(){
@@ -48,6 +62,38 @@ public class CardHand {
 
         //Calculate value
         for(int i = 0; i < size; i++){
+            if(temp.get(i).getRank() != "Ace"){
+                value += temp.get(i).getValue();
+            }
+            else if (temp.get(i).getRank() == "Ace" && value > 10){
+                value += 1;
+            }
+            else{
+                value += 11;
+            }
+        }
+
+        return value;
+    }
+
+    //copy of getTotalValue that is only used for split hands
+    public int getTotalValue(int n) {
+        int value = 0;
+        ArrayList<Card> temp;
+        if(n == 0) {
+            temp = hand;
+        } else {
+            temp = secondHand;
+        }
+        temp.sort(new Comparator<Card>() {
+            @Override
+            public int compare(Card o1, Card o2) {
+                return Integer.compare(o2.getValue(), o1.getValue());
+            }
+        });
+
+        //Calculate value
+        for(int i = 0; i < temp.size(); i++){
             if(temp.get(i).getRank() != "Ace"){
                 value += temp.get(i).getValue();
             }
