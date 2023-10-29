@@ -48,7 +48,7 @@ public class TitleScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("statsButton", "Button Clicked");
-                Intent intent = new Intent(getApplicationContext(), BlackjackGameActivity.class);
+                Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
                 startActivity(intent);
             }
         });
