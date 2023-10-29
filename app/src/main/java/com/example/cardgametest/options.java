@@ -28,7 +28,7 @@ public class options extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
-        
+
         prefs = getPreferences(Context.MODE_PRIVATE);
 
         if(!prefs.contains("volume")) {

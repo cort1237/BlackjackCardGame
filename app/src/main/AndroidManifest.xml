@@ -8,8 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -32,12 +33,16 @@
         </activity>
         <activity
             android:name=".BlackjackGameActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".options"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".WifiDirectActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
+        <activity
+            android:name=".StatsActivity"
+            android:exported="true" />
     </application>
+
 </manifest>
