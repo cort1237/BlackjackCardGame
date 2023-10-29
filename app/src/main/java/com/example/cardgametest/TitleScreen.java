@@ -42,5 +42,15 @@ public class TitleScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button statsButton = findViewById(R.id.statsButton);
+        statsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("statsButton", "Button Clicked");
+                Intent intent = new Intent(getApplicationContext(), BlackjackGameActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

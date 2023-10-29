@@ -32,6 +32,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private LinearLayout dealerLayout;
     private Deck deck = new Deck();
     private TableLayout tabLayout;
+
+    private Stats stats;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +82,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 }
             }
         });
+        stats = new Stats(getApplicationContext());
         setup();
     }
     // generate the hands for each row in the side bar
@@ -287,6 +291,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("playerHand.getTotalValue", "" + playerHand.getTotalValue());
 
         // Early version of standard Blackjack peek procedure (still needs to be tied to actual animation)
+        // Animation should play if dealer's visible card is an "Ace" or "Face" card, regardless if getTotalValue()==21
         if(dealerHand.getTotalValue() == 21) {
             dealerTurn();
         }
@@ -309,9 +314,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
     }
 
-    //Returning Card until getValue is implemented
     private Card dealCard(CardHand entity, LinearLayout handLayout) {
-//private void dealCard(CardHand entity, boolean dealer) {
         Card topCard = deck.retrieveTop();
         entity.addCard(topCard);
         addCardToHand(handLayout, topCard);             //Added LinearLayout var to update the visual elements on screen
@@ -330,6 +333,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.restart)).setEnabled(true);
         ((Button) findViewById(R.id.restart)).setVisibility(View.VISIBLE);
 
+        //Insert win view below
 
         while(dealerTotal<17) {
             Card card = dealCard(dealerHand, dealerLayout);
@@ -339,18 +343,36 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
         if (dealerTotal>21) {
             Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal + " BUST");
-            if (playerTotal<=21)
+            if (playerTotal<=21) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
-            else Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
+                stats.recordWin();
+            }
+            else {
+                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
+                stats.recordLoss();
+            }
 
         }
         else {
             Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal);
-            if (playerTotal > dealerTotal && playerTotal<=21)
+            if (playerTotal > dealerTotal && playerTotal<=21) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
-            else Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
-            if (playerTotal == dealerTotal)
+                stats.recordWin();
+            }
+            else if (playerTotal == dealerTotal) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
+                stats.recordPush();
+            } //should stats of a draw be recorded?
+            else {
+                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
+                stats.recordLoss();
+            }
+
         }
+
+        Log.d("End Stats", "Wins: " + stats.getStats()[0]);
+        Log.d("End Stats", "Losses: " + stats.getStats()[1]);
+        Log.d("End Stats", "Total Games: " + stats.getStats()[2]);
+
     }
 }
