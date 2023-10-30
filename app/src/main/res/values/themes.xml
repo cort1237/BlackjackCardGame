@@ -7,14 +7,14 @@
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorOnBackground">@color/black</item>
         <item name="colorSurface">@color/black</item>
+
     </style>
     <style name="defaultButtonStyle" parent="@style/Widget.AppCompat.Button.Colored">
-        <item name="android:background">@color/black</item>
-        <item name="android:textColor">@color/gray</item>
+        <item name="android:background">@drawable/roundbutton</item>
+        <item name="android:textColor">#f0f0f0</item>
         <item name="android:textSize">20sp</item>
         <item name="android:padding">10dp</item>
         <item name="android:gravity">center</item>
-
         <item name="android:textStyle">bold</item>
     </style>
 

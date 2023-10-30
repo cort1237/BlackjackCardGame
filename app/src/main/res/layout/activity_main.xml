@@ -196,7 +196,7 @@
         android:layout_height="match_parent"
 
 
-        android:background="@color/black"
+        android:background="#b5b5b5"
         android:elevation="2dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -226,6 +226,7 @@
         android:layout_width="31dp"
         android:layout_height="130dp"
         android:layout_marginTop="276dp"
+        android:layout_marginRight="-3dp"
         android:orientation="vertical"
         android:text=" "
 

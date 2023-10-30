@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 public class BlackjackGameActivity extends AppCompatActivity {
 
     private int playerMoney = 1000; // Example initial money amount
@@ -101,8 +103,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
     protected void generateHand(){
         int NUM_PLAYERS = 2;
         CardHand handList[] = new CardHand[NUM_PLAYERS];
-        handList[0] = playerHand;
-        handList[1] = dealerHand;
+        handList[0] = dealerHand;
+
+        handList[1] = playerHand;
         TableRow.LayoutParams params = new TableRow.LayoutParams(150,180);
         params.setMargins(4,8,4,8);
         TableRow tabLayout1 = findViewById(R.id.row1);
@@ -112,9 +115,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
         t[1] = tabLayout2;
         for(int x = 0; x < NUM_PLAYERS; x++) {
             t[x].removeAllViews();
+            ArrayList<Card> hand = handList[x].retrieveHand();
             for (int i = 0; i < handList[x].size(); i++) {
                 ImageView cardView = new ImageView(this);
-                cardView.setImageResource(R.drawable.default_jack_of_hearts);
+                cardView.setImageResource(hand.get(i).getCardImage());
                 cardView.setLayoutParams(params);
                 t[x].addView(cardView);
             }
