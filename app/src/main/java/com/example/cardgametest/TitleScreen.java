@@ -38,7 +38,7 @@ public class TitleScreen extends AppCompatActivity {
         multiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), WifiDirectActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ConnectActivity.class);
                 startActivity(intent);
             }
         });
