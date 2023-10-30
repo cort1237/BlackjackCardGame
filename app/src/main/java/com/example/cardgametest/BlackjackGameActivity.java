@@ -77,6 +77,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), options.class);
+                intent.putExtra("exit", 1);
                 startActivity(intent);
             }
         });

@@ -16,6 +16,7 @@ public class options extends AppCompatActivity {
     private SharedPreferences prefs;
     private float volumeValue ;
 
+    private int exit;
     @Override
     protected void onStop() {
         super.onStop();
@@ -27,8 +28,30 @@ public class options extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_options);
 
+        setContentView(R.layout.activity_options);
+        Button exitButton = findViewById(R.id.exitButton);
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null){
+            exit = extras.getInt("exit");
+
+            if(exit == 0){
+                exitButton.setVisibility(View.GONE);
+            }
+            else{
+                exitButton.setVisibility(View.VISIBLE);
+                exitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), TitleScreen.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
         prefs = getPreferences(Context.MODE_PRIVATE);
 
         if(!prefs.contains("volume")) {
@@ -47,16 +70,8 @@ public class options extends AppCompatActivity {
             }
         });
 
-        Button exitButton = findViewById(R.id.exitButton);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), TitleScreen.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
+
+
 
         Slider volumeSlider = findViewById(R.id.volume_slider);
         volumeSlider.setValue(volumeValue);
