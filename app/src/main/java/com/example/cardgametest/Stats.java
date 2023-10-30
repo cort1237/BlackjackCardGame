@@ -1,13 +1,11 @@
 package com.example.cardgametest;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.content.Context;
 import android.util.Log;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
+// Reads/Write to a comma separated txt file that holds W/L record
 public class Stats {
 
     Context context;
@@ -18,17 +16,23 @@ public class Stats {
         create();
     }
 
+    // Creates/overwrites a file stats.txt to store W/L. Can be reworked to not overwrite if append
+    // is set to "true". Such as if we wanted to record match history over time
     private void create() {
-        String s = "0, 0, 0, ";
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(context.getFileStreamPath(FILENAME), false));
-            writer.write(s);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        File file = context.getFileStreamPath(FILENAME);
+        if (!file.exists() || file.length() == 0) {
+            String s = "0, 0, 0, ";
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(context.getFileStreamPath(FILENAME), false));
+                writer.write(s);
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    // Operates on the notion that file is overwritten but can be adjusted needed
     private String[] read() {
         StringBuilder content = new StringBuilder();
         try {
@@ -69,7 +73,6 @@ public class Stats {
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(context.getFileStreamPath(FILENAME), false));
-            //writer.write("0, 0, 1, ");
             writer.write(output);
             writer.close();
         } catch (IOException e) {
@@ -95,11 +98,3 @@ public class Stats {
         return read();
     }
 }
-
-
-
-/*
-On event, call function.
-Perhaps pass in "loss" or "win" to a method.
-That method will then call read, then write the appropriate updated information
- */

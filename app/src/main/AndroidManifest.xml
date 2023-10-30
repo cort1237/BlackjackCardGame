@@ -43,6 +43,9 @@
         <activity
             android:name=".StatsActivity"
             android:exported="true" />
+        <activity
+            android:name=".ConnectActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
