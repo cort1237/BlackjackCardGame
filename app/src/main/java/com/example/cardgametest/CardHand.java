@@ -19,6 +19,7 @@ public class CardHand {
     //Initializes the hand passed in cards
     public CardHand(){
         hand = new ArrayList<Card>(2);
+        secondHand = new ArrayList<Card>(2);
         size = 0;
     }
 
@@ -44,6 +45,8 @@ public class CardHand {
     //When player fold, empty their hand
     public void clearHand(){
         hand.clear();
+        secondHand.clear();
+        split = false;
         size = 0;
     }
 
@@ -81,9 +84,9 @@ public class CardHand {
         int value = 0;
         ArrayList<Card> temp;
         if(n == 0) {
-            temp = hand;
+            temp = (ArrayList<Card>) hand.clone();
         } else {
-            temp = secondHand;
+            temp = (ArrayList<Card>) secondHand.clone();
         }
         temp.sort(new Comparator<Card>() {
             @Override
@@ -133,7 +136,6 @@ public class CardHand {
     }
     public boolean splitHand(){
         if(isPair() && size == 2) {
-            secondHand = new ArrayList<Card>(2);
             Card temp = hand.remove(0);
             secondHand.add(temp);
             split = true;
@@ -141,6 +143,7 @@ public class CardHand {
         }
         return false;
     }
+
 
     public boolean isSplit(){
         return split;

@@ -34,7 +34,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private CardHand playerHand = new CardHand();
     private int handValue = 0;
     private LinearLayout playerLayout;
-    private LinearLayout splitLayout;
+    private LinearLayout splitLayout1;
+    private LinearLayout splitLayout2;
     private CardHand dealerHand = new CardHand();
     private LinearLayout dealerLayout;
     private Deck deck = new Deck();
@@ -50,7 +51,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         playerLayout = findViewById(R.id.main_player_hand);
-        splitLayout = findViewById(R.id.split_player_hand);
+        splitLayout1 = findViewById(R.id.split_player_hand_1);
+        splitLayout2 = findViewById(R.id.split_player_hand_2);
         dealerLayout = findViewById(R.id.dealer_hand);
         tabLayout = findViewById(R.id.expandTab);
         // Money Text Field
@@ -129,18 +131,20 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
+        ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
         hitHelper();
     }
 
     public void resetGame(View view) {
         //for each player
+        if(playerHand.isSplit()){
+            splitLayout1.removeAllViews();
+            splitLayout2.removeAllViews();
+        }
         playerHand.clearHand();
         playerLayout.removeAllViews();
         dealerHand.clearHand();
         dealerLayout.removeAllViews();
-        if(playerHand.isSplit()){
-            splitLayout.removeAllViews();
-        }
         roundEnd.dismiss();
         setup();
     }
@@ -157,11 +161,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
             if (playerHand.getTotalValue() >= 21)
                 dealerTurn();
         } else if(playerHand.getTotalValue(0) < 21) {
-            dealCard(playerHand, playerLayout);
+            dealCard(playerHand, splitLayout1);
             Log.d("Hit Button Test", "hit");
             updateCurrentHand();
         } else {
-            dealCard(playerHand, splitLayout, 1);
+            dealCard(playerHand, splitLayout2, 1);
             updateCurrentHand();
             if(playerHand.getTotalValue(1) >= 21){
                 dealerTurn();
@@ -177,7 +181,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(mainPlayerHand.getChildCount() == 0)
             margin = 0;
         if(margin < -130)
-            margin = -130;
+            margin = -160;
         ImageView cardView = new ImageView(this);
         cardView.setImageResource(c.getCardImage());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200,260);
@@ -251,6 +255,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
             Log.d("split debug", "Player successfully split");
             ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
             ((TextView) findViewById(R.id.viewSplit)).setVisibility(View.VISIBLE);
+            playerLayout.removeAllViews();
+            refreshHand(playerHand, splitLayout1, 0);
+            refreshHand(playerHand, splitLayout2, 1);
             updateCurrentHand();
         }
     }
@@ -323,19 +330,26 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     private Card dealCard(CardHand entity, LinearLayout handLayout, int split) {
-        int margin;
         Card topCard = deck.retrieveTop();
         entity.addCard(topCard, split);
+        refreshHand(entity, handLayout, split);
+        Log.d("dealCard Test", "Dealer Card: " + topCard.getRank());
+        return topCard;
+    }
+
+    private void refreshHand(CardHand hand, LinearLayout handLayout, int split) {
+        int margin;
         int cardCount = handLayout.getChildCount();
-        if(cardCount > 2)
+        if(hand.isSplit())
+            margin = 8 - ((cardCount) * 80);
+        else if(cardCount > 2)
             margin = 8 - ((cardCount-1) * 40);
         else
             margin = 8;
         handLayout.removeAllViews();
-        entity.retrieveHand(0).forEach((card -> addCardToHand(handLayout, card, margin)));
-        Log.d("dealCard Test", "Dealer Card: " + topCard.getRank());
-        return topCard;
+        hand.retrieveHand(split).forEach((card -> addCardToHand(handLayout, card, margin)));
     }
+
     private Card dealCard(CardHand entity, LinearLayout handLayout) {
         return dealCard(entity, handLayout, 0);
     }
