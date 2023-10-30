@@ -36,8 +36,8 @@
         android:id="@+id/moneyTextView"
         android:layout_width="80dp"
         android:layout_height="33dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="276dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="312dp"
         android:drawableStart="@drawable/baseline_attach_money_24"
         android:text="1000"
         android:textAlignment="textStart"
@@ -50,12 +50,10 @@
         android:id="@+id/optionButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="320dp"
-        android:layout_marginTop="35dp"
-        app:layout_constraintBottom_toTopOf="@+id/dealer_hand"
+        android:layout_marginStart="335dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.291"
         app:srcCompat="@drawable/baseline_settings_24"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -128,8 +126,8 @@
         android:id="@+id/betTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="288dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="320dp"
         android:text="Bet: $100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -179,7 +177,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
-        android:id="@+id/split_player_hand"
+        android:id="@+id/split_player_hand_2"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginBottom="40dp"
