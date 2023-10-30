@@ -1,20 +1,27 @@
 package com.example.cardgametest;
 
+import android.os.Handler;
+import android.os.Looper;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -34,6 +41,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private TableLayout tabLayout;
 
     private Stats stats;
+
+    private CustomPopupWindow roundEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +91,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 }
             }
         });
+
+        roundEnd = new CustomPopupWindow(this);
+
         stats = new Stats(getApplicationContext());
         setup();
     }
@@ -129,6 +141,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(playerHand.isSplit()){
             splitLayout.removeAllViews();
         }
+        roundEnd.dismiss();
         setup();
     }
 
@@ -341,38 +354,59 @@ public class BlackjackGameActivity extends AppCompatActivity {
             Log.d("dealerTurn Test", "Current Dealer Total: " + dealerTotal);
         }
 
+        View rootView = findViewById(android.R.id.content);
+
         if (dealerTotal>21) {
             Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal + " BUST");
             if (playerTotal<=21) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
+                roundEnd.setMessage("PLAYER WINS");
             }
             else {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
                 stats.recordLoss();
+                roundEnd.setMessage("PLAYER BUSTS");
             }
-
+            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, -200);
         }
         else {
             Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal);
             if (playerTotal > dealerTotal && playerTotal<=21) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
+                roundEnd.setMessage("PLAYER WINS");
             }
             else if (playerTotal == dealerTotal) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
                 stats.recordPush();
+                roundEnd.setMessage("PUSH");
             } //should stats of a draw be recorded?
             else {
-                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
                 stats.recordLoss();
+                if (playerTotal<21) {
+                    Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
+                    roundEnd.setMessage("PLAYER LOSES");
+                }
+                else {
+                    Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
+                    roundEnd.setMessage("PLAYER BUST");
+                }
             }
-
+            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, -200);
         }
+
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                roundEnd.dismiss();
+//            }
+//        }, 2500);
 
         Log.d("End Stats", "Wins: " + stats.getStats()[0]);
         Log.d("End Stats", "Losses: " + stats.getStats()[1]);
         Log.d("End Stats", "Total Games: " + stats.getStats()[2]);
-
     }
+
+
 }
