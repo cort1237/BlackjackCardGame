@@ -9,6 +9,17 @@
 
 
     <LinearLayout
+        android:id="@+id/main_player_hand"
+        android:layout_width="334dp"
+        android:layout_height="163dp"
+        android:layout_marginBottom="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
         android:id="@+id/dealer_hand"
         android:layout_width="350dp"
         android:layout_height="160dp"
@@ -157,7 +168,7 @@
         app:layout_constraintTop_toBottomOf="@+id/viewHand" />
 
     <LinearLayout
-        android:id="@+id/main_player_hand"
+        android:id="@+id/split_player_hand_1"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginBottom="40dp"
@@ -193,7 +204,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <TableRow android:id="@+id/row1"
+        <TableRow
+            android:id="@+id/row1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -202,7 +214,8 @@
 
         </TableRow>
 
-        <TableRow android:id="@+id/row2"
+        <TableRow
+            android:id="@+id/row2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></TableRow>

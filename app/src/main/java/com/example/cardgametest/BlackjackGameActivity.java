@@ -114,7 +114,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             t[x].removeAllViews();
             for (int i = 0; i < handList[x].size(); i++) {
                 ImageView cardView = new ImageView(this);
-                cardView.setImageResource(R.drawable.ace_of_diamond_test);
+                cardView.setImageResource(R.drawable.default_jack_of_hearts);
                 cardView.setLayoutParams(params);
                 t[x].addView(cardView);
             }
@@ -148,10 +148,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     private void hitHelper() {
         if(!playerHand.isSplit()) {
-            Card c = deck.retrieveTop();
-            playerHand.addCard(c);
-            Log.d("hitHelper Test", "Player Card: " + c.getRank());
-            addCardToHand(playerLayout, c);
+            dealCard(playerHand, playerLayout);
             //System.out.println("Got Here.");
             //System.out.println(hand.retrieveFirstCard().getRank());
             Log.d("Hit Button Test", "hit");
@@ -160,19 +157,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
             if (playerHand.getTotalValue() >= 21)
                 dealerTurn();
         } else if(playerHand.getTotalValue(0) < 21) {
-            Card c = deck.retrieveTop();
-            playerHand.addCard(c, 0);
-            Log.d("hitHelper Test", "Player Card: " + c.getRank());
-            addCardToHand(playerLayout, c);
+            dealCard(playerHand, playerLayout);
             Log.d("Hit Button Test", "hit");
             updateCurrentHand();
         } else {
-            Log.d("hitHelper", "hits go to split hand");
-            Card c = deck.retrieveTop();
-            playerHand.addCard(c, 1);
-            Log.d("hitHelper Test", "Split Card: " + c.getRank());
-            addCardToHand(splitLayout, c);
-            Log.d("Hit Button Test", "hit");
+            dealCard(playerHand, splitLayout, 1);
             updateCurrentHand();
             if(playerHand.getTotalValue(1) >= 21){
                 dealerTurn();
@@ -183,11 +172,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
 
     //Adds a card to the specified Hand Layout on the screen
-    private void addCardToHand(LinearLayout mainPlayerHand, Card c) {
+    private void addCardToHand(LinearLayout mainPlayerHand, Card c, int margin) {
+        Log.d("AddCardToHand", c.getSuit() + " | " + c.getRank());
+        if(mainPlayerHand.getChildCount() == 0)
+            margin = 0;
+        if(margin < -130)
+            margin = -130;
         ImageView cardView = new ImageView(this);
-        cardView.setImageResource(R.drawable.ace_of_diamond_test);
+        cardView.setImageResource(c.getCardImage());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200,260);
-        params.setMargins(8,8,8,8);
+        Log.d("Margin", Integer.toString(margin));
+        params.setMargins(margin,8,0,8);
         cardView.setLayoutParams(params);
         mainPlayerHand.addView(cardView);
         generateHand();
@@ -327,12 +322,22 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
     }
 
-    private Card dealCard(CardHand entity, LinearLayout handLayout) {
+    private Card dealCard(CardHand entity, LinearLayout handLayout, int split) {
+        int margin;
         Card topCard = deck.retrieveTop();
-        entity.addCard(topCard);
-        addCardToHand(handLayout, topCard);             //Added LinearLayout var to update the visual elements on screen
+        entity.addCard(topCard, split);
+        int cardCount = handLayout.getChildCount();
+        if(cardCount > 2)
+            margin = 8 - ((cardCount-1) * 40);
+        else
+            margin = 8;
+        handLayout.removeAllViews();
+        entity.retrieveHand(0).forEach((card -> addCardToHand(handLayout, card, margin)));
         Log.d("dealCard Test", "Dealer Card: " + topCard.getRank());
         return topCard;
+    }
+    private Card dealCard(CardHand entity, LinearLayout handLayout) {
+        return dealCard(entity, handLayout, 0);
     }
 
     private void dealerTurn() {

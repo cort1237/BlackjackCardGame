@@ -1,8 +1,5 @@
 package com.example.cardgametest;
-
-import android.content.Context;
-import android.widget.ImageView;
-
+import java.lang.reflect.Field;
 import java.util.*;
 
 /*
@@ -73,7 +70,7 @@ public class Deck {
 }
 
 class Card {
-    public static final String[] SUITS = {"Clubs", "Diamonds", "Hearts", "Spades"};
+    public static final String[] SUITS = {"clubs", "diamonds", "hearts", "spades"};
 
     private final int rank;
     private final int value;
@@ -93,16 +90,26 @@ class Card {
         return value;
     }
 
+    public int getCardImage() {
+        String filename = "default_" + this.getRank() + "_of_" + this.getSuit();
+        try {
+            Field fld = R.drawable.class.getField(filename);
+            return fld.getInt(null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getRank() {
         switch (rank) {
             case 1:
-                return "Ace";
+                return "ace";
             case 11:
-                return "Jack";
+                return "jack";
             case 12:
-                return "Queen";
+                return "queen";
             case 13:
-                return "King";
+                return "king";
             default:
                 return Integer.toString(rank);
         }

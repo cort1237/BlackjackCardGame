@@ -52,7 +52,7 @@ public class CardHand {
     //to see if the running total is greater than 10, if it is than the ace is 1, else the ace is 11
     public int getTotalValue() {
         int value = 0;
-        ArrayList<Card> temp = hand;
+        ArrayList<Card> temp = (ArrayList<Card>) hand.clone();
         temp.sort(new Comparator<Card>() {
             @Override
             public int compare(Card o1, Card o2) {
@@ -62,10 +62,10 @@ public class CardHand {
 
         //Calculate value
         for(int i = 0; i < size; i++){
-            if(temp.get(i).getRank() != "Ace"){
+            if(temp.get(i).getRank() != "ace"){
                 value += temp.get(i).getValue();
             }
-            else if (temp.get(i).getRank() == "Ace" && value > 10){
+            else if (temp.get(i).getRank() == "ace" && value > 10){
                 value += 1;
             }
             else{
