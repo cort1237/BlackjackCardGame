@@ -33,7 +33,7 @@ public class Stats {
     }
 
     // Operates on the notion that file is overwritten but can be adjusted needed
-    private String[] read() {
+    public String[] getStats() {
         StringBuilder content = new StringBuilder();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(context.getFileStreamPath(FILENAME)));
@@ -45,14 +45,14 @@ public class Stats {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //Log.d("Stats.read()", String.valueOf(content));
+        //Log.d("Stats.getStats()", String.valueOf(content));
 
         return String.valueOf(content).split(",\\s*");
     }
 
     private void write(int n) {
 
-        String[] currentStats = read();
+        String[] currentStats = getStats();
         int[] updatedStats = new int[currentStats.length];
 
         for (int i = 0; i < currentStats.length; i++) {
@@ -94,7 +94,4 @@ public class Stats {
         write(2);
     }
 
-    public String[] getStats() {
-        return read();
-    }
 }

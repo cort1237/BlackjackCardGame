@@ -90,9 +90,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
             public void onClick(View v){
                 if(tabLayout.getVisibility() == View.VISIBLE){
                     tabLayout.setVisibility(View.GONE);
+                    roundEnd.showAtLocation(v, Gravity.CENTER, 0, -200);
                 }
                 else{
                     tabLayout.setVisibility(View.VISIBLE);
+                    roundEnd.dismiss();
                 }
             }
         });
