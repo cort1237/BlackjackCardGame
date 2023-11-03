@@ -1,29 +1,21 @@
 package com.example.cardgametest;
 
-import android.os.Handler;
-import android.os.Looper;
-import androidx.appcompat.app.AlertDialog;
+import static android.provider.Settings.System.putString;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -63,16 +55,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         splitHandText = findViewById(R.id.viewSplit);
         updateMoneyText();
 
-        //Example Button Implementation
-        /*
-        Button exampleButton = findViewById(R.id.buttonExample);
-        exampleButton.setOnClickListener(view -> {
-
-        });
-        */
-
-        //button to open the options menu
-        /*@SuppressLint("WrongViewCast")*/ ImageButton optionsButton = findViewById(R.id.optionButton);
+        ImageButton optionsButton = findViewById(R.id.optionButton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,19 +73,38 @@ public class BlackjackGameActivity extends AppCompatActivity {
             public void onClick(View v){
                 if(tabLayout.getVisibility() == View.VISIBLE){
                     tabLayout.setVisibility(View.GONE);
-                    roundEnd.showAtLocation(v, Gravity.CENTER, 0, -200);
+                    //roundEnd.showAtLocation(v, Gravity.CENTER, 0, -200);
                 }
                 else{
                     tabLayout.setVisibility(View.VISIBLE);
-                    roundEnd.dismiss();
+                    //roundEnd.dismiss();
                 }
+            }
+        });
+
+
+        //Bet Add & Sub
+        findViewById(R.id.betButtonAdd).setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               changeBetAmount(10);
+           }
+        });
+        findViewById(R.id.betButtonSub).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeBetAmount(-10);
             }
         });
 
         roundEnd = new CustomPopupWindow(this);
 
         stats = new Stats(getApplicationContext());
-        setup();
+        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.hitButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.foldButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
+        resetGame();
     }
     // generate the hands for each row in the side bar
     protected void generateHand(){
@@ -142,7 +144,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         hitHelper();
     }
 
-    public void resetGame(View view) {
+    private void resetGame() {
         //for each player
         if(playerHand.isSplit()){
             splitLayout1.removeAllViews();
@@ -153,9 +155,22 @@ public class BlackjackGameActivity extends AppCompatActivity {
         dealerHand.clearHand();
         dealerLayout.removeAllViews();
         roundEnd.dismiss();
-        setup();
+
+        //Hide Play Buttons
+        ((Button) findViewById(R.id.hitButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.foldButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+
+        //Show Bet Buttons
+        ((Button) findViewById(R.id.betButton)).setVisibility(View.VISIBLE);
+        ((Button) findViewById(R.id.betButtonAdd)).setVisibility(View.VISIBLE);
+        ((Button) findViewById(R.id.betButtonSub)).setVisibility(View.VISIBLE);
     }
 
+    public void resetGame(View view) {
+        resetGame();
+    }
 
     private void hitHelper() {
         if(!playerHand.isSplit()) {
@@ -178,7 +193,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 dealerTurn();
             }
         }
-
     }
 
 
@@ -197,6 +211,40 @@ public class BlackjackGameActivity extends AppCompatActivity {
         cardView.setLayoutParams(params);
         mainPlayerHand.addView(cardView);
         generateHand();
+    }
+
+    public void bet(View view) {
+        int bet = getBet();
+        if (bet <= 0)
+            return;
+        removeMoney(bet);
+
+        //Hide Bet Buttons
+        ((Button) findViewById(R.id.betButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.betButtonAdd)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.betButtonSub)).setVisibility(View.INVISIBLE);
+
+        //Show Game Buttons
+        ((Button) findViewById(R.id.hitButton)).setVisibility(View.VISIBLE);
+        ((Button) findViewById(R.id.foldButton)).setVisibility(View.VISIBLE);
+
+        setup();
+    }
+
+
+    private void changeBetAmount(int amount) {
+        int bet = getBet() + amount;
+        if (bet < 0)
+            bet = 0;
+        String betString = ((TextView) findViewById(R.id.betTextView)).getText().toString();
+        betString = betString.substring(0, 6) + Integer.toString(bet);
+
+        ((TextView) findViewById(R.id.betTextView)).setText(betString);
+    }
+
+    private int getBet() {
+        String bet = ((TextView) findViewById(R.id.betTextView)).getText().toString().substring(6);
+        return Integer.parseInt(bet);
     }
 
     //when fold button is clicked, this function will run
@@ -321,7 +369,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
             //Enable Player Controls
             ((Button) findViewById(R.id.hitButton)).setEnabled(true);
             ((Button) findViewById(R.id.foldButton)).setEnabled(true);
-            ((Button) findViewById(R.id.betButton)).setEnabled(true);
             ((Button) findViewById(R.id.restart)).setEnabled(false);
             if(playerHand.isPair()){
                 ((Button) findViewById(R.id.splitButton)).setVisibility(View.VISIBLE);
@@ -368,7 +415,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //Disable Player controls
         ((Button) findViewById(R.id.hitButton)).setEnabled(false);
         ((Button) findViewById(R.id.foldButton)).setEnabled(false);
-        ((Button) findViewById(R.id.betButton)).setEnabled(false);
         ((Button) findViewById(R.id.restart)).setEnabled(true);
         ((Button) findViewById(R.id.restart)).setVisibility(View.VISIBLE);
 
@@ -388,6 +434,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                addMoney(getBet()*2);
             }
             else {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
@@ -402,11 +449,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                addMoney(getBet()*2);
             }
             else if (playerTotal == dealerTotal) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
                 stats.recordPush();
                 roundEnd.setMessage("PUSH");
+                addMoney(getBet());
             } //should stats of a draw be recorded?
             else {
                 stats.recordLoss();
