@@ -22,6 +22,7 @@ public class ConnectActivity extends Activity {
     private Button hostButton;
     private Button joinButton;
     private Button backToTitleButton;
+    private final int MAX_PLAYERS = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

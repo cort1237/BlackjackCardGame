@@ -1,7 +1,5 @@
 package com.example.cardgametest;
 
-import static android.provider.Settings.System.putString;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -100,10 +98,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
         roundEnd = new CustomPopupWindow(this);
 
         stats = new Stats(getApplicationContext());
-        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.hitButton)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.foldButton)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
+        (findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+        findViewById(R.id.hitButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.foldButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
         resetGame();
     }
     // generate the hands for each row in the side bar
@@ -140,7 +138,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
-        ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
+        findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
         hitHelper();
     }
 
@@ -157,15 +155,15 @@ public class BlackjackGameActivity extends AppCompatActivity {
         roundEnd.dismiss();
 
         //Hide Play Buttons
-        ((Button) findViewById(R.id.hitButton)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.foldButton)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+        findViewById(R.id.hitButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.foldButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.restart).setVisibility(View.INVISIBLE);
 
         //Show Bet Buttons
-        ((Button) findViewById(R.id.betButton)).setVisibility(View.VISIBLE);
-        ((Button) findViewById(R.id.betButtonAdd)).setVisibility(View.VISIBLE);
-        ((Button) findViewById(R.id.betButtonSub)).setVisibility(View.VISIBLE);
+        findViewById(R.id.betButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.betButtonAdd).setVisibility(View.VISIBLE);
+        findViewById(R.id.betButtonSub).setVisibility(View.VISIBLE);
     }
 
     public void resetGame(View view) {
@@ -175,8 +173,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private void hitHelper() {
         if(!playerHand.isSplit()) {
             dealCard(playerHand, playerLayout);
-            //System.out.println("Got Here.");
-            //System.out.println(hand.retrieveFirstCard().getRank());
             Log.d("Hit Button Test", "hit");
             updateCurrentHand();
 
@@ -220,13 +216,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
         removeMoney(bet);
 
         //Hide Bet Buttons
-        ((Button) findViewById(R.id.betButton)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.betButtonAdd)).setVisibility(View.INVISIBLE);
-        ((Button) findViewById(R.id.betButtonSub)).setVisibility(View.INVISIBLE);
+        findViewById(R.id.betButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.betButtonAdd).setVisibility(View.INVISIBLE);
+        findViewById(R.id.betButtonSub).setVisibility(View.INVISIBLE);
 
         //Show Game Buttons
-        ((Button) findViewById(R.id.hitButton)).setVisibility(View.VISIBLE);
-        ((Button) findViewById(R.id.foldButton)).setVisibility(View.VISIBLE);
+        findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
 
         setup();
     }
@@ -308,8 +304,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
         else{
             Log.d("split debug", "Player successfully split");
-            ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
-            ((TextView) findViewById(R.id.viewSplit)).setVisibility(View.VISIBLE);
+            findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
+            findViewById(R.id.viewSplit).setVisibility(View.VISIBLE);
             playerLayout.removeAllViews();
             refreshHand(playerHand, splitLayout1, 0);
             refreshHand(playerHand, splitLayout2, 1);
@@ -367,17 +363,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
         else {
             //Enable Player Controls
-            ((Button) findViewById(R.id.hitButton)).setEnabled(true);
-            ((Button) findViewById(R.id.foldButton)).setEnabled(true);
-            ((Button) findViewById(R.id.restart)).setEnabled(false);
+            findViewById(R.id.hitButton).setEnabled(true);
+            findViewById(R.id.foldButton).setEnabled(true);
+            findViewById(R.id.restart).setEnabled(false);
             if(playerHand.isPair()){
-                ((Button) findViewById(R.id.splitButton)).setVisibility(View.VISIBLE);
+                findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
             }
             else{
-                ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
+                findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
             }
-            ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
-            ((TextView) findViewById(R.id.viewSplit)).setVisibility(View.INVISIBLE);
+            findViewById(R.id.restart).setVisibility(View.INVISIBLE);
+            findViewById(R.id.viewSplit).setVisibility(View.INVISIBLE);
 
             updateCurrentHand();
         }
@@ -413,10 +409,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //dealerTotal = 16;
 
         //Disable Player controls
-        ((Button) findViewById(R.id.hitButton)).setEnabled(false);
-        ((Button) findViewById(R.id.foldButton)).setEnabled(false);
-        ((Button) findViewById(R.id.restart)).setEnabled(true);
-        ((Button) findViewById(R.id.restart)).setVisibility(View.VISIBLE);
+        findViewById(R.id.hitButton).setEnabled(false);
+        findViewById(R.id.foldButton).setEnabled(false);
+        findViewById(R.id.restart).setEnabled(true);
+        findViewById(R.id.restart).setVisibility(View.VISIBLE);
 
         //Insert win view below
 
