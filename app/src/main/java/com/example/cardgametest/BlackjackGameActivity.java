@@ -73,11 +73,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
             public void onClick(View v){
                 if(tabLayout.getVisibility() == View.VISIBLE){
                     tabLayout.setVisibility(View.GONE);
-                    roundEnd.showAtLocation(v, Gravity.CENTER, 0, -200);
+                    //roundEnd.showAtLocation(v, Gravity.CENTER, 0, -200);
                 }
                 else{
                     tabLayout.setVisibility(View.VISIBLE);
-                    roundEnd.dismiss();
+                    //roundEnd.dismiss();
                 }
             }
         });
@@ -100,6 +100,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
         roundEnd = new CustomPopupWindow(this);
 
         stats = new Stats(getApplicationContext());
+        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.hitButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.foldButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
         resetGame();
     }
     // generate the hands for each row in the side bar
@@ -140,7 +144,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         hitHelper();
     }
 
-    public void resetGame() {
+    private void resetGame() {
         //for each player
         if(playerHand.isSplit()){
             splitLayout1.removeAllViews();
@@ -156,6 +160,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.hitButton)).setVisibility(View.INVISIBLE);
         ((Button) findViewById(R.id.foldButton)).setVisibility(View.INVISIBLE);
         ((Button) findViewById(R.id.splitButton)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
 
         //Show Bet Buttons
         ((Button) findViewById(R.id.betButton)).setVisibility(View.VISIBLE);
@@ -163,6 +168,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.betButtonSub)).setVisibility(View.VISIBLE);
     }
 
+    public void resetGame(View view) {
+        resetGame();
+    }
 
     private void hitHelper() {
         if(!playerHand.isSplit()) {
@@ -205,11 +213,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
         generateHand();
     }
 
-    public void bet() {
+    public void bet(View view) {
         int bet = getBet();
         if (bet <= 0)
             return;
-        playerMoney -= bet;
+        removeMoney(bet);
 
         //Hide Bet Buttons
         ((Button) findViewById(R.id.betButton)).setVisibility(View.INVISIBLE);
@@ -361,7 +369,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
             //Enable Player Controls
             ((Button) findViewById(R.id.hitButton)).setEnabled(true);
             ((Button) findViewById(R.id.foldButton)).setEnabled(true);
-            ((Button) findViewById(R.id.betButton)).setEnabled(true);
             ((Button) findViewById(R.id.restart)).setEnabled(false);
             if(playerHand.isPair()){
                 ((Button) findViewById(R.id.splitButton)).setVisibility(View.VISIBLE);
@@ -408,7 +415,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //Disable Player controls
         ((Button) findViewById(R.id.hitButton)).setEnabled(false);
         ((Button) findViewById(R.id.foldButton)).setEnabled(false);
-        ((Button) findViewById(R.id.betButton)).setEnabled(false);
         ((Button) findViewById(R.id.restart)).setEnabled(true);
         ((Button) findViewById(R.id.restart)).setVisibility(View.VISIBLE);
 
@@ -428,6 +434,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                addMoney(getBet()*2);
             }
             else {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
@@ -442,11 +449,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                addMoney(getBet()*2);
             }
             else if (playerTotal == dealerTotal) {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
                 stats.recordPush();
                 roundEnd.setMessage("PUSH");
+                addMoney(getBet());
             } //should stats of a draw be recorded?
             else {
                 stats.recordLoss();
