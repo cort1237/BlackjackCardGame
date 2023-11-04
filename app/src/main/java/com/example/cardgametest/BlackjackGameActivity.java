@@ -15,6 +15,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
 
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class BlackjackGameActivity extends AppCompatActivity {
@@ -32,10 +33,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private LinearLayout dealerLayout;
     private Deck deck = new Deck();
     private TableLayout tabLayout;
+    private NetworkHandler netHandle;
 
     private Stats stats;
 
     private CustomPopupWindow roundEnd;
+    private final boolean MP_FLAG = getIntent().getStringExtra("Type").equals("MP");
+    private final boolean HOST_FLAG = getIntent().getStringExtra("Host").equals("HOST");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,14 @@ public class BlackjackGameActivity extends AppCompatActivity {
         currentHandText = findViewById(R.id.viewHand);
         splitHandText = findViewById(R.id.viewSplit);
         updateMoneyText();
+
+        //If in multiplayer, setup socket threads for each connection
+        if(MP_FLAG) {
+            netHandle = ((GameApplication) getApplication()).getNetworkHandler();
+            for (Socket socket : netHandle.getClientSockets()) {
+                Thread t = new Thread(()->{handleClientConnection(socket);});
+            }
+        }
 
         ImageButton optionsButton = findViewById(R.id.optionButton);
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -477,6 +489,36 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("End Stats", "Wins: " + stats.getStats()[0]);
         Log.d("End Stats", "Losses: " + stats.getStats()[1]);
         Log.d("End Stats", "Total Games: " + stats.getStats()[2]);
+    }
+
+    /**
+     * Checks for messages on the provided socket.
+     * Messages should be formatted the following way: "Source_ID : Job : Message"
+     * @param socket
+     */
+    private void handleClientConnection(Socket socket) {
+        while (true) {
+            String message = netHandle.receiveMessageFromClient(socket);
+            if (message != null) {
+                // Handle the received message
+                String[] args = message.split(" : ");
+                if(HOST_FLAG) {
+                    netHandle.sendToAllClients(message); //If message recieved by host echo message to all clients.
+                    interpretMessage(args);
+                }
+                //Since every message gets echoed to all clients. It will get returned to sender, this will ignore the message.
+                else if(Integer.parseInt(args[0]) == netHandle.id) {
+                    continue;
+                }
+                else {
+                    interpretMessage(args);
+                }
+            }
+        }
+    }
+
+    private void interpretMessage(String[] args) {
+
     }
 
 

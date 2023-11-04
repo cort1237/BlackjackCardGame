@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -80,6 +81,8 @@ public class ConnectActivity extends Activity {
                 new MessageSender().execute("initialize");
                 new MessageSender().execute("play");
                 Intent i = new Intent(ConnectActivity.this, BlackjackGameActivity.class);
+                i.putExtra("type", "MP");
+                i.putExtra("host", "HOST");
                 startActivity(i);
             }
         });
@@ -104,8 +107,8 @@ public class ConnectActivity extends Activity {
                 connectionList.setText(String.format("%s\n%s", connectionList.getText(), clientSocket.getInetAddress().toString()));
                 runOnUiThread(() -> startButton.setVisibility(View.VISIBLE)); //Make play button visible after a connection.
 
-                Thread clientThread = new Thread(() -> handleClientConnection(clientSocket));  //Await messages from client on a new thread.
-                clientThread.start();
+                //Thread clientThread = new Thread(() -> handleClientConnection(clientSocket));  //Await messages from client on a new thread.
+                //clientThread.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -163,7 +166,10 @@ public class ConnectActivity extends Activity {
                 //If the message is play send all players to the game screen.
                 if(args[0].equals("play")) {
                     Intent i = new Intent(this, BlackjackGameActivity.class);
+                    i.putExtra("Type", "MP");
+                    i.putExtra("host", "CLIENT");
                     startActivity(i);
+                    Thread.currentThread().interrupt(); // Close this activities message threads.
                 }
                 else if(args[0].equals("ASSIGN_ID")) {
                     netHandle.id = Integer.parseInt(args[1]);

@@ -25,6 +25,10 @@ public class NetworkHandler {
         id = i;
     }
 
+    public ArrayList<Socket> getClientSockets() {
+        return clientSockets;
+    }
+
     public void sendToAllClients(String message) {
         for (Socket socket : clientSockets) {
             try {
