@@ -232,14 +232,14 @@ public class BlackjackGameActivity extends AppCompatActivity {
             return;
         removeMoney(bet);
 
+
+        //Hide Bet Buttons
+        findViewById(R.id.betButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.betButtonAdd).setVisibility(View.INVISIBLE);
+        findViewById(R.id.betButtonSub).setVisibility(View.INVISIBLE);
+
         //If Single Player
         if(!MP_FLAG) {
-
-            //Hide Bet Buttons
-            findViewById(R.id.betButton).setVisibility(View.INVISIBLE);
-            findViewById(R.id.betButtonAdd).setVisibility(View.INVISIBLE);
-            findViewById(R.id.betButtonSub).setVisibility(View.INVISIBLE);
-
             //Show Game Buttons
             findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
             findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
