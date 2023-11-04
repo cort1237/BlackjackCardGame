@@ -31,6 +31,7 @@ public class NetworkHandler {
 
     public void sendToAllClients(String message) {
         for (Socket socket : clientSockets) {
+            Log.d("Message Destination", socket.getInetAddress().toString());
             try {
                 DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
                 outputStream.writeUTF(message);

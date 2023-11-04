@@ -166,7 +166,7 @@ public class ConnectActivity extends Activity {
                 //If the message is play send all players to the game screen.
                 if(args[0].equals("play")) {
                     Intent i = new Intent(this, BlackjackGameActivity.class);
-                    i.putExtra("Type", "MP");
+                    i.putExtra("type", "MP");
                     i.putExtra("host", "CLIENT");
                     startActivity(i);
                     Thread.currentThread().interrupt(); // Close this activities message threads.

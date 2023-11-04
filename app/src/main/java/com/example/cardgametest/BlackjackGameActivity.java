@@ -3,6 +3,7 @@ package com.example.cardgametest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,8 +39,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private Stats stats;
 
     private CustomPopupWindow roundEnd;
-    private final boolean MP_FLAG = getIntent().getStringExtra("Type").equals("MP");
-    private final boolean HOST_FLAG = getIntent().getStringExtra("Host").equals("HOST");
+    private boolean MP_FLAG;
+    private boolean HOST_FLAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +57,16 @@ public class BlackjackGameActivity extends AppCompatActivity {
         currentHandText = findViewById(R.id.viewHand);
         splitHandText = findViewById(R.id.viewSplit);
         updateMoneyText();
+        MP_FLAG = getIntent().getStringExtra("type").equals("MP");
+
 
         //If in multiplayer, setup socket threads for each connection
         if(MP_FLAG) {
+            HOST_FLAG = getIntent().getStringExtra("host").equals("HOST");
             netHandle = ((GameApplication) getApplication()).getNetworkHandler();
             for (Socket socket : netHandle.getClientSockets()) {
                 Thread t = new Thread(()->{handleClientConnection(socket);});
+                t.start();
             }
         }
 
@@ -227,18 +232,25 @@ public class BlackjackGameActivity extends AppCompatActivity {
             return;
         removeMoney(bet);
 
-        //Hide Bet Buttons
-        findViewById(R.id.betButton).setVisibility(View.INVISIBLE);
-        findViewById(R.id.betButtonAdd).setVisibility(View.INVISIBLE);
-        findViewById(R.id.betButtonSub).setVisibility(View.INVISIBLE);
+        //If Single Player
+        if(!MP_FLAG) {
 
-        //Show Game Buttons
-        findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
-        findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
+            //Hide Bet Buttons
+            findViewById(R.id.betButton).setVisibility(View.INVISIBLE);
+            findViewById(R.id.betButtonAdd).setVisibility(View.INVISIBLE);
+            findViewById(R.id.betButtonSub).setVisibility(View.INVISIBLE);
 
-        setup();
+            //Show Game Buttons
+            findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
+            findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
+
+            setup();
+        }
+        else {
+            sendAllMessage("SetBet", Integer.toString(bet));
+        }
+
     }
-
 
     private void changeBetAmount(int amount) {
         int bet = getBet() + amount;
@@ -500,6 +512,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         while (true) {
             String message = netHandle.receiveMessageFromClient(socket);
             if (message != null) {
+                Log.d("Received Message", message);
+
                 // Handle the received message
                 String[] args = message.split(" : ");
                 if(HOST_FLAG) {
@@ -518,8 +532,39 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     private void interpretMessage(String[] args) {
+        String job = args[1];
+        String message = args[2];
+        int id = Integer.parseInt(args[0]);
+
+
 
     }
 
+    private void sendAllMessage(int id, String job, String message) {
+        new MessageSender().execute(String.format("%d : %s : %s", id, job, message));
+    }
+    private void sendAllMessage(String job, String message) {
+        new MessageSender().execute(String.format("%d : %s : %s", netHandle.id, job, message));
+    }
 
+    private class MessageSender extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            Log.d("Sending Message", params[0]);
+            netHandle.sendToAllClients(params[0]);
+            return null;
+        }
+    }
+
+}
+
+class Player {
+    private int money;
+    private int bet;
+    private int id;
+
+    Player(int money, int id) {
+        this.money = money;
+        this.id = id;
+    }
 }
