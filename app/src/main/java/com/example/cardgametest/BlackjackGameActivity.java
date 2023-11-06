@@ -41,11 +41,15 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private boolean HOST_FLAG;
     MediaPlayer mediaPlayer;
     private ArrayList<Player> players;
+    private float scale;
+    private int playerID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        scale = getResources().getDisplayMetrics().density;
 
         playerLayout = findViewById(R.id.main_player_hand);
         splitLayout1 = findViewById(R.id.split_player_hand_1);
@@ -67,6 +71,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Thread t = new Thread(()->{handleClientConnection(socket);});
                 t.start();
             }
+            playerID = netHandle.id;
+            int playercount = getIntent().getIntExtra("players", 0);
+            for (int i = 0; i < Math.min(playercount, 4); i++) {
+                if(i==playerID) {
+
+                }
+            }
+
+        }
+        else {
+            playerID = 0;
         }
 
         ImageButton optionsButton = findViewById(R.id.optionButton);
@@ -133,7 +148,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         CardHand handList[] = new CardHand[NUM_PLAYERS];
         handList[0] = dealerHand;
         handList[1] = playerHand;
-        TableRow.LayoutParams params = new TableRow.LayoutParams(150,180);
+        TableRow.LayoutParams params = new TableRow.LayoutParams((int)(scale*75),(int)(scale*90));
         params.setMargins(4,8,4,8);
         TableRow tabLayout1 = findViewById(R.id.row1);
         TableRow tabLayout2 = findViewById(R.id.row2);
@@ -224,9 +239,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
             margin = -160;
         ImageView cardView = new ImageView(this);
         cardView.setImageResource(c.getCardImage());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200,260);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(scale*100),(int)(scale*130));
         Log.d("Margin", Integer.toString(margin));
-        params.setMargins(margin,8,0,8);
+        params.setMargins((int)((margin/2)*scale),8,0,8);
         cardView.setLayoutParams(params);
         mainPlayerHand.addView(cardView);
         generateHand();
@@ -353,10 +368,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isMoneyNegative() {
-        return playerMoney < 0;
-    }
-
     //Will hand out two cards to each entity at the table
     private void setup() {
         playerHand.clearHand();
@@ -455,7 +466,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 stats.recordLoss();
                 roundEnd.setMessage("PLAYER BUSTS");
             }
-            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, -200);
+            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, 0);
         }
         else {
             Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal);
@@ -482,7 +493,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                     roundEnd.setMessage("PLAYER BUST");
                 }
             }
-            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, -200);
+            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, 0);
         }
 
 //        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -567,4 +578,6 @@ class Player {
         this.gameHand = gameHand;
         this.visualHand = visualHand;
     }
+
+
 }
