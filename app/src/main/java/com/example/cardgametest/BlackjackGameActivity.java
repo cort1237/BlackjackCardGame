@@ -169,6 +169,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     public void hit(View view){
         findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
         hitHelper();
+        //mediaPlayer.start();
+        //mediaPlayer.release();
     }
 
     private void resetGame() {
@@ -246,6 +248,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         removeMoney(bet);
 
         mediaPlayer.start();
+        // mediaPlayer.release();
 
         //Hide Bet Buttons
         findViewById(R.id.betButton).setVisibility(View.INVISIBLE);
@@ -256,7 +259,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(!MP_FLAG) {
             //Show Game Buttons
             findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
-            mediaPlayer=MediaPlayer.create(this,R.raw.drawn);
+            // mediaPlayer=MediaPlayer.create(this,R.raw.drawn);
             findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
 
             setup();
@@ -456,7 +459,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
-                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+//                mediaPlayer.start();
+//                mediaPlayer.release();
                 addMoney(getBet()*2);
             }
             else {
@@ -472,7 +477,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
-                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+//                mediaPlayer.start();
+//                mediaPlayer.release();
                 addMoney(getBet()*2);
             }
             else if (playerTotal == dealerTotal) {
