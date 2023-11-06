@@ -31,6 +31,7 @@ public class ConnectActivity extends Activity {
     private Button backToTitleButton;
     private TextView connectionList;
     private Button startButton;
+    private int playerCount = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +78,15 @@ public class ConnectActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                playerCount = netHandle.getClientSockets().size();
 
+                new MessageSender().execute("PLAYER_COUNT : " + playerCount);
                 new MessageSender().execute("initialize");
                 new MessageSender().execute("play");
                 Intent i = new Intent(ConnectActivity.this, BlackjackGameActivity.class);
                 i.putExtra("type", "MP");
                 i.putExtra("host", "HOST");
+                i.putExtra("players", playerCount);
                 startActivity(i);
             }
         });
@@ -170,6 +174,9 @@ public class ConnectActivity extends Activity {
                     i.putExtra("host", "CLIENT");
                     startActivity(i);
                     Thread.currentThread().interrupt(); // Close this activities message threads.
+                }
+                else if(args[0].equals("PLAYER_COUNT")) {
+                    playerCount = Integer.parseInt(args[1]);
                 }
                 else if(args[0].equals("ASSIGN_ID")) {
                     netHandle.id = Integer.parseInt(args[1]);

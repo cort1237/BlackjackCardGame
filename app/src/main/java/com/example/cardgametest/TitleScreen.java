@@ -31,6 +31,7 @@ public class TitleScreen extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), BlackjackGameActivity.class);
                 intent.putExtra("type", "SP");
+                intent.putExtra("players", 1);
                 startActivity(intent);
             }
         });
