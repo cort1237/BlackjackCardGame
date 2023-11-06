@@ -256,6 +256,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(!MP_FLAG) {
             //Show Game Buttons
             findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
+            mediaPlayer=MediaPlayer.create(this,R.raw.drawn);
             findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
 
             setup();
@@ -455,6 +456,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
                 addMoney(getBet()*2);
             }
             else {
@@ -470,6 +472,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
                 addMoney(getBet()*2);
             }
             else if (playerTotal == dealerTotal) {
