@@ -81,11 +81,19 @@ public class BlackjackGameActivity extends AppCompatActivity {
         });
 
 
+
         //expand tab and button
         tabLayout.bringToFront();
+        Button tabButton = findViewById(R.id.expandButton);
+        if(MP_FLAG){
+            tabButton.setVisibility(View.GONE);
+            tabLayout.setVisibility(View.GONE);
+        }
+
         findViewById(R.id.expandButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                Log.d("YUP", "onClick: ");
                 if(tabLayout.getVisibility() == View.VISIBLE){
                     tabLayout.setVisibility(View.GONE);
                     //roundEnd.showAtLocation(v, Gravity.CENTER, 0, -200);
@@ -184,6 +192,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mediaPlayer.start();
+
             }
         });
         findViewById(R.id.betButtonAdd).setVisibility(View.VISIBLE);
