@@ -180,12 +180,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //Show Bet Buttons
         findViewById(R.id.betButton).setVisibility(View.VISIBLE);
         mediaPlayer=MediaPlayer.create(this,R.raw.register);
-        findViewById(R.id.betButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mediaPlayer.start();
-            }
-        });
         findViewById(R.id.betButtonAdd).setVisibility(View.VISIBLE);
         findViewById(R.id.betButtonSub).setVisibility(View.VISIBLE);
     }
@@ -239,6 +233,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             return;
         removeMoney(bet);
 
+        mediaPlayer.start();
 
         //Hide Bet Buttons
         findViewById(R.id.betButton).setVisibility(View.INVISIBLE);
