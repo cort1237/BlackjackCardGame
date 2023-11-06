@@ -75,8 +75,8 @@
         android:id="@+id/moneyTextView"
         android:layout_width="80dp"
         android:layout_height="33dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="300dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="292dp"
         android:drawableStart="@drawable/baseline_attach_money_24"
         android:text="1000"
         android:textAlignment="textStart"
@@ -89,30 +89,25 @@
         android:id="@+id/optionButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="332dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="753dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="324dp"
+        android:gravity="center|center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/baseline_settings_24"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="MissingConstraints, SpeakableTextPresentCheck"
+        tools:layout_editor_absoluteY="31dp" />
 
     <Button
         android:id="@+id/restart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="16dp"
         android:gravity="center|center_horizontal"
         android:onClick="resetGame"
         android:text="Reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/optionButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.03" />
+        app:layout_constraintVertical_bias="0.052" />
 
     <Button
         android:id="@+id/splitButton"
@@ -159,8 +154,8 @@
         android:id="@+id/betTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="304dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="300dp"
         android:text="@string/bet_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -246,7 +241,7 @@
 
     <Button
         android:id="@+id/expandButton"
-        android:layout_width="31dp"
+        android:layout_width="32dp"
         android:layout_height="130dp"
         android:layout_marginTop="276dp"
         android:layout_marginRight="-3dp"
@@ -256,7 +251,8 @@
 
 
         app:layout_constraintEnd_toStartOf="@+id/expandTab"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck">
 
     </Button>
 

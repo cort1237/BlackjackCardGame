@@ -3,6 +3,7 @@ package com.example.cardgametest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,12 +36,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private Deck deck = new Deck();
     private TableLayout tabLayout;
     private NetworkHandler netHandle;
-
     private Stats stats;
-
     private CustomPopupWindow roundEnd;
     private boolean MP_FLAG;
     private boolean HOST_FLAG;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         roundEnd = new CustomPopupWindow(this);
 
         stats = new Stats(getApplicationContext());
-        (findViewById(R.id.restart)).setVisibility(View.INVISIBLE);
+        findViewById(R.id.restart).setVisibility(View.INVISIBLE);
         findViewById(R.id.hitButton).setVisibility(View.INVISIBLE);
         findViewById(R.id.foldButton).setVisibility(View.INVISIBLE);
         findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
@@ -179,6 +179,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
         //Show Bet Buttons
         findViewById(R.id.betButton).setVisibility(View.VISIBLE);
+        mediaPlayer=MediaPlayer.create(this,R.raw.register);
+        findViewById(R.id.betButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.start();
+            }
+        });
         findViewById(R.id.betButtonAdd).setVisibility(View.VISIBLE);
         findViewById(R.id.betButtonSub).setVisibility(View.VISIBLE);
     }
