@@ -216,6 +216,8 @@
         android:background="#b5b5b5"
         android:elevation="2dp"
         android:visibility="gone"
+        android:paddingRight="25dp"
+        android:paddingLeft="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -229,10 +231,18 @@
             android:paddingTop="50dp">
 
 
+
+
         </TableRow>
 
         <TableRow
             android:id="@+id/row2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        </TableRow>
+        <TableRow
+            android:id="@+id/row3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
