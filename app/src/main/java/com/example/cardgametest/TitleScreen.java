@@ -29,7 +29,6 @@ public class TitleScreen extends AppCompatActivity {
         singleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("rootasd", String.valueOf(isTaskRoot()));
                 Intent intent = new Intent(getApplicationContext(), BlackjackGameActivity.class);
                 intent.putExtra("type", "SP");
                 startActivity(intent);
