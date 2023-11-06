@@ -27,7 +27,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private TextView currentHandText;
     private TextView splitHandText;
     private CardHand playerHand = new CardHand();
-    private int handValue = 0;
     private LinearLayout playerLayout;
     private LinearLayout splitLayout1;
     private LinearLayout splitLayout2;
@@ -40,9 +39,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private CustomPopupWindow roundEnd;
     private boolean MP_FLAG;
     private boolean HOST_FLAG;
-
-    private ArrayList<Player> playerList = new ArrayList<Player>();
     MediaPlayer mediaPlayer;
+    private ArrayList<Player> players;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         splitHandText = findViewById(R.id.viewSplit);
         updateMoneyText();
         MP_FLAG = getIntent().getStringExtra("type").equals("MP");
-
 
         //If in multiplayer, setup socket threads for each connection
         if(MP_FLAG) {
@@ -86,7 +83,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //expand tab and button
         tabLayout.bringToFront();
         Button tabButton = findViewById(R.id.expandButton);
-        if(!MP_FLAG){
+        if(MP_FLAG){
             tabButton.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
         }
@@ -132,34 +129,20 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
     // generate the hands for each row in the side bar
     protected void generateHand(){
-        int NUM_PLAYERS = playerList.size();
-        CardHand handList[] = new CardHand[3];
-
-        for(int i = 0 ; i < NUM_PLAYERS; i++){
-            handList[i] = playerList.get(i).getHand();
-        }
-        if(!MP_FLAG){ // testing purposes without using multiplayer
-            NUM_PLAYERS = 3;
-            handList[0] = dealerHand;
-            handList[1] = playerHand;
-            handList[2] = dealerHand;
-        }
-        TableRow.LayoutParams params = new TableRow.LayoutParams(160,227);
-        params.setMargins(0,8,-30,8);
+        int NUM_PLAYERS = 2;
+        CardHand handList[] = new CardHand[NUM_PLAYERS];
+        handList[0] = dealerHand;
+        handList[1] = playerHand;
+        TableRow.LayoutParams params = new TableRow.LayoutParams(150,180);
+        params.setMargins(4,8,4,8);
         TableRow tabLayout1 = findViewById(R.id.row1);
         TableRow tabLayout2 = findViewById(R.id.row2);
-        TableRow tabLayout3 = findViewById(R.id.row3);
-        TableRow t[] = new TableRow[3];
+        TableRow t[] = new TableRow[2];
         t[0] = tabLayout1;
         t[1] = tabLayout2;
-        t[2] = tabLayout3;
         for(int x = 0; x < NUM_PLAYERS; x++) {
             t[x].removeAllViews();
             ArrayList<Card> hand = handList[x].retrieveHand();
-            TextView tview = new TextView(this, null, 0, R.style.customTextStyle);
-            tview.setText("NIckname" + Integer.toString(x));
-
-            t[x].addView(tview);
             for (int i = 0; i < handList[x].size(); i++) {
                 ImageView cardView = new ImageView(this);
                 cardView.setImageResource(hand.get(i).getCardImage());
@@ -302,19 +285,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     //update the debug textview of current hand
-    /*private void updateCurrentHand(){
-        String currentHand = "";
-        for(int i = 0; i < playerHand.size(); i++){
-            System.out.println(playerHand.get(i).getRank());
-            currentHand += " " + playerHand.get(i).getRank();
-            Log.d("card debug", "card #" + i + "| value: " + playerHand.get(i).getRank());
-        }
-
-        currentHand += " (" + playerHand.getTotalValue() + ")";
-        currentHandText.setText(currentHand);
-    }*/
-
-    //new updateCurrentHand to handle split hands
     private void updateCurrentHand(){
         if(!playerHand.isSplit()){
             String currentHand = "";
@@ -586,19 +556,15 @@ class Player {
     private int money;
     private int bet;
     private int id;
+    public LinearLayout visualHand;
+    public LinearLayout splitHand1;
+    public LinearLayout splitHand2;
+    public CardHand gameHand;
 
-    private CardHand cardHand;
-    Player(int money, int id) {
+    Player(int money, int id, CardHand gameHand, LinearLayout visualHand) {
         this.money = money;
         this.id = id;
-        this.cardHand = new CardHand();
-    }
-
-    public CardHand getHand(){
-        return this.cardHand;
-    }
-
-    public void reset(){
-        this.cardHand.clearHand();
+        this.gameHand = gameHand;
+        this.visualHand = visualHand;
     }
 }
