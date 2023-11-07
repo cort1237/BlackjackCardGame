@@ -20,7 +20,7 @@ public class StatsActivity extends AppCompatActivity {
 
         String[] statline = stats.getStats();
 
-        statsView.setText(String.format("W: %s\nL: %s\nTotal Games: %s", statline[0], statline[1], statline[2]));
+        statsView.setText(String.format("W: %s\nL: %s\nTotal Games: %s\n\nReward Currency: %s", statline[0], statline[1], statline[2], statline[3]));
 
         Button returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(new View.OnClickListener() {
@@ -29,7 +29,5 @@ public class StatsActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 }

@@ -349,6 +349,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     // Function to add money
     public void addMoney(int amount) {
+        stats.recordCurrency(amount);
         playerMoney += amount;
         updateMoneyText();
     }
