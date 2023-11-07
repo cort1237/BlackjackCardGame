@@ -50,7 +50,7 @@ public class Stats {
     }
 
     // Operates on the notion that file is overwritten but can be adjusted needed
-    public String[] getStats() {
+    public String[] getData() {
         StringBuilder content = new StringBuilder();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(context.getFileStreamPath(FILENAME)));
@@ -69,7 +69,7 @@ public class Stats {
 
     private void write(int n, int amount) {
 
-        String[] currentStats = getStats();
+        String[] currentStats = getData();
         int[] updatedStats = new int[currentStats.length];
 
         for (int i = 0; i < currentStats.length; i++) {

@@ -7,20 +7,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class StatsActivity extends AppCompatActivity {
+public class ShopActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
+        setContentView(R.layout.activity_shop);
 
-        TextView statsView = (TextView) findViewById(R.id.statsView);
+        TextView shopView = (TextView) findViewById(R.id.shopView);
 
         Stats stats = new Stats(getApplicationContext());
 
         String[] statline = stats.getData();
 
-        statsView.setText(String.format("W: %s\nL: %s\nTotal Rounds: %s", statline[0], statline[1], statline[2]));
+        shopView.setText(String.format("Reward Currency: %s", statline[3]));
 
         Button returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(new View.OnClickListener() {

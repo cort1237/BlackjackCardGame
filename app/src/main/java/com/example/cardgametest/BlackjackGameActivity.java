@@ -519,9 +519,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
 //            }
 //        }, 2500);
 
-        Log.d("End Stats", "Wins: " + stats.getStats()[0]);
-        Log.d("End Stats", "Losses: " + stats.getStats()[1]);
-        Log.d("End Stats", "Total Games: " + stats.getStats()[2]);
+        Log.d("End Stats", "Wins: " + stats.getData()[0]);
+        Log.d("End Stats", "Losses: " + stats.getData()[1]);
+        Log.d("End Stats", "Total Games: " + stats.getData()[2]);
     }
 
     /**
