@@ -169,8 +169,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
     public void hit(View view){
         findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
         hitHelper();
-        //mediaPlayer.start();
-        //mediaPlayer.release();
+        mediaPlayer.release();
+        mediaPlayer=MediaPlayer.create(this,R.raw.drawn);
+        mediaPlayer.start();
     }
 
     private void resetGame() {
@@ -267,7 +268,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         else {
             sendAllMessage("SetBet", Integer.toString(bet));
         }
-
     }
 
     private void changeBetAmount(int amount) {
@@ -459,6 +459,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                mediaPlayer.release();
+                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+                mediaPlayer.start();
 //                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
 //                mediaPlayer.start();
 //                mediaPlayer.release();
@@ -477,6 +480,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
                 stats.recordWin();
                 roundEnd.setMessage("PLAYER WINS");
+                mediaPlayer.release();
+                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+                mediaPlayer.start();
 //                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
 //                mediaPlayer.start();
 //                mediaPlayer.release();
@@ -493,6 +499,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 if (playerTotal<21) {
                     Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
                     roundEnd.setMessage("PLAYER LOSES");
+                    mediaPlayer.release();
+                    mediaPlayer=MediaPlayer.create(this,R.raw.losing);
+                    mediaPlayer.start();
                 }
                 else {
                     Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
