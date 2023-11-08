@@ -14,14 +14,6 @@ public class ShopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
-        TextView shopView = (TextView) findViewById(R.id.shopView);
-
-        Stats stats = new Stats(getApplicationContext());
-
-        String[] statline = stats.getData();
-
-        shopView.setText(String.format("Reward Currency: %s", statline[3]));
-
         Button returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
