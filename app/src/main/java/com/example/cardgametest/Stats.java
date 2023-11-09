@@ -70,7 +70,7 @@ public class Stats {
     private void write(int n, int amount) {
 
         String[] currentStats = getData();
-        int[] updatedStats = new int[currentStats.length];
+        int[] updatedStats = new int[4];
 
         for (int i = 0; i < currentStats.length; i++) {
             try {
@@ -82,11 +82,13 @@ public class Stats {
 
         if (n < 3)
             updatedStats[n] += 1;
-        else
+        else {
+            Log.d(TAG, " " + amount);
             updatedStats[3] += (int) (amount * 0.1);
+        }
 
         String output = "";
-        for (int i=0; i<updatedStats.length; i++) {
+        for (int i=0; i< updatedStats.length; i++) {
             output += updatedStats[i] + ", ";
         }
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ShopActivity extends AppCompatActivity {
@@ -19,6 +20,18 @@ public class ShopActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
+
+        Stats stats = new Stats(getApplicationContext());
+
+
+        Log.d(TAG, stats.getData()[0]);
+        Log.d(TAG, stats.getData()[1]);
+        Log.d(TAG, stats.getData()[2]);
+        Log.d(TAG, stats.getData()[3]);
+        String rewardCurrency = stats.getData()[3];
+
+        TextView rewardCurrencyTextView = findViewById(R.id.rewardCurrencyTextView);
+        rewardCurrencyTextView.setText(String.format("Currency: %s", rewardCurrency));
 
         Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
