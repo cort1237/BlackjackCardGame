@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/itemCardView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="fill"
+    android:layout_rowWeight="1"
+    android:layout_columnWeight="1"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal"
+        >
+
+        <TextView
+            android:id="@+id/itemNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item Name"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/itemCostTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item Cost"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
