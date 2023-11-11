@@ -143,8 +143,9 @@ public class ShopActivity extends AppCompatActivity {
                     Toast.makeText(ShopActivity.this, "Purchased", Toast.LENGTH_SHORT).show();
                     Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " purchase");
                 } else {
-                    // User does not have enough money, execute the negative button's logic
-                    alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
+                    // User does not have enough money
+                    Toast.makeText(ShopActivity.this, "Insufficient funds", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG + " showAlertDialog", "Insufficient funds for " + item.getItemName() + " purchase");
                 }
             }
         });
