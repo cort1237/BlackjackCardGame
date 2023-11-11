@@ -3,6 +3,7 @@ package com.example.cardgametest;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -16,7 +17,9 @@ public class CustomPopupWindow {
         messageTextView = contentView.findViewById(R.id.messageTextView);
 
         // Create and configure the PopupWindow
-        popupWindow = new PopupWindow(contentView,222,202);
+        //popupWindow = new PopupWindow(contentView,222,202);
+        popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
     }
 
     public void setMessage(String message) {

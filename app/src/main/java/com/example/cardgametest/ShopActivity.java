@@ -83,8 +83,8 @@ public class ShopActivity extends AppCompatActivity {
             TextView itemNameTextView = view.findViewById(R.id.itemNameTextView);
             TextView itemCostTextView = view.findViewById(R.id.itemCostTextView);
 
-            itemNameTextView.setText(items[i].getName());
-            itemCostTextView.setText("Cost: " + items[i].getCost());
+            itemNameTextView.setText(items[i].getItemName());
+            itemCostTextView.setText("Cost: " + items[i].getItemCost());
 
             cardView.addView(view);
 
@@ -116,8 +116,8 @@ public class ShopActivity extends AppCompatActivity {
     public void showAlertDialog(View v, ShopItem item) {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(item.getName());
-        alertDialogBuilder.setMessage("Do you want to purchase this item for " + item.getCost() + "?");
+        alertDialogBuilder.setTitle(item.getItemName());
+        alertDialogBuilder.setMessage("Do you want to purchase this item for " + item.getItemCost() + "?");
 
         AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -125,12 +125,23 @@ public class ShopActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Check if there's enough money to cover the cost
-                if (Integer.parseInt(rewardCurrency) >= item.getCost()) {
+                if (Integer.parseInt(rewardCurrency) >= item.getItemCost()) {
                     // User has enough money, proceed with the purchase
+
+                    // Need to deduct rewardCurrency and rewrite it in the stats.txt file
+                    rewardCurrency = String.valueOf(Integer.parseInt(rewardCurrency) - item.getItemCost());
+                    Log.d(TAG + " showAlertDialog", "Updated Currency: " + rewardCurrency);
+
+                    TextView rewardCurrencyTextView = findViewById(R.id.rewardCurrencyTextView);
+                    rewardCurrencyTextView.setText(String.format("Currency: %s", rewardCurrency));
+
+                    Stats stats = new Stats(getApplicationContext());
+                    stats.recordCurrency((int)(0-(item.getItemCost()/.1)));
+
                     purchasedItems.add(item);
                     Log.d(TAG + " showAlertDialog", String.valueOf(purchasedItems.size()));
                     Toast.makeText(ShopActivity.this, "Purchased", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG + " showAlertDialog", "Confirmed " + item.getName() + " purchase");
+                    Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " purchase");
                 } else {
                     // User does not have enough money, execute the negative button's logic
                     alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
@@ -142,7 +153,7 @@ public class ShopActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(ShopActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
-                Log.d(TAG + " showAlertDialog", "Canceled " + item.getName() + " purchase");
+                Log.d(TAG + " showAlertDialog", "Canceled " + item.getItemName() + " purchase");
             }
         });
 
@@ -152,19 +163,19 @@ public class ShopActivity extends AppCompatActivity {
 
 class ShopItem {
 
-    private String name;
-    private int cost;
+    private String itemName;
+    private int itemCost;
 
-    public ShopItem(String name, int cost) {
-        this.name = name;
-        this.cost = cost;
+    public ShopItem(String itemName, int itemCost) {
+        this.itemName = itemName;
+        this.itemCost = itemCost;
     }
 
-    public String getName() {
-        return name;
+    public String getItemName() {
+        return itemName;
     }
 
-    public int getCost() {
-        return cost;
+    public int getItemCost() {
+        return itemCost;
     }
 }
