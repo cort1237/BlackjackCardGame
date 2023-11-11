@@ -3,19 +3,23 @@ package com.example.cardgametest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
+import com.example.cardgametest.R.color.*;
 
 import org.w3c.dom.Text;
 
@@ -43,6 +47,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private boolean HOST_FLAG;
     MediaPlayer mediaPlayer;
     private ArrayList<Player> players = new ArrayList<Player>();
+    private int messageNum = 0;
+    private TableLayout logTable;
+    private ScrollView logScroll;
+    private Button logButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +62,14 @@ public class BlackjackGameActivity extends AppCompatActivity {
         splitLayout2 = findViewById(R.id.split_player_hand_2);
         dealerLayout = findViewById(R.id.dealer_hand);
         tabLayout = findViewById(R.id.expandTab);
+        logTable = findViewById(R.id.logTable);
+        logScroll = findViewById(R.id.logTableView);
         // Money Text Field
         moneyTextView = findViewById(R.id.moneyTextView);
         currentHandText = findViewById(R.id.viewHand);
         splitHandText = findViewById(R.id.viewSplit);
+        //logTable = findViewById(R.id.logTable);
+        logButton = findViewById(R.id.logViewButton);
         updateMoneyText();
         MP_FLAG = getIntent().getStringExtra("type").equals("MP");
 
@@ -65,10 +77,12 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(MP_FLAG) {
             HOST_FLAG = getIntent().getStringExtra("host").equals("HOST");
             netHandle = ((GameApplication) getApplication()).getNetworkHandler();
+            Log.d("Net Handle ID", Integer.toString(netHandle.id));
             for (Socket socket : netHandle.getClientSockets()) {
                 Thread t = new Thread(()->{handleClientConnection(socket);});
                 t.start();
             }
+            logButton.setVisibility(View.VISIBLE);
         }
 
         ImageButton optionsButton = findViewById(R.id.optionButton);
@@ -101,6 +115,19 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 else{
                     tabLayout.setVisibility(View.VISIBLE);
                     //roundEnd.dismiss();
+                }
+            }
+        });
+
+        logButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(logScroll.getVisibility() == View.VISIBLE){
+                    logScroll.setVisibility(View.GONE);
+                    Log.d("Message Log", "Message log is hidden");
+                } else {
+                    logScroll.setVisibility(View.VISIBLE);
+                    Log.d("Message Log", "Message log is visible");
                 }
             }
         });
@@ -185,6 +212,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         dealerHand.clearHand();
         dealerLayout.removeAllViews();
         roundEnd.dismiss();
+        clearLog();
 
         //Hide Play Buttons
         findViewById(R.id.hitButton).setVisibility(View.INVISIBLE);
@@ -556,9 +584,38 @@ public class BlackjackGameActivity extends AppCompatActivity {
         String job = args[1];
         String message = args[2];
         int id = Integer.parseInt(args[0]);
+        logMessage(job, message, id);
 
 
+    }
+    private void logMessage(String job, String message, int id){
+        int playerID = id + 1;
+        String fullMessage = "Player " + playerID + " " + job + " " + message;
+        TableRow newRow = new TableRow(this);
+        newRow.setId(++messageNum);
+        int bgColor;
+        if(messageNum % 2 == 0){
+            bgColor = Color.LTGRAY;
+        } else {bgColor = Color.WHITE;}
+        newRow.setBackgroundColor(bgColor);
+        newRow.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT
+        ));
+        TextView numCol = new TextView(this);
+        numCol.setText(Integer.toString(messageNum));
+        numCol.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        newRow.addView(numCol);
+        TextView messageView = new TextView(this);
+        messageView.setText(fullMessage);
+        messageView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        newRow.addView(messageView);
+        logTable.addView(newRow);
+    }
 
+    private void clearLog(){
+        logTable.removeAllViews();
+        messageNum = 0;
     }
 
     private void sendAllMessage(int id, String job, String message) {
@@ -572,6 +629,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             Log.d("Sending Message", params[0]);
+            String[] args = params[0].split(" : ");
+            logMessage(args[1], args[2], Integer.parseInt(args[0]));
             netHandle.sendToAllClients(params[0]);
             return null;
         }

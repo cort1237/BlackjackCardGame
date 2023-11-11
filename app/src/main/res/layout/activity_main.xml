@@ -56,7 +56,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" >
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/dealer_hand"
@@ -265,5 +267,35 @@
         tools:ignore="SpeakableTextPresentCheck">
 
     </Button>
+
+    <Button
+        android:id="@+id/logViewButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Message Log"
+        app:layout_constraintBottom_toTopOf="@id/logTableView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:id="@+id/logTableView"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:visibility="gone"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="192dp"
+        tools:layout_editor_absoluteY="446dp"
+        tools:ignore="MissingConstraints">
+
+        <TableLayout
+            android:id="@+id/logTable"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:stretchColumns="1">
+        </TableLayout>
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
