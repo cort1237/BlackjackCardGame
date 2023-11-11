@@ -57,7 +57,7 @@ public class NetworkHandler {
         try {
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             String s = inputStream.readUTF();
-            Log.d("NetworkHandler Recieve", s);
+            Log.d("NetworkHandler Receive", s);
             return s;
         } catch (EOFException e) {
             return null;

@@ -23,6 +23,8 @@ import com.example.cardgametest.R.color.*;
 
 import org.w3c.dom.Text;
 
+import org.w3c.dom.Text;
+
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -557,6 +559,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
      * @param socket
      */
     private void handleClientConnection(Socket socket) {
+        Log.d("Thread Started", "Listener Thread (" + socket.getInetAddress().toString() + ")");
         while (true) {
             String message = netHandle.receiveMessageFromClient(socket);
             if (message != null) {
@@ -609,7 +612,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         messageView.setText(fullMessage);
         messageView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         newRow.addView(messageView);
-        logTable.addView(newRow);
+        runOnUiThread(()->{logTable.addView(newRow);});
     }
 
     private void clearLog(){

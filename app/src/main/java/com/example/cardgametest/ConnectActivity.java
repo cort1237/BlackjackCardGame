@@ -169,11 +169,7 @@ public class ConnectActivity extends Activity {
 
                 //If the message is play send all players to the game screen.
                 if(args[0].equals("play")) {
-                    Intent i = new Intent(this, BlackjackGameActivity.class);
-                    i.putExtra("type", "MP");
-                    i.putExtra("host", "CLIENT");
-                    startActivity(i);
-                    Thread.currentThread().interrupt(); // Close this activities message threads.
+                    break;
                 }
                 else if(args[0].equals("PLAYER_COUNT")) {
                     playerCount = Integer.parseInt(args[1]);
@@ -191,5 +187,10 @@ public class ConnectActivity extends Activity {
                 });
             }
         }
+        Intent i = new Intent(this, BlackjackGameActivity.class);
+        i.putExtra("type", "MP");
+        i.putExtra("host", "CLIENT");
+        startActivity(i);
+        Thread.currentThread().interrupt(); // Close this activities message threads.
     }
 }
