@@ -14,10 +14,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class ShopActivity extends AppCompatActivity {
 
     private ShopItem[] items;
+    private ArrayList<ShopItem> purchasedItems = new ArrayList<ShopItem>();
     private static final String TAG = "ShopActivity";
+
+    private String rewardCurrency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +32,7 @@ public class ShopActivity extends AppCompatActivity {
         Stats stats = new Stats(getApplicationContext());
 
         Log.d(TAG, stats.getData()[3]);
-        String rewardCurrency = stats.getData()[3];
+        rewardCurrency = stats.getData()[3];
 
         TextView rewardCurrencyTextView = findViewById(R.id.rewardCurrencyTextView);
         rewardCurrencyTextView.setText(String.format("Currency: %s", rewardCurrency));
@@ -41,7 +46,7 @@ public class ShopActivity extends AppCompatActivity {
         });
 
         /*
-        create button for each item. open an alert dialog if button has been pressed. add item to player's inventory if confirmed
+        create onClick for each item. open an alert dialog if button has been pressed. add item to player's inventory if confirmed
          */
 
         items = new ShopItem[]{
@@ -71,6 +76,7 @@ public class ShopActivity extends AppCompatActivity {
 //          layoutParams.rowSpec = GridLayout.spec(i / 2); // Assuming 2 columns
 //          layoutParams.columnSpec = GridLayout.spec(i % 2);
             layoutParams.setMargins( margin, margin, margin,margin);
+            cardView.setContentPadding(16, 16, 16, 16);
             cardView.setLayoutParams(layoutParams);
 
             View view = getLayoutInflater().inflate(R.layout.cardview_item, null);
@@ -86,8 +92,8 @@ public class ShopActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     int position = gridLayout.indexOfChild(v);
-                    Log.d(TAG, "Item " + (position + 1) + " clicked");
-                    showAlertDialog(v, items[position].getName());
+                    Log.d(TAG + " cardView.OnClick", "Item " + (position + 1) + " clicked");
+                    showAlertDialog(v, items[position]);
                 }
             });
 
@@ -107,28 +113,40 @@ public class ShopActivity extends AppCompatActivity {
  */
     }
 
-    public void showAlertDialog(View v, String item) {
+    public void showAlertDialog(View v, ShopItem item) {
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle(item);
-        alertDialog.setMessage("Do you wish to purchase?");
-        alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(item.getName());
+        alertDialogBuilder.setMessage("Do you want to purchase this item for " + item.getCost() + "?");
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ShopActivity.this, "Purchased", Toast.LENGTH_SHORT).show();
-                Log.d(TAG + " showAlertDialog", "Confirmed " + item + " purchase");
+                // Check if there's enough money to cover the cost
+                if (Integer.parseInt(rewardCurrency) >= item.getCost()) {
+                    // User has enough money, proceed with the purchase
+                    purchasedItems.add(item);
+                    Log.d(TAG + " showAlertDialog", String.valueOf(purchasedItems.size()));
+                    Toast.makeText(ShopActivity.this, "Purchased", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG + " showAlertDialog", "Confirmed " + item.getName() + " purchase");
+                } else {
+                    // User does not have enough money, execute the negative button's logic
+                    alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
+                }
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(ShopActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
-                Log.d(TAG + " showAlertDialog", "Canceled " + item + " purchase");
+                Log.d(TAG + " showAlertDialog", "Canceled " + item.getName() + " purchase");
             }
         });
 
-        alertDialog.create().show();
+        alertDialog.show();
     }
 }
 
