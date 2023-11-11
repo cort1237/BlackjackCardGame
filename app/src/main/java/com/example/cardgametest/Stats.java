@@ -10,6 +10,8 @@ public class Stats {
 
     Context context;
     private final String FILENAME = "stats.txt";
+    private static final String TAG = "Stats.java";
+
 
     public Stats(Context context) {
         this.context = context;
@@ -19,9 +21,10 @@ public class Stats {
     // Creates/overwrites a file stats.txt to store W/L. Can be reworked to not overwrite if append
     // is set to "true". Such as if we wanted to record match history over time
     private void create() {
+        //deleteFile();
         File file = context.getFileStreamPath(FILENAME);
         if (!file.exists() || file.length() == 0) {
-            String s = "0, 0, 0, ";
+            String s = "0, 0, 0, 0";
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(context.getFileStreamPath(FILENAME), false));
                 writer.write(s);
@@ -32,8 +35,22 @@ public class Stats {
         }
     }
 
+    private void deleteFile() {
+        File file = context.getFileStreamPath(FILENAME);
+
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("File deleted successfully.");
+            } else {
+                System.err.println("Failed to delete the file.");
+            }
+        } else {
+            System.out.println("File does not exist, no need to delete.");
+        }
+    }
+
     // Operates on the notion that file is overwritten but can be adjusted needed
-    public String[] getStats() {
+    public String[] getData() {
         StringBuilder content = new StringBuilder();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(context.getFileStreamPath(FILENAME)));
@@ -50,10 +67,10 @@ public class Stats {
         return String.valueOf(content).split(",\\s*");
     }
 
-    private void write(int n) {
+    private void write(int n, int amount) {
 
-        String[] currentStats = getStats();
-        int[] updatedStats = new int[currentStats.length];
+        String[] currentStats = getData();
+        int[] updatedStats = new int[4];
 
         for (int i = 0; i < currentStats.length; i++) {
             try {
@@ -63,13 +80,19 @@ public class Stats {
             }
         }
 
-        updatedStats[n] += 1;
-        //updatedStats[2] += 1;
+        if (n < 3)
+            updatedStats[n] += 1;
+        else {
+            Log.d(TAG, " " + amount);
+            updatedStats[3] += (int) (amount * 0.1);
+        }
 
         String output = "";
-        for (int i=0; i<updatedStats.length; i++) {
+        for (int i=0; i< updatedStats.length; i++) {
             output += updatedStats[i] + ", ";
         }
+
+        Log.d(TAG, "write(): " + output);
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(context.getFileStreamPath(FILENAME), false));
@@ -81,17 +104,21 @@ public class Stats {
     }
 
     public void recordWin() {
-        write(0);
-        write(2);
+        write(0, 0);
+        write(2, 0);
     }
 
     public void recordLoss() {
-        write(1);
-        write(2);
+        write(1, 0);
+        write(2, 0);
     }
 
     public void recordPush() {
-        write(2);
+        write(2, 0);
+    }
+
+    public void recordCurrency(int amount) {
+        write(3, amount);
     }
 
 }

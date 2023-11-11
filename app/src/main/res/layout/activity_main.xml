@@ -56,7 +56,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" >
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/dealer_hand"
@@ -225,6 +227,8 @@
         android:background="#b5b5b5"
         android:elevation="2dp"
         android:visibility="gone"
+        android:paddingRight="25dp"
+        android:paddingLeft="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -244,7 +248,14 @@
             android:id="@+id/row2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"></TableRow>
+            android:layout_weight="1">
+        </TableRow>
+        <TableRow
+            android:id="@+id/row3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        </TableRow>
     </TableLayout>
 
     <Button
@@ -253,9 +264,9 @@
         android:layout_height="130dp"
         android:layout_marginTop="276dp"
         android:layout_marginRight="-3dp"
-        android:contentDescription="SlidingBox"
         android:orientation="vertical"
         android:text=" "
+        android:contentDescription="SlidingBox"
 
 
         app:layout_constraintEnd_toStartOf="@+id/expandTab"
@@ -263,5 +274,35 @@
         tools:ignore="SpeakableTextPresentCheck">
 
     </Button>
+
+    <Button
+        android:id="@+id/logViewButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Message Log"
+        app:layout_constraintBottom_toTopOf="@id/logTableView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:id="@+id/logTableView"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:visibility="gone"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="192dp"
+        tools:layout_editor_absoluteY="446dp"
+        tools:ignore="MissingConstraints">
+
+        <TableLayout
+            android:id="@+id/logTable"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:stretchColumns="1">
+        </TableLayout>
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

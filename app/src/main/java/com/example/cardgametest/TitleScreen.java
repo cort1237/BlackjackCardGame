@@ -45,6 +45,16 @@ public class TitleScreen extends AppCompatActivity {
             }
         });
 
+        Button shopButton = findViewById(R.id.shopButton);
+        shopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("shopButton", "Button Clicked");
+                Intent intent = new Intent(getApplicationContext(), ShopActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Button statsButton = findViewById(R.id.statsButton);
         statsButton.setOnClickListener(new View.OnClickListener() {
             @Override
