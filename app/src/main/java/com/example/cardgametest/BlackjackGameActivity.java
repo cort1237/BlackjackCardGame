@@ -112,7 +112,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         findViewById(R.id.expandButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Log.d("YUP", "onClick: ");
+
                 if(tabLayout.getVisibility() == View.VISIBLE){
                     tabLayout.setVisibility(View.GONE);
                     //roundEnd.showAtLocation(v, Gravity.CENTER, 0, -200);
@@ -163,10 +163,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
     // generate the hands for each row in the side bar
     protected void generateHand(){
+
         int NUM_PLAYERS = players.size();
         if(NUM_PLAYERS != 0){
         CardHand handList[] = new CardHand[NUM_PLAYERS];
-
+        for(int i = 0; i < players.size(); i++){
+            handList[i] = players.get(i).getHand();
+        }
         TableRow.LayoutParams params = new TableRow.LayoutParams(150,217);
         params.setMargins(4,8,-30,8);
         TableRow tabLayout1 = findViewById(R.id.row1);
@@ -649,11 +652,11 @@ class Player {
     public LinearLayout splitHand2;
     public CardHand gameHand;
 
-    Player(int money, int id, CardHand gameHand, LinearLayout visualHand) {
+    Player(int money, int id, CardHand gameHand) {
         this.money = money;
         this.id = id;
-        this.gameHand = gameHand;
-        this.visualHand = visualHand;
+        this.gameHand =  gameHand;
+        //this.visualHand = visualHand;
     }
 
     public CardHand getHand(){
