@@ -445,9 +445,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
 
         for (int i=0; i<2; i++)  {
-            //for (Player player : playerList) {
             hitHelper();
-            //}
             dealCard(players.get(0));
         }
 
@@ -456,7 +454,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
         // Early version of standard Blackjack peek procedure (still needs to be tied to actual animation)
         // Animation should play if dealer's visible card is an "Ace" or "Face" card, regardless if getTotalValue()==21
-        if(players.get(0).getHand().getTotalValue() == 21) {
+        if(players.get(0).getHand().getTotalValue() == 21 || players.get(1).getHand().getTotalValue() == 21) {
             dealerTurn();
         }
         else {

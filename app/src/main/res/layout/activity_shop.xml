@@ -10,10 +10,13 @@
     <Button
         android:id="@+id/backButton"
         style="@style/defaultButtonStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="44dp"
         android:layout_height="wrap_content"
         android:background="@drawable/roundbutton"
-        android:text="WIP Return"
+        android:drawableLeft="@drawable/arrow_back"
+        android:gravity="center_vertical|start"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         />
 
     <TextView
