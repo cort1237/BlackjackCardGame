@@ -23,6 +23,7 @@ import android.widget.Button;
 import java.net.Socket;
 import java.util.ArrayList;
 
+
 public class BlackjackGameActivity extends AppCompatActivity {
 
     private int playerMoney = 1000; // Example initial money amount
@@ -385,6 +386,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             for(int i = 0; i < p.getHand().retrieveHand(1).size(); i++){
                 hand2 += " " + p.getHand().retrieveHand(1).get(i).getRank();
                 Log.d("hand 2 debug", "card #" + i + "| value: " + p.getHand().retrieveHand(1).get(i).getRank());
+
             }
 
 
@@ -875,6 +877,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
 }
 
+
+
 class Player {
     private int money;
     private int bet;
@@ -889,12 +893,14 @@ class Player {
     private final Context parentContext;
     int id;
 
+    String nickname;
     Player(int money, TableRow row, Context c) {
         this.money = money;
-        this.visualRow =  row;
+        this.visualRow = row;
         this.gameHand = new CardHand();
         this.parentContext = c;
         this.bet = 0;
+
         scale = c.getResources().getDisplayMetrics().density;
         split = false;
         stand = false;
@@ -902,7 +908,7 @@ class Player {
 
     Player(int money, LinearLayout row, Context c) {
         this.money = money;
-        this.visualHand =  row;
+        this.visualHand = row;
         this.gameHand = new CardHand();
         this.parentContext = c;
         this.bet = 0;
@@ -911,7 +917,7 @@ class Player {
         stand = false;
     }
 
-    public CardHand getHand(){
+    public CardHand getHand() {
         return gameHand;
     }
 
@@ -919,14 +925,17 @@ class Player {
         gameHand.addCard(c, split);
         refreshHand();
     }
-    public void addCard(Card c) {addCard(c, 0);}
+
+    public void addCard(Card c) {
+        addCard(c, 0);
+    }
 
     public void clearHand() {
-        if(gameHand.isSplit()){
+        if (gameHand.isSplit()) {
             splitHand1.removeAllViews();
             splitHand2.removeAllViews();
         }
-        if(visualHand != null)
+        if (visualHand != null)
             visualHand.removeAllViews();
         else
             visualRow.removeAllViews();
@@ -934,11 +943,27 @@ class Player {
         split = false;
     }
 
-    public int getMoney() {return money;}
-    public int getBet() {return bet;}
-    public void setMoney(int m) {money = m;}
-    public void setBet(int b) {bet = b;}
-    public void setId(int id) {this.id=id;}
+    public int getMoney() {
+        return money;
+    }
+
+    public int getBet() {
+        return bet;
+    }
+
+    public void setMoney(int m) {
+        money = m;
+    }
+
+    public void setBet(int b) {
+        bet = b;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+        String nicks[] = {"Blackjack Bill", "Peeking Paul", "Card Countin Charles", "Strangle-Eye Saul", "Kevin" };
+        this.nickname = nicks[id];
+    }
 
     public int getMainTotal() {
         return gameHand.getTotalValue();
@@ -948,20 +973,19 @@ class Player {
     public void refreshHand() {
         int margin;
         int cardCount = gameHand.size();
-        if(gameHand.isSplit())
+        if (gameHand.isSplit())
             margin = 8 - ((cardCount) * 80);
-        else if(cardCount > 2)
-            margin = 8 - ((cardCount-1) * 40);
+        else if (cardCount > 2)
+            margin = 8 - ((cardCount - 1) * 40);
         else
             margin = 8;
-        if(visualHand != null) {
+        if (visualHand != null) {
             visualHand.removeAllViews();
-        }
-        else {
+        } else {
             visualRow.removeAllViews();
         }
         gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
-        if(split)
+        if (split)
             gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, margin, 1)));
     }
 
@@ -969,7 +993,7 @@ class Player {
         Log.d("AddCardToHand", c.getSuit() + " | " + c.getRank());
         ImageView cardView = new ImageView(parentContext);
         cardView.setImageResource(c.getCardImage());
-        if(visualHand != null) { //Main Screen Layout
+        if (visualHand != null) { //Main Screen Layout
             if (visualHand.getChildCount() == 0)
                 margin = 0;
             if (margin < -130)
@@ -979,7 +1003,7 @@ class Player {
             params.setMargins((int) ((margin / 2) * scale), 8, 0, 8);
             cardView.setLayoutParams(params);
 
-            if(!split)
+            if (!split)
                 visualHand.addView(cardView);
             else {
                 if (s == 1) {
@@ -988,15 +1012,16 @@ class Player {
                     splitHand2.addView(cardView);
                 }
             }
-        }
-        else { //Side Bar Layout
+        } else { //Side Bar Layout
             TableRow.LayoutParams params = new TableRow.LayoutParams(150, 217);
             params.setMargins(4, 8, -30, 8);
             cardView.setLayoutParams(params);
 
-            TextView tview = new TextView(parentContext, null , 0 , R.style.customTextStyle);
-            visualRow.addView(tview);
-
+            TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
+            tview.setText(this.nickname);
+            if(visualRow.getChildCount() < 1 ) {// add the nickname text only for the first time
+                visualRow.addView(tview);
+            }
             visualRow.addView(cardView);
         }
     }
