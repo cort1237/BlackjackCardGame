@@ -78,7 +78,7 @@
         android:layout_width="80dp"
         android:layout_height="33dp"
         android:layout_marginStart="21dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="292dp"
         android:drawableStart="@drawable/baseline_attach_money_24"
         android:text="1000"
@@ -86,7 +86,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,11 +94,11 @@
         android:id="@+id/optionButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="324dp"
-        android:layout_marginEnd="9dp"
+        android:layout_marginStart="320dp"
+        android:layout_marginTop="35dp"
         android:gravity="center|center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/baseline_settings_24"
         tools:ignore="MissingConstraints, SpeakableTextPresentCheck"
@@ -108,14 +108,14 @@
         android:id="@+id/restart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="68dp"
         android:gravity="center|center_horizontal"
         android:onClick="resetGame"
         android:text="Reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/optionButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.048" />
+        app:layout_constraintVertical_bias="0.062" />
 
     <Button
         android:id="@+id/splitButton"
@@ -163,11 +163,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="33dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="300dp"
         android:text="@string/bet_value"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.063"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

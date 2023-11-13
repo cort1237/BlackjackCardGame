@@ -21,18 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.699" />
 
-    <com.google.android.material.slider.Slider
-        android:id="@+id/volume_slider"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="248dp"
-        android:valueFrom="0"
-        android:valueTo="100"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <Button
         android:id="@+id/exitButton"
         style="@style/defaultButtonStyle"
@@ -46,5 +34,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.872" />
+
+    <Switch
+        android:id="@+id/volume_switch"
+        android:layout_width="183dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="115dp"
+        android:layout_marginTop="243dp"
+        android:layout_marginEnd="114dp"
+        android:layout_marginBottom="182dp"
+        android:text="Sound"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/returnButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
