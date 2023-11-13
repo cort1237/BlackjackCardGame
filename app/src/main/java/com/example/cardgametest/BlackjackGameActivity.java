@@ -223,6 +223,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //for each player
         for (Player p: players) {
             p.clearHand();
+            p.stand = false;
         }
         roundEnd.dismiss();
         clearLog();
@@ -242,47 +243,57 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     public void resetGame(View view) {
         resetGame();
+        sendAllMessage("RESET", " ");
     }
 
     private void hitHelper() {
         Player p = players.get(playerID);
 
-        if(!(p.getHand().isSplit())) {
-            dealCard(p);
-            Log.d("Hit Button Test", "hit");
-            updateCurrentHand();
-            if(p.getMainTotal() >= 21)
-                dealerTurn();
-        } else if (p.getHand().getTotalValue(0) < 21) {
-            dealCard(p,0);
-            Log.d("Hit Button Test", "hit");
-            updateCurrentHand();
-        } else {
-            dealCard(p, 1);
-            updateCurrentHand();
-            if(p.getHand().getTotalValue(1) >= 21){
-                dealerTurn();
+        //Single Player
+        if(!MP_FLAG) {
+            if (!(p.getHand().isSplit())) {
+                dealCard(p);
+                Log.d("Hit Button Test", "hit");
+                updateCurrentHand();
+                if (p.getMainTotal() >= 21)
+                    dealerTurn();
+            } else if (p.getHand().getTotalValue(0) < 21) {
+                dealCard(p, 0);
+                Log.d("Hit Button Test", "hit");
+                updateCurrentHand();
+            } else {
+                dealCard(p, 1);
+                updateCurrentHand();
+                if (p.getHand().getTotalValue(1) >= 21) {
+                    dealerTurn();
+                }
             }
         }
-        /**
-        if(!playerHand.isSplit()) {
-            dealCard(p);
-            Log.d("Hit Button Test", "hit");
-            updateCurrentHand();
-
-            if (playerHand.getTotalValue() >= 21)
-                dealerTurn();
-        } else if(playerHand.getTotalValue(0) < 21) {
-            dealCard(playerHand, splitLayout1);
-            Log.d("Hit Button Test", "hit");
-            updateCurrentHand();
-        } else {
-            dealCard(playerHand, splitLayout2, 1);
-            updateCurrentHand();
-            if(playerHand.getTotalValue(1) >= 21){
-                dealerTurn();
+        else {
+            int s;
+            if (!(p.getHand().isSplit())) {
+                sendAllMessage("Hit", "0");
+                s = 0;
+            } else if (p.getHand().getTotalValue(0) < 21) {
+                sendAllMessage("Hit", "0");
+                s = 0;
+            } else {
+                sendAllMessage("Hit", "1");
+                s = 1;
             }
-        }**/
+            if (HOST_FLAG) {
+                Card c = deck.retrieveTop();
+                String m = p.id + "," + c.toString() + ",0";
+                dealCard(p, c, s);
+                sendAllMessage("DealCard", m);
+                if(checkHand(s)) {
+                    sendAllMessage("Bust", " ");
+                    p.stand = true;
+                }
+                disablePlayerControls();
+                nextTurn();
+            }
+        }
     }
 
 
@@ -338,7 +349,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("Fold Button Test", "fold");
     }
     private void foldHandHelper() {
-        dealerTurn();
+        if(MP_FLAG) {
+            players.get(playerID).stand = true;
+            sendAllMessage("Stand", " ");
+            if(HOST_FLAG) {
+                disablePlayerControls();
+                nextTurn();
+            }
+        }
+        else {
+            dealerTurn();
+        }
     }
 
     //update the debug textview of current hand
@@ -458,33 +479,72 @@ public class BlackjackGameActivity extends AppCompatActivity {
         for (int i = 0; i < 2; i++) {
             for (Player p : players) {
                 Card c = deck.retrieveTop();
-                String m = p.id + "," + c.to_string() + ",0";
+                String m = p.id + "," + c.toString() + ",0";
                 dealCard(p,c,0);
                 sendAllMessage("DealCard",m);
             }
         }
 
         sendAllMessage("TurnStart", Integer.toString(currentTurn));
+        runOnUiThread(this::enablePlayerControls);
+        runOnUiThread(this::showPlayerControls);
     }
 
-    private int getNextTurn() {
+    private void nextTurn() {
+        //Check for dealer's turn
+        boolean dealersTurn = true;
+        for (Player p : players) {
+            if(p.id == 0)
+                continue;
+            if(!p.stand)
+                dealersTurn = false;
+        }
+
+        if(dealersTurn) {
+            dealerTurn();
+            return;
+        }
+
+
+
         if(currentTurn == playerNum)
             currentTurn = 1;
         else
             currentTurn++;
-        return currentTurn;
+
+        //If player is out, go to next player.
+        if(players.get(currentTurn).stand) {
+            nextTurn();
+            return;
+        }
+
+        if(currentTurn == playerID)
+            runOnUiThread(this::enablePlayerControls);
+        sendAllMessage("TurnStart", Integer.toString(currentTurn));
     }
 
     private void disablePlayerControls() {
         findViewById(R.id.hitButton).setEnabled(false);
         findViewById(R.id.foldButton).setEnabled(false);
-        findViewById(R.id.splitButton).setEnabled(false);
+        //findViewById(R.id.splitButton).setEnabled(false);
     }
 
     private void enablePlayerControls() {
         findViewById(R.id.hitButton).setEnabled(true);
         findViewById(R.id.foldButton).setEnabled(true);
-        findViewById(R.id.splitButton).setEnabled(true);
+        //findViewById(R.id.splitButton).setEnabled(true);
+    }
+
+    private void showPlayerControls() {
+        findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
+        //findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
+    }
+
+    private void hidePlayerControls() {
+        findViewById(R.id.hitButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.foldButton).setVisibility(View.INVISIBLE);
+        //findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
     }
 
     private Card dealCard(Player p, int split) {
@@ -504,82 +564,79 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     private void dealerTurn() {
-        int dealerTotal = players.get(0).getMainTotal(),
-                playerTotal = players.get(playerID).getMainTotal();
+        if(!MP_FLAG) {
+            int dealerTotal = players.get(0).getMainTotal(),
+                    playerTotal = players.get(playerID).getMainTotal();
 
-        //Disable Player controls
-        findViewById(R.id.hitButton).setEnabled(false);
-        findViewById(R.id.foldButton).setEnabled(false);
-        findViewById(R.id.restart).setEnabled(true);
-        findViewById(R.id.restart).setVisibility(View.VISIBLE);
+            //Disable Player controls
+            findViewById(R.id.hitButton).setEnabled(false);
+            findViewById(R.id.foldButton).setEnabled(false);
+            findViewById(R.id.restart).setEnabled(true);
+            findViewById(R.id.restart).setVisibility(View.VISIBLE);
 
-        //Insert win view below
+            //Insert win view below
 
-        while(dealerTotal<17) {
-            Card card = dealCard(players.get(0));
-            dealerTotal+= card.getValue();
-            Log.d("dealerTurn Test", "Current Dealer Total: " + dealerTotal);
-        }
-
-        View rootView = findViewById(android.R.id.content);
-
-        if (dealerTotal>21) {
-            Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal + " BUST");
-            if (playerTotal<=21) {
-                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
-                stats.recordWin();
-                roundEnd.setMessage("PLAYER WINS");
-                mediaPlayer.release();
-                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
-                mediaPlayer.start();
-//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
-//                mediaPlayer.start();
-//                mediaPlayer.release();
-                addMoney(getBet()*2);
+            while (dealerTotal < 17) {
+                Card card = dealCard(players.get(0));
+                dealerTotal += card.getValue();
+                Log.d("dealerTurn Test", "Current Dealer Total: " + dealerTotal);
             }
-            else {
-                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
-                stats.recordLoss();
-                roundEnd.setMessage("PLAYER BUSTS");
-            }
-            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, 0);
-        }
-        else {
-            Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal);
-            if (playerTotal > dealerTotal && playerTotal<=21) {
-                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
-                stats.recordWin();
-                roundEnd.setMessage("PLAYER WINS");
-                mediaPlayer.release();
-                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
-                mediaPlayer.start();
-//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
-//                mediaPlayer.start();
-//                mediaPlayer.release();
-                addMoney(getBet()*2);
-            }
-            else if (playerTotal == dealerTotal) {
-                Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
-                stats.recordPush();
-                roundEnd.setMessage("PUSH");
-                addMoney(getBet());
-            } //should stats of a draw be recorded?
-            else {
-                stats.recordLoss();
-                if (playerTotal<21) {
-                    Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
-                    roundEnd.setMessage("PLAYER LOSES");
+
+            View rootView = findViewById(android.R.id.content);
+
+            if (dealerTotal > 21) {
+                Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal + " BUST");
+                if (playerTotal <= 21) {
+                    Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
+                    stats.recordWin();
+                    roundEnd.setMessage("PLAYER WINS");
                     mediaPlayer.release();
-                    mediaPlayer=MediaPlayer.create(this,R.raw.losing);
+                    mediaPlayer = MediaPlayer.create(this, R.raw.cheer);
                     mediaPlayer.start();
-                }
-                else {
+//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+//                mediaPlayer.start();
+//                mediaPlayer.release();
+                    addMoney(getBet() * 2);
+                } else {
                     Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
-                    roundEnd.setMessage("PLAYER BUST");
+                    stats.recordLoss();
+                    roundEnd.setMessage("PLAYER BUSTS");
                 }
+                roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+            } else {
+                Log.d("dealerTurn Test", "Final Dealer Total: " + dealerTotal);
+                if (playerTotal > dealerTotal && playerTotal <= 21) {
+                    Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " WIN");
+                    stats.recordWin();
+                    roundEnd.setMessage("PLAYER WINS");
+                    mediaPlayer.release();
+                    mediaPlayer = MediaPlayer.create(this, R.raw.cheer);
+                    mediaPlayer.start();
+//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
+//                mediaPlayer.start();
+//                mediaPlayer.release();
+                    addMoney(getBet() * 2);
+                } else if (playerTotal == dealerTotal) {
+                    Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
+                    stats.recordPush();
+                    roundEnd.setMessage("PUSH");
+                    addMoney(getBet());
+                } //should stats of a draw be recorded?
+                else {
+                    stats.recordLoss();
+                    if (playerTotal < 21) {
+                        Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
+                        roundEnd.setMessage("PLAYER LOSES");
+                        mediaPlayer.release();
+                        mediaPlayer = MediaPlayer.create(this, R.raw.losing);
+                        mediaPlayer.start();
+                    } else {
+                        Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
+                        roundEnd.setMessage("PLAYER BUST");
+                    }
+                }
+                roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, 0);
             }
-            roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, 0);
-        }
 
 //        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
 //            @Override
@@ -588,9 +645,70 @@ public class BlackjackGameActivity extends AppCompatActivity {
 //            }
 //        }, 2500);
 
-        Log.d("End Stats", "Wins: " + stats.getData()[0]);
-        Log.d("End Stats", "Losses: " + stats.getData()[1]);
-        Log.d("End Stats", "Total Games: " + stats.getData()[2]);
+            Log.d("End Stats", "Wins: " + stats.getData()[0]);
+            Log.d("End Stats", "Losses: " + stats.getData()[1]);
+            Log.d("End Stats", "Total Games: " + stats.getData()[2]);
+        }
+        else if (HOST_FLAG){
+            Player dealer = players.get(0);
+            while(dealer.getMainTotal() < 17) {
+                Log.d("Drawing Card", "Dealer Total: " + dealer.getMainTotal());
+
+                Card c = deck.retrieveTop();
+                runOnUiThread(()->dealer.addCard(c));
+                String m = 0 + "," + c.toString() + ",0";
+                sendAllMessage("DealCard", m);
+            }
+            sendAllMessage("RoundEnd", " ");
+            checkScore();
+        }
+    }
+
+    private void checkScore() {
+        Player dealer = players.get(0);
+        Player p = players.get(playerID);
+
+        if(p.getMainTotal() > 21) {
+            Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " BUST");
+            sendAllMessage("Lose", " ");
+            p.setMoney(p.getMoney()-p.getBet());
+            sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
+            sendAllMessage("SetBet", "0");
+            roundEnd.setMessage("PLAYER BUSTS");
+
+        }
+        else if(dealer.getMainTotal() > p.getMainTotal() && dealer.getMainTotal() <= 21) {
+            Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " LOSE");
+            Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " WIN");
+            sendAllMessage("Lose", " ");
+            p.setMoney(p.getMoney()-p.getBet());
+            sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
+            sendAllMessage("SetBet", "0");
+            roundEnd.setMessage("PLAYER LOSES");
+
+        }
+        else if ((dealer.getMainTotal() < p.getMainTotal()) || (dealer.getMainTotal() > 21)) {
+            Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " WIN");
+            Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " LOSE");
+            sendAllMessage("Lose", " ");
+            if(dealer.getMainTotal() == 21)
+                p.setMoney(p.getMoney()+(p.getBet()*2));
+            else
+                p.setMoney(p.getMoney()+p.getBet());
+            roundEnd.setMessage("PLAYER WINS");
+
+        }
+        sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
+        sendAllMessage("SetBet", "0");
+        runOnUiThread(()-> roundEnd.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0));
+
+
+        if(HOST_FLAG)
+            runOnUiThread(() -> {
+                findViewById(R.id.restart).setVisibility(View.VISIBLE);
+                findViewById(R.id.restart).setEnabled(true);});
+
+
     }
 
     /**
@@ -645,15 +763,18 @@ public class BlackjackGameActivity extends AppCompatActivity {
                     }
                     if(start) {
                         Log.d("GameFlow", "All Bets Received. Dealing Starting Hand...");
-                        setupMP();
+                        setupMP(); //Start Game
                     }
                 }
-
 
                 break;
             case "DealCard": //Deal the Specified Card to player id in message[0] (Always comes from host)
                 String[] arg = message.split(","); //"id,value of suit,splitHandSpecifier"
                 dealCard(players.get(Integer.parseInt(arg[0])), new Card(arg[1]), Integer.parseInt(arg[2]));
+                if(checkHand(Integer.parseInt(arg[2]))) {
+                    sendAllMessage("Bust", " ");
+                }
+                runOnUiThread(this::disablePlayerControls);
                 break;
             case "SetMoney": //SetMoney - Set the current Money of the player
                 players.get(id).setMoney(Integer.parseInt(message));
@@ -662,32 +783,51 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 if(!HOST_FLAG)
                     break;
                 Card c = dealCard(players.get(id), Integer.parseInt(message));
-                String m = id + "," + c.to_string() + "," + Integer.parseInt(message);
+                String m = id + "," + c + "," + Integer.parseInt(message);
                 sendAllMessage("DealCard", m);
+                nextTurn();
                 break;
             case "Split":
                 break;
             case "Stand":
+            case "Bust":
+                players.get(id).stand = true;
                 break;
             case "TurnStart":
                 if(Integer.parseInt(message) != playerID) {
+                    runOnUiThread(this::showPlayerControls);
                     runOnUiThread(this::disablePlayerControls);
                     break;
                 }
                 runOnUiThread(this::enablePlayerControls);
                 break;
-            case "Start":
-                setup();
-                runOnUiThread(this::disablePlayerControls);
+            case "RoundEnd":
+                runOnUiThread(this::hidePlayerControls);
+                checkScore();
+                break;
+            case "RESET":
+                runOnUiThread(this::resetGame);
+                break;
+            default:
                 break;
         }
 
 
 
     }
+
+    private boolean checkHand(int splitHand) {
+        Player p = players.get(playerID);
+        if (splitHand == 2) {
+            Log.d("checkHand", "1 | " + p.getHand().getTotalValue(1));
+            return p.getHand().getTotalValue(1) > 21;
+        }
+        Log.d("checkHand", "0 | " + p.getHand().getTotalValue(0));
+        return p.getHand().getTotalValue() > 21;
+    }
+
     private void logMessage(String job, String message, int id){
-        int playerID = id + 1;
-        String fullMessage = "Player " + playerID + " " + job + " " + message;
+        String fullMessage = "Player " + id + " " + job + " " + message;
         TableRow newRow = new TableRow(this);
         newRow.setId(++messageNum);
         int bgColor;
@@ -727,7 +867,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             Log.d("Sending Message", params[0]);
             String[] args = params[0].split(" : ");
-            logMessage(args[1], args[2], Integer.parseInt(args[0]));
+            logMessage(args[1], args[2], Integer.parseInt(args[0])+1);
             netHandle.sendToAllClients(params[0]);
             return null;
         }
@@ -740,6 +880,7 @@ class Player {
     private int bet;
     private final float scale;
     private boolean split;
+    public boolean stand;
     private LinearLayout visualHand;
     private TableRow visualRow;
     private LinearLayout splitHand1;
@@ -756,6 +897,7 @@ class Player {
         this.bet = 0;
         scale = c.getResources().getDisplayMetrics().density;
         split = false;
+        stand = false;
     }
 
     Player(int money, LinearLayout row, Context c) {
@@ -766,6 +908,7 @@ class Player {
         this.bet = 0;
         scale = c.getResources().getDisplayMetrics().density;
         split = false;
+        stand = false;
     }
 
     public CardHand getHand(){

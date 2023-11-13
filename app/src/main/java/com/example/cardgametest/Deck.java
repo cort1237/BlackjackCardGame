@@ -142,7 +142,7 @@ class Card {
         }
     }
 
-    public String to_string() {
+    public String toString() {
         return getRank() + " of " + getSuit();
     }
 }
