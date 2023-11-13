@@ -42,6 +42,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private TableLayout logTable;
     private ScrollView logScroll;
     private int playerID;
+    private int currentTurn = 1 ;
+    private int playerNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +79,28 @@ public class BlackjackGameActivity extends AppCompatActivity {
             logButton.setVisibility(View.VISIBLE);
 
             //Initialize Players
-            players.add(new Player(playerMoney,findViewById(R.id.row1),this));
-            players.add(new Player(playerMoney,findViewById(R.id.row2),this));
-            players.add(new Player(playerMoney,findViewById(R.id.row3),this));
-            players.add(netHandle.id+1, new Player(playerMoney, playerLayout,this));
+            playerNum = netHandle.getClientSockets().size()+1;
+            switch(playerNum) {
+                case 4:
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row3),this));
+                case 3:
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row2),this));
+                case 2:
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row1),this));
+                default:
+                    players.add(netHandle.id+1, new Player(playerMoney, playerLayout,this));
+            }
             playerID = netHandle.id+1;
         }
         else {
             players.add(new Player(playerMoney, playerLayout, this));
             playerID = 1;
+        }
+
+        int id_counter = 0;
+        for (Player p : players) {
+            p.setId(id_counter);
+            id_counter++;
         }
 
         ImageButton optionsButton = findViewById(R.id.optionButton);
@@ -102,7 +117,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //expand tab and button
         tabLayout.bringToFront();
         Button tabButton = findViewById(R.id.expandButton);
-        if(MP_FLAG){
+        if(!MP_FLAG){
             tabButton.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
         }
@@ -160,11 +175,12 @@ public class BlackjackGameActivity extends AppCompatActivity {
         resetGame();
     }
     // generate the hands for each row in the side bar
+    /**
     protected void generateHand(){
 
         int NUM_PLAYERS = players.size();
         if(NUM_PLAYERS != 0){
-        CardHand handList[] = new CardHand[NUM_PLAYERS];
+        CardHand[] handList = new CardHand[NUM_PLAYERS];
         for(int i = 0; i < players.size(); i++){
             handList[i] = players.get(i).getHand();
         }
@@ -172,7 +188,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         TableRow tabLayout1 = findViewById(R.id.row1);
         TableRow tabLayout2 = findViewById(R.id.row2);
         TableRow tabLayout3 = findViewById(R.id.row3);
-        TableRow t[] = new TableRow[3];
+        TableRow[] t = new TableRow[3];
         t[0] = tabLayout1;
         t[1] = tabLayout2;
         t[2] = tabLayout3;
@@ -185,13 +201,14 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
             }
         }
-    }}
+    }}**/
     @Override
     protected void onResume() {
         super.onResume();
         Log.d("Resumed", "Returned from settings");
 
     }
+
 
     //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
@@ -294,6 +311,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             setup();
         }
         else {
+            players.get(playerID).setBet(bet);
             sendAllMessage("SetBet", Integer.toString(bet));
         }
     }
@@ -436,11 +454,49 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
     }
 
+    private void setupMP() {
+        for (int i = 0; i < 2; i++) {
+            for (Player p : players) {
+                Card c = deck.retrieveTop();
+                String m = p.id + "," + c.to_string() + ",0";
+                dealCard(p,c,0);
+                sendAllMessage("DealCard",m);
+            }
+        }
+
+        sendAllMessage("TurnStart", Integer.toString(currentTurn));
+    }
+
+    private int getNextTurn() {
+        if(currentTurn == playerNum)
+            currentTurn = 1;
+        else
+            currentTurn++;
+        return currentTurn;
+    }
+
+    private void disablePlayerControls() {
+        findViewById(R.id.hitButton).setEnabled(false);
+        findViewById(R.id.foldButton).setEnabled(false);
+        findViewById(R.id.splitButton).setEnabled(false);
+    }
+
+    private void enablePlayerControls() {
+        findViewById(R.id.hitButton).setEnabled(true);
+        findViewById(R.id.foldButton).setEnabled(true);
+        findViewById(R.id.splitButton).setEnabled(true);
+    }
+
     private Card dealCard(Player p, int split) {
         Card topCard = deck.retrieveTop();
-        p.addCard(topCard, split);
+        runOnUiThread(()->p.addCard(topCard, split));
         Log.d("dealCard Test", "Dealer Card: " + topCard.getRank());
         return topCard;
+    }
+
+    private void dealCard(Player p, Card c, int split) {
+        runOnUiThread(()->p.addCard(c, split));
+        Log.d("dealCard Test", "Card: " + c.getRank());
     }
 
     private Card dealCard(Player p) {
@@ -569,8 +625,63 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private void interpretMessage(String[] args) {
         String job = args[1];
         String message = args[2];
-        int id = Integer.parseInt(args[0]);
+        int id = Integer.parseInt(args[0]) + 1;
         logMessage(job, message, id);
+
+
+        switch(job) {
+            case "SetBet":  //SetBet - Set the bet of id to `message`
+                players.get(id).setBet(Integer.parseInt(message));
+
+                //Check for all bets if Host
+                if(HOST_FLAG) {
+                    boolean start = true;
+                    for (Player p : players) {
+                        Log.d("BetCheck", "Player " + p.id + " | Bet: " + p.getBet());
+                        if(p.id == 0) //Ignore Dealer Hand
+                            continue;
+                        if(p.getBet() == 0) //If any bets unset, set false
+                            start = false;
+                    }
+                    if(start) {
+                        Log.d("GameFlow", "All Bets Received. Dealing Starting Hand...");
+                        setupMP();
+                    }
+                }
+
+
+                break;
+            case "DealCard": //Deal the Specified Card to player id in message[0] (Always comes from host)
+                String[] arg = message.split(","); //"id,value of suit,splitHandSpecifier"
+                dealCard(players.get(Integer.parseInt(arg[0])), new Card(arg[1]), Integer.parseInt(arg[2]));
+                break;
+            case "SetMoney": //SetMoney - Set the current Money of the player
+                players.get(id).setMoney(Integer.parseInt(message));
+                break;
+            case "Hit":
+                if(!HOST_FLAG)
+                    break;
+                Card c = dealCard(players.get(id), Integer.parseInt(message));
+                String m = id + "," + c.to_string() + "," + Integer.parseInt(message);
+                sendAllMessage("DealCard", m);
+                break;
+            case "Split":
+                break;
+            case "Stand":
+                break;
+            case "TurnStart":
+                if(Integer.parseInt(message) != playerID) {
+                    runOnUiThread(this::disablePlayerControls);
+                    break;
+                }
+                runOnUiThread(this::enablePlayerControls);
+                break;
+            case "Start":
+                setup();
+                runOnUiThread(this::disablePlayerControls);
+                break;
+        }
+
 
 
     }
@@ -635,12 +746,14 @@ class Player {
     private LinearLayout splitHand2;
     private final CardHand gameHand;
     private final Context parentContext;
+    int id;
 
     Player(int money, TableRow row, Context c) {
         this.money = money;
         this.visualRow =  row;
         this.gameHand = new CardHand();
         this.parentContext = c;
+        this.bet = 0;
         scale = c.getResources().getDisplayMetrics().density;
         split = false;
     }
@@ -650,6 +763,7 @@ class Player {
         this.visualHand =  row;
         this.gameHand = new CardHand();
         this.parentContext = c;
+        this.bet = 0;
         scale = c.getResources().getDisplayMetrics().density;
         split = false;
     }
@@ -669,8 +783,11 @@ class Player {
             splitHand1.removeAllViews();
             splitHand2.removeAllViews();
         }
+        if(visualHand != null)
+            visualHand.removeAllViews();
+        else
+            visualRow.removeAllViews();
         gameHand.clearHand();
-        visualHand.removeAllViews();
         split = false;
     }
 
@@ -678,6 +795,7 @@ class Player {
     public int getBet() {return bet;}
     public void setMoney(int m) {money = m;}
     public void setBet(int b) {bet = b;}
+    public void setId(int id) {this.id=id;}
 
     public int getMainTotal() {
         return gameHand.getTotalValue();
