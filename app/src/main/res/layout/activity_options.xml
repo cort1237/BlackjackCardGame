@@ -31,6 +31,11 @@
         android:valueTo="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:thumbColor="#3f81d1"
+        app:trackColorInactive="#d1e6ff"
+        app:trackColorActive="#82b6f5"
+
+
         />
 
     <Button
