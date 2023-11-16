@@ -223,55 +223,87 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
 
-        android:orientation="vertical"
         android:background="#b5b5b5"
         android:elevation="2dp"
-        android:visibility="gone"
-        android:paddingRight="25dp"
+        android:orientation="vertical"
         android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        >
+        app:layout_constraintVertical_bias="0.0">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/row1"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:paddingTop="50dp">
+            android:paddingTop="50dp"
+            android:orientation="vertical">
 
-            <LinearLayout android:id="@+id/Rrow1"
+
+
+            <LinearLayout
+                android:id="@+id/Rrow1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                >
 
-
+                android:orientation="horizontal">
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/row2"
-            android:layout_height="0dp"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true">
-        </RelativeLayout>
-        <RelativeLayout
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            >
+            <LinearLayout
+                android:id="@+id/Rrow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                android:orientation="horizontal">
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/row3"
-            android:layout_height="0dp"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true">
-        </RelativeLayout>
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            >
+
+
+
+            <LinearLayout
+                android:id="@+id/Rrow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                android:background="@android:color/transparent"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <Button

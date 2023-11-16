@@ -86,9 +86,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
             playerNum = netHandle.getClientSockets().size()+1;
             switch(playerNum) {
                 case 4:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row3 ) , findViewById(R.id.Rrow1),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row3 ) , findViewById(R.id.Rrow3),this));
                 case 3:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row2), findViewById(R.id.Rrow1),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row2), findViewById(R.id.Rrow2),this));
                 case 2:
                     players.add(1, new Player(playerMoney,findViewById(R.id.row1), findViewById(R.id.Rrow1),this));
                 default:
@@ -119,7 +119,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
 
         //expand tab and button
-        tabLayout.bringToFront();
+        //tabLayout.bringToFront();
         Button tabButton = findViewById(R.id.expandButton);
         if(!MP_FLAG){
             tabButton.setVisibility(View.GONE);
@@ -887,16 +887,16 @@ class Player {
     private boolean split;
     public boolean stand;
     private LinearLayout visualHand;
-    private RelativeLayout visualRow;
+    private LinearLayout visualRow;
     private LinearLayout splitHand1;
     private LinearLayout splitHand2;
     private final CardHand gameHand;
     private final Context parentContext;
     int id;
 
-    private LinearLayout vr;
-    String nickname;
-    Player(int money, RelativeLayout row, LinearLayout vr, Context c) {
+    private LinearLayout vr; // each tab in the side bar has two rows for formatting
+    String nickname;        // vr contains images and visual row contains the nickname
+    Player(int money, LinearLayout row, LinearLayout vr, Context c) {
         this.money = money;
         this.visualRow = row;
         this.gameHand = new CardHand();
@@ -937,10 +937,13 @@ class Player {
             splitHand1.removeAllViews();
             splitHand2.removeAllViews();
         }
-        if (visualHand != null)
+        if (visualHand != null) {
             visualHand.removeAllViews();
-        else
-            visualRow.removeAllViews();
+
+        }
+        else{
+            vr.removeAllViews();
+        }
         gameHand.clearHand();
         split = false;
     }
@@ -983,8 +986,10 @@ class Player {
             margin = 8;
         if (visualHand != null) {
             visualHand.removeAllViews();
-        } else {
-            visualRow.removeAllViews();
+
+        }
+        if( vr != null) {
+            vr.removeAllViews();
         }
         gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
         if (split)
@@ -1014,7 +1019,7 @@ class Player {
                     splitHand2.addView(cardView);
                 }
             }
-        } else { //Side Bar Layout
+        }  //Side Bar Layout
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 217);
             params.setMargins(4, 8, -3, 8);
 
@@ -1025,14 +1030,16 @@ class Player {
                     //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
             cardView.setLayoutParams(params);
-            if(visualRow.getChildCount() < 1 ) {// add the nickname text only for the first time
+            if(visualRow != null){
+            if(visualRow.getChildCount() < 2 ) {// add the nickname text only for the first time
                 visualRow.addView(tview);
+            }}
+            if(vr != null) {
+                this.vr.addView(cardView);
             }
 
-            visualRow.addView(cardView);
 
 
-        }
     }
 
     public void split() {
