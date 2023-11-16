@@ -218,12 +218,12 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-    <TableLayout
+    <LinearLayout
         android:id="@+id/expandTab"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
 
-
+        android:orientation="vertical"
         android:background="#b5b5b5"
         android:elevation="2dp"
         android:visibility="gone"
@@ -232,31 +232,47 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        >
 
-        <TableRow
+        <RelativeLayout
             android:id="@+id/row1"
-            android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_width="wrap_content"
             android:layout_weight="1"
             android:paddingTop="50dp">
 
+            <LinearLayout android:id="@+id/Rrow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                >
 
-        </TableRow>
 
-        <TableRow
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/row2"
-            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
-        </TableRow>
-        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+        </RelativeLayout>
+        <RelativeLayout
             android:id="@+id/row3"
-            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
-        </TableRow>
-    </TableLayout>
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+        </RelativeLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/expandButton"

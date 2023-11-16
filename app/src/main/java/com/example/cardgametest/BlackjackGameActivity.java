@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -22,6 +23,7 @@ import android.widget.Button;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.LoggingPermission;
 
 
 public class BlackjackGameActivity extends AppCompatActivity {
@@ -31,7 +33,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private TextView currentHandText;
     private TextView splitHandText;
     private final Deck deck = new Deck();
-    private TableLayout tabLayout;
+    private LinearLayout tabLayout;
     private NetworkHandler netHandle;
     private Stats stats;
     private CustomPopupWindow roundEnd;
@@ -46,11 +48,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private int currentTurn = 1 ;
     private int playerNum;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         LinearLayout playerLayout = findViewById(R.id.main_player_hand);
         LinearLayout dealerLayout = findViewById(R.id.dealer_hand);
@@ -62,6 +64,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         splitHandText = findViewById(R.id.viewSplit);
         Button logButton = findViewById(R.id.logViewButton);
         updateMoneyText();
+
 
         players.add(new Player(0, dealerLayout, this));
 
@@ -83,11 +86,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
             playerNum = netHandle.getClientSockets().size()+1;
             switch(playerNum) {
                 case 4:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row3),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row3 ) , findViewById(R.id.Rrow1),this));
                 case 3:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row2),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row2), findViewById(R.id.Rrow1),this));
                 case 2:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row1),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.row1), findViewById(R.id.Rrow1),this));
                 default:
                     players.add(netHandle.id+1, new Player(playerMoney, playerLayout,this));
             }
@@ -884,21 +887,22 @@ class Player {
     private boolean split;
     public boolean stand;
     private LinearLayout visualHand;
-    private TableRow visualRow;
+    private RelativeLayout visualRow;
     private LinearLayout splitHand1;
     private LinearLayout splitHand2;
     private final CardHand gameHand;
     private final Context parentContext;
     int id;
 
+    private LinearLayout vr;
     String nickname;
-    Player(int money, TableRow row, Context c) {
+    Player(int money, RelativeLayout row, LinearLayout vr, Context c) {
         this.money = money;
         this.visualRow = row;
         this.gameHand = new CardHand();
         this.parentContext = c;
         this.bet = 0;
-
+        this.vr = vr;
         scale = c.getResources().getDisplayMetrics().density;
         split = false;
         stand = false;
@@ -1011,16 +1015,23 @@ class Player {
                 }
             }
         } else { //Side Bar Layout
-            TableRow.LayoutParams params = new TableRow.LayoutParams(150, 217);
-            params.setMargins(4, 8, -30, 8);
-            cardView.setLayoutParams(params);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 217);
+            params.setMargins(4, 8, -3, 8);
+
 
             TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
             tview.setText(this.nickname);
+            //cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+
+            cardView.setLayoutParams(params);
             if(visualRow.getChildCount() < 1 ) {// add the nickname text only for the first time
                 visualRow.addView(tview);
             }
+
             visualRow.addView(cardView);
+
+
         }
     }
 
