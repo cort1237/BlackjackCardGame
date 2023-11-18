@@ -9,7 +9,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:background="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -68,7 +68,7 @@
         android:layout_marginEnd="24dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
-        app:layout_constraintBottom_toTopOf="@id/totalGamesCardView"
+        app:layout_constraintBottom_toTopOf="@id/pushesCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,6 +91,37 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/pushesCardView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/totalGamesCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lossesCardView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/pushesTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Pushes: 0"
+                android:textSize="18dp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/totalGamesCardView"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -98,11 +129,11 @@
         android:layout_marginEnd="24dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/returnButton"
+        app:layout_constraintBottom_toTopOf="@id/returnButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lossesCardView">
+        app:layout_constraintTop_toBottomOf="@+id/pushesCardView">
 
         <RelativeLayout
             android:layout_width="match_parent"

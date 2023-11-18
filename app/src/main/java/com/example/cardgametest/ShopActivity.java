@@ -45,10 +45,6 @@ public class ShopActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        create onClick for each item. open an alert dialog if button has been pressed. add item to player's inventory if confirmed
-         */
-
         items = new ShopItem[]{
                 new ShopItem("Item 1", 10),
                 new ShopItem("Item 2", 20),
@@ -62,19 +58,19 @@ public class ShopActivity extends AppCompatActivity {
 
         GridLayout gridLayout = findViewById(R.id.gridLayout);
 
+
+        /*
+        create onClick for each item. open an alert dialog if button has been pressed. add item to player's inventory if confirmed
+         */
         int margin = 50;
         for (int i=0; i<items.length; i++) {
             // Loop through the items array to dynamically create CardViews
             CardView cardView = new CardView(this);
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-            layoutParams.width = 0; // Set width to 0dp to enable layout_columnWeight
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Set height to WRAP_CONTENT
-            layoutParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // 1f is layout_columnWeight
+            layoutParams.width = 0;
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            layoutParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             layoutParams.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-//          layoutParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
-//          layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-//          layoutParams.rowSpec = GridLayout.spec(i / 2); // Assuming 2 columns
-//          layoutParams.columnSpec = GridLayout.spec(i % 2);
             layoutParams.setMargins( margin, margin, margin,margin);
             cardView.setContentPadding(16, 16, 16, 16);
             cardView.setLayoutParams(layoutParams);
@@ -101,6 +97,8 @@ public class ShopActivity extends AppCompatActivity {
         }
 
 /*
+// Before attempting to dynamically create items i was manually doing this for each item:
+
         CardView item6CardView = findViewById(R.id.item6CardView);
         item6CardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +160,7 @@ public class ShopActivity extends AppCompatActivity {
     }
 }
 
+// abstract class ShopItem {
 class ShopItem {
 
     private String itemName;
