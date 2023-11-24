@@ -1,17 +1,14 @@
 package com.example.cardgametest;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
@@ -33,6 +30,7 @@ public class ConnectActivity extends Activity {
     private NetworkHandler netHandle;
     private TextView statusText;
     private EditText ipAddress;
+    private EditText nicknameField;
     private Button hostButton;
     private Button joinButton;
     private Button backToTitleButton;
@@ -59,6 +57,7 @@ public class ConnectActivity extends Activity {
         backToTitleButton = findViewById(R.id.backToTitleButton);
         connectionList = findViewById(R.id.connectionListView);
         startButton = findViewById(R.id.startGame);
+        nicknameField = findViewById(R.id.nicknameField);
 
 
         netHandle = new NetworkHandler();
@@ -100,8 +99,9 @@ public class ConnectActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playerCount = netHandle.getClientSockets().size();
+                playerCount = netHandle.getClientSockets().size()+1;
 
+                new MessageSender().execute("SETUP : " + minBet + " : " + startMoney);
                 new MessageSender().execute("PLAYER_COUNT : " + playerCount);
                 new MessageSender().execute("initialize");
                 new MessageSender().execute("play");
@@ -109,8 +109,9 @@ public class ConnectActivity extends Activity {
                 i.putExtra("type", "MP");
                 i.putExtra("host", "HOST");
                 i.putExtra("players", playerCount);
-                i.putExtra("minbet", minBet);
-                i.putExtra("startmoney", startMoney);
+                i.putExtra("min_bet", minBet);
+                i.putExtra("start_money", startMoney);
+                i.putExtra("my_name", name);
                 startActivity(i);
             }
         });
@@ -122,6 +123,8 @@ public class ConnectActivity extends Activity {
                 minBet = Integer.parseInt((betSpinner.getSelectedItem().toString().substring(1)));
                 startMoney = Integer.parseInt((moneySpinner.getSelectedItem().toString().substring(1)));
                 name = hostName.getText().toString();
+                if(name.equals(""))
+                    name = "Host";
                 window.dismiss();
                 hostButton.setEnabled(false);
                 joinButton.setEnabled(false);
@@ -213,6 +216,10 @@ public class ConnectActivity extends Activity {
                 else if(args[0].equals("PLAYER_COUNT")) {
                     playerCount = Integer.parseInt(args[1]);
                 }
+                else if(args[0].equals("SETUP")) {
+                    minBet = Integer.parseInt(args[1]);
+                    startMoney = Integer.parseInt(args[2]);
+                }
                 else if(args[0].equals("ASSIGN_ID")) {
                     netHandle.id = Integer.parseInt(args[1]);
                     Log.d("Game ID", args[1]);
@@ -227,8 +234,15 @@ public class ConnectActivity extends Activity {
             }
         }
         Intent i = new Intent(this, BlackjackGameActivity.class);
+        String name = nicknameField.getText().toString();
+        if(name.equals("") || name == null)
+            name = "player";
         i.putExtra("type", "MP");
         i.putExtra("host", "CLIENT");
+        i.putExtra("players", playerCount);
+        i.putExtra("min_bet", minBet);
+        i.putExtra("start_money", startMoney);
+        i.putExtra("my_name", name);
         startActivity(i);
         Thread.currentThread().interrupt(); // Close this activities message threads.
     }

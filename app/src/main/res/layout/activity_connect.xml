@@ -68,6 +68,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <EditText
+        android:id="@+id/nicknameField"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="384dp"
+        android:hint="Enter Nickname"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        android:importantForAutofill="no" />
+
     <Button
         android:id="@+id/backToTitleButton"
         android:layout_width="wrap_content"

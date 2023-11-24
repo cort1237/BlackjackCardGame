@@ -23,6 +23,7 @@ import android.widget.Button;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.LoggingPermission;
 
 
@@ -47,6 +48,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private int playerID;
     private int currentTurn = 1 ;
     private int playerNum;
+    private int minBet;
 
 
     @Override
@@ -75,15 +77,14 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(MP_FLAG) {
             HOST_FLAG = getIntent().getStringExtra("host").equals("HOST");
             netHandle = ((GameApplication) getApplication()).getNetworkHandler();
+            minBet = getIntent().getIntExtra("min_bet", 100);
+            playerMoney = getIntent().getIntExtra("start_money", 1000);
             Log.d("Net Handle ID", Integer.toString(netHandle.id));
-            for (Socket socket : netHandle.getClientSockets()) {
-                Thread t = new Thread(()-> handleClientConnection(socket));
-                t.start();
-            }
             logButton.setVisibility(View.VISIBLE);
 
             //Initialize Players
-            playerNum = netHandle.getClientSockets().size()+1;
+            playerNum = getIntent().getIntExtra("players", 2);
+            Log.d("playerNum", "" + playerNum);
             switch(playerNum) {
                 case 4:
                     players.add(1, new Player(playerMoney,findViewById(R.id.row3 ) , findViewById(R.id.Rrow3),this));
@@ -95,6 +96,15 @@ public class BlackjackGameActivity extends AppCompatActivity {
                     players.add(netHandle.id+1, new Player(playerMoney, playerLayout,this));
             }
             playerID = netHandle.id+1;
+            String name = getIntent().getStringExtra("my_name");
+            players.get(playerID).setNickname(name);
+            sendAllMessage("PLAYER_NAME", name);
+
+            for (Socket socket : netHandle.getClientSockets()) {
+                Thread t = new Thread(()-> handleClientConnection(socket));
+                t.start();
+            }
+
         }
         else {
             players.add(new Player(playerMoney, playerLayout, this));
@@ -809,6 +819,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 runOnUiThread(this::hidePlayerControls);
                 checkScore();
                 break;
+            case "PLAYER_NAME":
+                players.get(id).setNickname(message);
             case "RESET":
                 runOnUiThread(this::resetGame);
                 break;
@@ -831,6 +843,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     private void logMessage(String job, String message, int id){
+        String[] ignored_jobs = {"PLAYER_NAME"};
+        if(Arrays.asList(ignored_jobs).contains(job))
+            return;
+
         String fullMessage = "Player " + id + " " + job + " " + message;
         TableRow newRow = new TableRow(this);
         newRow.setId(++messageNum);
@@ -965,6 +981,10 @@ class Player {
         bet = b;
     }
 
+    public void setNickname(String s) {
+        nickname = s;
+    }
+
     public void setId(int id) {
         this.id = id;
         String nicks[] = {"Blackjack Bill", "Peeking Paul", "Card Countin Charles", "Strangle-Eye Saul", "Kevin" };
@@ -974,7 +994,6 @@ class Player {
     public int getMainTotal() {
         return gameHand.getTotalValue();
     }
-
 
     public void refreshHand() {
         int margin;
