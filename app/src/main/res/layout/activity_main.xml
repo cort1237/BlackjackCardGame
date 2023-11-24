@@ -137,7 +137,7 @@
         android:layout_marginBottom="40dp"
         android:gravity="center|center_horizontal"
         android:onClick="foldHand"
-        android:text="Fold"
+        android:text="Stand"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/main_player_hand"
         app:layout_constraintEnd_toEndOf="parent"

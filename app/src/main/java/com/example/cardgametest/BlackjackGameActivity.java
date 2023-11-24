@@ -247,7 +247,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     public void resetGame(View view) {
         resetGame();
-        sendAllMessage("RESET", " ");
+        if(MP_FLAG)
+            sendAllMessage("RESET", " ");
     }
 
     private void hitHelper() {
