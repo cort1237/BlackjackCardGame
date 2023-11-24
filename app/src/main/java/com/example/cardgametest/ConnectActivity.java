@@ -1,14 +1,21 @@
 package com.example.cardgametest;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -29,9 +36,16 @@ public class ConnectActivity extends Activity {
     private Button hostButton;
     private Button joinButton;
     private Button backToTitleButton;
+    private Button startHost;
     private TextView connectionList;
     private Button startButton;
+    private Spinner betSpinner;
+    private Spinner moneySpinner;
+    private EditText hostName;
     private int playerCount = 1;
+    private int minBet;
+    private int startMoney;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +60,15 @@ public class ConnectActivity extends Activity {
         connectionList = findViewById(R.id.connectionListView);
         startButton = findViewById(R.id.startGame);
 
+
         netHandle = new NetworkHandler();
         ((GameApplication) getApplication()).setNetworkHandler(netHandle); //Store NetworkHandler in application for global use
+        PopupWindow window = new PopupWindow(LayoutInflater.from(this).inflate(R.layout.server_setup_popup, null), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+
+        startHost = window.getContentView().findViewById(R.id.startHostButton);
+        betSpinner = window.getContentView().findViewById(R.id.betSpinner);
+        moneySpinner = window.getContentView().findViewById(R.id.moneySpinner);
+        hostName = window.getContentView().findViewById(R.id.hostNameTextField);
 
         /*
          *  Button Listeners
@@ -55,7 +76,8 @@ public class ConnectActivity extends Activity {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ServerTask().execute();
+                //new ServerTask().execute();
+                window.showAtLocation(findViewById(R.id.joinButton), Gravity.CENTER, 0, 0);
             }
         });
 
@@ -87,7 +109,24 @@ public class ConnectActivity extends Activity {
                 i.putExtra("type", "MP");
                 i.putExtra("host", "HOST");
                 i.putExtra("players", playerCount);
+                i.putExtra("minbet", minBet);
+                i.putExtra("startmoney", startMoney);
                 startActivity(i);
+            }
+        });
+
+        //Host Setup Popup
+        startHost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                minBet = Integer.parseInt((betSpinner.getSelectedItem().toString().substring(1)));
+                startMoney = Integer.parseInt((moneySpinner.getSelectedItem().toString().substring(1)));
+                name = hostName.getText().toString();
+                window.dismiss();
+                hostButton.setEnabled(false);
+                joinButton.setEnabled(false);
+                ipAddress.setEnabled(false);
+                new ServerTask().execute();
             }
         });
     }
@@ -103,7 +142,7 @@ public class ConnectActivity extends Activity {
             try {
                 serverSocket = new ServerSocket(12345);
 
-                runOnUiThread(() -> statusText.setText("Server started. Waiting for clients..."));
+                runOnUiThread(() -> statusText.setText("Server started.\nWaiting for clients..."));
 
                 Socket clientSocket = serverSocket.accept();
                 netHandle.addClientSocket(clientSocket);

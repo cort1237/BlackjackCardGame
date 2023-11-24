@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Bets">
+        <item name="100">$100</item>
+        <item name="300">$300</item>
+        <item name="500">$500</item>
+        <item name="750">$750</item>
+        <item name="1000">$1000</item>
+    </string-array>
+
+    <string-array name="StartingMoney">
+        <item name="1000">$1000</item>
+        <item name="2000">$2000</item>
+        <item name="5000">$5000</item>
+        <item name="7500">$7500</item>
+        <item name="10000">$10000</item>
+    </string-array>
+</resources>
