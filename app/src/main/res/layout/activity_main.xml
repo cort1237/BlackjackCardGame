@@ -228,7 +228,7 @@
         android:orientation="vertical"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -310,11 +310,11 @@
         android:id="@+id/expandButton"
         android:layout_width="32dp"
         android:layout_height="130dp"
-        android:layout_marginTop="276dp"
+        android:layout_marginTop="240dp"
         android:layout_marginRight="-3dp"
+        android:contentDescription="SlidingBox"
         android:orientation="vertical"
         android:text=" "
-        android:contentDescription="SlidingBox"
 
 
         app:layout_constraintEnd_toStartOf="@+id/expandTab"
