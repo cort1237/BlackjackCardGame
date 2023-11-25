@@ -803,7 +803,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(Arrays.asList(ignored_jobs).contains(job))
             return;
 
-        String fullMessage = "Player " + id + " " + job + " " + message;
+        String fullMessage = generateMessage(job, message, id);
         TableRow newRow = new TableRow(this);
         newRow.setId(++messageNum);
         int bgColor;
