@@ -253,6 +253,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         mediaPlayer=MediaPlayer.create(this,R.raw.register);
         findViewById(R.id.betButtonAdd).setVisibility(View.VISIBLE);
         findViewById(R.id.betButtonSub).setVisibility(View.VISIBLE);
+        players.get(0).setDealerTurn(false);
     }
 
     public void resetGame(View view) {
@@ -578,6 +579,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     private void dealerTurn() {
+        players.get(0).setDealerTurn(true);
+        players.get(0).refreshHand();
         if(!MP_FLAG) {
             int dealerTotal = players.get(0).getMainTotal(),
                     playerTotal = players.get(playerID).getMainTotal();
@@ -870,6 +873,34 @@ public class BlackjackGameActivity extends AppCompatActivity {
         runOnUiThread(()->{logTable.addView(newRow);});
     }
 
+    private String generateMessage(String job, String message, int id){
+        String msg = null;
+        switch(job){
+            case "SetBet":  //SetBet - Set the bet of id to `message`
+                msg = "Player " + id + " has bet $" + message;
+                break;
+            case "DealCard": //Deal the Specified Card to player id in message[0] (Always comes from host)
+                String[] parts = message.split(",");
+                msg = "Player " + parts[0] + " has drawn the " + parts[1] + " of " + parts[2];
+                break;
+            case "Hit":
+                msg = "Player " + id + " hits.";
+                break;
+            case "Split":
+                msg = "Player " + id + " has split their hand.";
+                break;
+            case "Stand":
+                msg = "Player " + id +" stands.";
+                break;
+            case "Bust":
+                msg = "Player "+id+" has busted.";
+                break;
+            default:
+                break;
+        }
+        return msg;
+    }
+
     private void clearLog(){
         logTable.removeAllViews();
         messageNum = 0;
@@ -895,9 +926,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
 }
 
-
-
-class Player {
+ class Player {
     private int money;
     private int bet;
     private final float scale;
@@ -910,6 +939,7 @@ class Player {
     private final CardHand gameHand;
     private final Context parentContext;
     int id;
+    boolean dealerTurn = false;
 
     private LinearLayout vr; // each tab in the side bar has two rows for formatting
     String nickname;        // vr contains images and visual row contains the nickname
@@ -943,6 +973,10 @@ class Player {
     public void addCard(Card c, int split) {
         gameHand.addCard(c, split);
         refreshHand();
+    }
+
+    public void setDealerTurn(boolean turn){
+        dealerTurn = turn;
     }
 
     public void addCard(Card c) {
@@ -1019,7 +1053,12 @@ class Player {
     private void addCardToHand(Card c, int margin, int s) {
         Log.d("AddCardToHand", c.getSuit() + " | " + c.getRank());
         ImageView cardView = new ImageView(parentContext);
-        cardView.setImageResource(c.getCardImage());
+        int cardImageNum;
+        if(id == 0 && visualHand.getChildCount() == 1 && !dealerTurn)
+            cardImageNum = c.getCardBack();
+        else
+            cardImageNum = c.getCardImage();
+        cardView.setImageResource(cardImageNum);
         if (visualHand != null) { //Main Screen Layout
             if (visualHand.getChildCount() == 0)
                 margin = 0;
@@ -1040,23 +1079,23 @@ class Player {
                 }
             }
         }  //Side Bar Layout
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 217);
-            params.setMargins(4, 8, -3, 8);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 217);
+        params.setMargins(4, 8, -3, 8);
 
 
-            TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
-            tview.setText(this.nickname);
-            //cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
+        tview.setText(this.nickname);
+        //cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+        //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
-            cardView.setLayoutParams(params);
-            if(visualRow != null){
+        cardView.setLayoutParams(params);
+        if(visualRow != null){
             if(visualRow.getChildCount() < 2 ) {// add the nickname text only for the first time
                 visualRow.addView(tview);
             }}
-            if(vr != null) {
-                this.vr.addView(cardView);
-            }
+        if(vr != null) {
+            this.vr.addView(cardView);
+        }
 
 
 

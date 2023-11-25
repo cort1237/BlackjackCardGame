@@ -117,6 +117,16 @@ class Card {
         return value;
     }
 
+    public int getCardBack() {
+        String filename = "cardbackblack";
+        try {
+            Field fld = R.drawable.class.getField(filename);
+            return fld.getInt(null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public int getCardImage() {
         String filename = "default_" + this.getRank() + "_of_" + this.getSuit();
         try {
