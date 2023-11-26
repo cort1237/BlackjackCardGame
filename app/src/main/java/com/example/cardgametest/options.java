@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.google.android.material.slider.Slider;
@@ -20,6 +21,7 @@ public class options extends AppCompatActivity {
         SharedPreferences.Editor e = prefs.edit();
         e.putFloat("volume", volumeValue);
         e.apply();
+
     }
 
     @Override
@@ -46,7 +48,7 @@ public class options extends AppCompatActivity {
                 });
             }
         }
-        prefs = getPreferences(Context.MODE_PRIVATE);
+        prefs =  getSharedPreferences("options", Context.MODE_PRIVATE);
 
         if(!prefs.contains("volume")) {
 
@@ -57,7 +59,15 @@ public class options extends AppCompatActivity {
         volumeValue = prefs.getFloat("volume",0);
 
         Button returnButton = findViewById(R.id.returnButton);
-        returnButton.setOnClickListener(view -> finish());
+        returnButton.setOnClickListener( new View.OnClickListener() {
+            public void onClick(View v) {
+                SharedPreferences.Editor e = prefs.edit();
+                e.putFloat("volume", volumeValue);
+                e.apply();
+                finish();
+            }
+        });
+
 
 
 

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -42,7 +43,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private CustomPopupWindow roundEnd;
     private boolean MP_FLAG;
     private boolean HOST_FLAG;
-    MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer = new MediaPlayer();
     private final ArrayList<Player> players = new ArrayList<>(); //Players 0 - Dealer; Player 1 - Host
     private int messageNum = 0;
     private TableLayout logTable;
@@ -52,7 +53,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private int playerNum;
     private int minBet = 100;
 
-
+    private float volumeValue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +127,16 @@ public class BlackjackGameActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //get prefereneces which contains values stored from options
+        SharedPreferences prefs = getSharedPreferences("options", Context.MODE_PRIVATE);
+
+        if(!prefs.contains("volume")) {
+
+            SharedPreferences.Editor e = prefs.edit();
+            e.putFloat("volume", volumeValue);
+            e.apply();
+        }
+        volumeValue = prefs.getFloat("volume",0);
 
         //expand tab and button
         //tabLayout.bringToFront();
@@ -173,6 +184,16 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        //get prefereneces which contains values stored from options
+        SharedPreferences prefs = getSharedPreferences("options", Context.MODE_PRIVATE);
+
+        if(!prefs.contains("volume")) {
+
+            SharedPreferences.Editor e = prefs.edit();
+            e.putFloat("volume", volumeValue);
+            e.apply();
+        }
+        volumeValue = prefs.getFloat("volume",0);
         super.onResume();
         Log.d("Resumed", "Returned from settings");
 
@@ -185,6 +206,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         hitHelper();
         mediaPlayer.release();
         mediaPlayer=MediaPlayer.create(this,R.raw.drawn);
+        mediaPlayer.setVolume(volumeValue,volumeValue);
         mediaPlayer.start();
     }
 
@@ -207,6 +229,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //Show Bet Buttons
         findViewById(R.id.betButton).setVisibility(View.VISIBLE);
         mediaPlayer=MediaPlayer.create(this,R.raw.register);
+        mediaPlayer.setVolume(volumeValue, volumeValue);
         findViewById(R.id.betButtonAdd).setVisibility(View.VISIBLE);
         findViewById(R.id.betButtonSub).setVisibility(View.VISIBLE);
         players.get(0).setDealerTurn(false);
@@ -275,7 +298,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if (bet <= 0)
             return;
         removeMoney(bet);
-
+        mediaPlayer.setVolume(volumeValue, volumeValue);
         mediaPlayer.start();
         // mediaPlayer.release();
 
@@ -565,10 +588,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                     roundEnd.setMessage("PLAYER WINS");
                     mediaPlayer.release();
                     mediaPlayer = MediaPlayer.create(this, R.raw.cheer);
+                    mediaPlayer.setVolume(volumeValue,volumeValue);
                     mediaPlayer.start();
-//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
-//                mediaPlayer.start();
-//                mediaPlayer.release();
+
                     addMoney(getBet() * 2);
                 } else {
                     Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
@@ -584,10 +606,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                     roundEnd.setMessage("PLAYER WINS");
                     mediaPlayer.release();
                     mediaPlayer = MediaPlayer.create(this, R.raw.cheer);
+                    mediaPlayer.setVolume(volumeValue,volumeValue);
                     mediaPlayer.start();
-//                mediaPlayer=MediaPlayer.create(this,R.raw.cheer);
-//                mediaPlayer.start();
-//                mediaPlayer.release();
+
                     addMoney(getBet() * 2);
                 } else if (playerTotal == dealerTotal) {
                     Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " PUSH");
@@ -602,6 +623,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                         roundEnd.setMessage("PLAYER LOSES");
                         mediaPlayer.release();
                         mediaPlayer = MediaPlayer.create(this, R.raw.losing);
+                        mediaPlayer.setVolume(volumeValue,volumeValue);
                         mediaPlayer.start();
                     } else {
                         Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
