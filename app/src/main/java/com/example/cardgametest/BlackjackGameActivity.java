@@ -1,5 +1,7 @@
 package com.example.cardgametest;
 
+import static java.lang.Thread.sleep;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Button;
 
 import java.net.Socket;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
@@ -49,7 +52,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private TableLayout logTable;
     private ScrollView logScroll;
     private int playerID;
-    private int currentTurn = 1 ;
+    private int currentTurn = 1;
     private int playerNum;
     private int minBet = 100;
 
@@ -68,7 +71,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         currentHandText = findViewById(R.id.viewHand);
         splitHandText = findViewById(R.id.viewSplit);
         Button logButton = findViewById(R.id.logViewButton);
-        updateMoneyText();
+
 
 
         players.add(new Player(0, dealerLayout, this));
@@ -119,6 +122,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
             p.setId(id_counter);
             id_counter++;
         }
+
+        updateMoneyText();
 
         ImageButton optionsButton = findViewById(R.id.optionButton);
         optionsButton.setOnClickListener(view -> {
@@ -217,6 +222,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             p.stand = false;
             p.setBet(0);
         }
+        currentTurn = 1;
         roundEnd.dismiss();
         clearLog();
 
@@ -334,6 +340,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.betTextView)).setText(betString);
     }
 
+
+
     private int getBet() {
         String bet = ((TextView) findViewById(R.id.betTextView)).getText().toString().substring(6);
         return Integer.parseInt(bet);
@@ -407,26 +415,34 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
     }
 
-
-    @SuppressLint("SetTextI18n")
     private void updateMoneyText() {
-        moneyTextView.setText("" + playerMoney);
+        moneyTextView.setText(MessageFormat.format("{0}", players.get(playerID).getMoney()));
     }
 
     // Function to add money
-    public void addMoney(int amount) {
+    public void addMoney(Player p, int amount) {
         stats.recordCurrency(amount);
-        playerMoney += amount;
-        updateMoneyText();
+        p.setMoney(p.getMoney() + amount);
+        runOnUiThread(this::updateMoneyText);
+    }
+
+    public void addMoney(int amount) {
+        addMoney(players.get(playerID), amount);
     }
 
     // Function to remove money
-    public void removeMoney(int amount) {
-        if (playerMoney >= amount) {
-            playerMoney -= amount;
-            updateMoneyText();
-        }
+    public void removeMoney(Player p, int amount) {
+        p.setMoney(p.getMoney() - amount);
+        if(p.getMoney() < 0)
+            p.setMoney(0);
+        runOnUiThread(this::updateMoneyText);
+        Log.d("removeMoney", "Player " + p.id + " | Money: " + p.getMoney());
     }
+
+    public void removeMoney(int amount) {
+        removeMoney(players.get(playerID), amount);
+    }
+
 
     //Will hand out two cards to each entity at the table
     private void setup() {
@@ -559,7 +575,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     private void dealerTurn() {
         players.get(0).setDealerTurn(true);
-        players.get(0).refreshHand();
+        runOnUiThread(()->players.get(0).refreshHand());
+        sendAllMessage("flipDealer", " ");
+
         if(!MP_FLAG) {
             int dealerTotal = players.get(0).getMainTotal(),
                     playerTotal = players.get(playerID).getMainTotal();
@@ -650,7 +668,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 Log.d("Drawing Card", "Dealer Total: " + dealer.getMainTotal());
 
                 Card c = deck.retrieveTop();
-                runOnUiThread(()->dealer.addCard(c));
+                dealer.addCard(c);
+                runOnUiThread(() -> dealer.refreshHand());
                 String m = 0 + "," + c.toString() + ",0";
                 sendAllMessage("DealCard", m);
             }
@@ -666,9 +685,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(p.getMainTotal() > 21) {
             Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " BUST");
             sendAllMessage("Lose", " ");
-            p.setMoney(p.getMoney()-p.getBet());
-            sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
-            sendAllMessage("SetBet", "0");
             roundEnd.setMessage("PLAYER BUSTS");
 
         }
@@ -676,22 +692,23 @@ public class BlackjackGameActivity extends AppCompatActivity {
             Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " LOSE");
             Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " WIN");
             sendAllMessage("Lose", " ");
-            p.setMoney(p.getMoney()-p.getBet());
-            sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
-            sendAllMessage("SetBet", "0");
             roundEnd.setMessage("PLAYER LOSES");
 
         }
         else if ((dealer.getMainTotal() < p.getMainTotal()) || (dealer.getMainTotal() > 21)) {
             Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " WIN");
             Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " LOSE");
-            sendAllMessage("Lose", " ");
+            sendAllMessage("Win", " ");
             if(dealer.getMainTotal() == 21)
-                p.setMoney(p.getMoney()+(p.getBet()*2));
+                addMoney(p.getBet() * 3);
             else
-                p.setMoney(p.getMoney()+p.getBet());
+                addMoney(p.getBet() * 2);
             roundEnd.setMessage("PLAYER WINS");
-
+        }
+        else {
+            addMoney(p.getBet());
+            sendAllMessage("Tie", " ");
+            roundEnd.setMessage("PUSH");
         }
         sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
         sendAllMessage("SetBet", "0");
@@ -735,7 +752,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         String job = args[1];
         String message = args[2];
         int id = Integer.parseInt(args[0]) + 1;
-        logMessage(job, message, id);
+        if(id != playerID)
+            logMessage(job, message, id);
 
 
         switch(job) {
@@ -769,6 +787,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 break;
             case "SetMoney": //SetMoney - Set the current Money of the player
                 players.get(id).setMoney(Integer.parseInt(message));
+                runOnUiThread(() -> players.get(id).refreshHand());
                 break;
             case "Hit":
                 if(!HOST_FLAG)
@@ -778,11 +797,16 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 sendAllMessage("DealCard", m);
                 nextTurn();
                 break;
+            case "flipDealer":
+                players.get(0).setDealerTurn(true);
+                runOnUiThread(()->players.get(0).refreshHand());
+                break;
             case "Split":
                 break;
             case "Stand":
             case "Bust":
                 players.get(id).stand = true;
+                nextTurn();
                 break;
             case "TurnStart":
                 if(Integer.parseInt(message) != playerID) {
@@ -793,6 +817,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 runOnUiThread(this::enablePlayerControls);
                 break;
             case "RoundEnd":
+                if(players.get(0).getMainTotal() > 21)
+                    logMessage("Bust", " ", 0);
                 runOnUiThread(this::hidePlayerControls);
                 checkScore();
                 break;
@@ -821,11 +847,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void logMessage(String job, String message, int id){
-        String[] ignored_jobs = {"PLAYER_NAME"};
-        if(Arrays.asList(ignored_jobs).contains(job))
-            return;
-
         String fullMessage = generateMessage(job, message, id);
+        if(fullMessage == null)
+            return;
         TableRow newRow = new TableRow(this);
         newRow.setId(++messageNum);
         int bgColor;
@@ -852,11 +876,14 @@ public class BlackjackGameActivity extends AppCompatActivity {
         String msg = null;
         switch(job){
             case "SetBet":  //SetBet - Set the bet of id to `message`
+                if(Integer.parseInt(message) == 0) //Don't log bet reset
+                    break;
                 msg = "Player " + id + " has bet $" + message;
                 break;
             case "DealCard": //Deal the Specified Card to player id in message[0] (Always comes from host)
                 String[] parts = message.split(",");
-                msg = "Player " + parts[0] + " has drawn the " + parts[1] + " of " + parts[2];
+                msg = "Player " + parts[0] + " has drawn the " + parts[1];
+                id = Integer.parseInt(parts[0]);
                 break;
             case "Hit":
                 msg = "Player " + id + " hits.";
@@ -868,11 +895,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 msg = "Player " + id +" stands.";
                 break;
             case "Bust":
-                msg = "Player "+id+" has busted.";
+                msg = "Player "+ id +" has busted.";
                 break;
             default:
                 break;
         }
+        if(id==0)
+            msg = "The Dealer " + msg.split(" ", 3)[2];
         return msg;
     }
 
@@ -1001,7 +1030,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         return gameHand.getTotalValue();
     }
 
-    public void refreshHand() {
+    public void refreshHand(){
         int margin;
         int cardCount = gameHand.size();
         if (gameHand.isSplit())
@@ -1024,6 +1053,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
         catch (ConcurrentModificationException e)
         {
+            try {
+                sleep(100);
+            } catch (InterruptedException ex) {}
             gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
             if (split)
                 gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, margin, 1)));
@@ -1064,7 +1096,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
 
         TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
-        tview.setText(this.nickname);
+        tview.setText(MessageFormat.format("{0} - ${1}", this.nickname, this.getMoney()));
         //cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
         //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
