@@ -1,5 +1,7 @@
 package com.example.cardgametest;
 
+import android.util.Log;
+
 import java.util.*;
 
 
@@ -88,26 +90,45 @@ public class CardHand {
         } else {
             temp = (ArrayList<Card>) secondHand.clone();
         }
+
+        //Sort Aces to back using getRank
         temp.sort(new Comparator<Card>() {
             @Override
             public int compare(Card o1, Card o2) {
-                return Integer.compare(o2.getValue(), o1.getValue());
+                if(o1.getRank().equals("ace")){
+                    return 1;
+                }
+                else if(o2.getRank().equals("ace")){
+                    return -1;
+                }
+                else{
+                    return Integer.compare(o2.getValue(), o1.getValue());
+                }
             }
         });
 
-        //Calculate value
-        for(int i = 0; i < temp.size(); i++){
-            if(temp.get(i).getRank() != "Ace"){
-                value += temp.get(i).getValue();
-            }
-            else if (temp.get(i).getRank() == "Ace" && value > 10){
-                value += 1;
-            }
-            else{
+        //Calculate value for all but aces
+        int i = 0;
+        while(i < temp.size()){
+            if(temp.get(i).getRank().equals("ace"))
+                break;
+            value += temp.get(i).getValue();
+            i++;
+        }
+        //Calculate value for aces making the best combo for the player
+        for(int j = i; j < temp.size(); j++){
+            int needed = 21 - value;
+            int cardsLeft = temp.size() - j + 1;
+
+            //If the player can fit an 11 in their hand with any remaining aces being 1, then the ace is 11
+            if(needed > 11 && (needed-11-(cardsLeft-1)) >= 0){
                 value += 11;
             }
+            //Else the ace is 1
+            else{
+                value += 1;
+            }
         }
-
         return value;
     }
 
