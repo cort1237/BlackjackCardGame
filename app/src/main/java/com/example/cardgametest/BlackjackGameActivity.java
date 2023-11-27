@@ -576,7 +576,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private void dealerTurn() {
         players.get(0).setDealerTurn(true);
         runOnUiThread(()->players.get(0).refreshHand());
-        sendAllMessage("flipDealer", " ");
+
 
         if(!MP_FLAG) {
             int dealerTotal = players.get(0).getMainTotal(),
@@ -663,6 +663,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             Log.d("End Stats", "Total Games: " + stats.getData()[2]);
         }
         else if (HOST_FLAG){
+            sendAllMessage("flipDealer", " ");
             Player dealer = players.get(0);
             while(dealer.getMainTotal() < 17) {
                 Log.d("Drawing Card", "Dealer Total: " + dealer.getMainTotal());
