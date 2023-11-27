@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -26,12 +30,20 @@ public class ConnectActivity extends Activity {
     private NetworkHandler netHandle;
     private TextView statusText;
     private EditText ipAddress;
+    private EditText nicknameField;
     private Button hostButton;
     private Button joinButton;
     private Button backToTitleButton;
+    private Button startHost;
     private TextView connectionList;
     private Button startButton;
+    private Spinner betSpinner;
+    private Spinner moneySpinner;
+    private EditText hostName;
     private int playerCount = 1;
+    private int minBet;
+    private int startMoney;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +57,17 @@ public class ConnectActivity extends Activity {
         backToTitleButton = findViewById(R.id.backToTitleButton);
         connectionList = findViewById(R.id.connectionListView);
         startButton = findViewById(R.id.startGame);
+        nicknameField = findViewById(R.id.nicknameField);
+
 
         netHandle = new NetworkHandler();
         ((GameApplication) getApplication()).setNetworkHandler(netHandle); //Store NetworkHandler in application for global use
+        PopupWindow window = new PopupWindow(LayoutInflater.from(this).inflate(R.layout.server_setup_popup, null), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+
+        startHost = window.getContentView().findViewById(R.id.startHostButton);
+        betSpinner = window.getContentView().findViewById(R.id.betSpinner);
+        moneySpinner = window.getContentView().findViewById(R.id.moneySpinner);
+        hostName = window.getContentView().findViewById(R.id.hostNameTextField);
 
         /*
          *  Button Listeners
@@ -55,7 +75,8 @@ public class ConnectActivity extends Activity {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ServerTask().execute();
+                //new ServerTask().execute();
+                window.showAtLocation(findViewById(R.id.joinButton), Gravity.CENTER, 0, 0);
             }
         });
 
@@ -78,8 +99,9 @@ public class ConnectActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playerCount = netHandle.getClientSockets().size();
+                playerCount = netHandle.getClientSockets().size()+1;
 
+                new MessageSender().execute("SETUP : " + minBet + " : " + startMoney);
                 new MessageSender().execute("PLAYER_COUNT : " + playerCount);
                 new MessageSender().execute("initialize");
                 new MessageSender().execute("play");
@@ -87,7 +109,27 @@ public class ConnectActivity extends Activity {
                 i.putExtra("type", "MP");
                 i.putExtra("host", "HOST");
                 i.putExtra("players", playerCount);
+                i.putExtra("min_bet", minBet);
+                i.putExtra("start_money", startMoney);
+                i.putExtra("my_name", name);
                 startActivity(i);
+            }
+        });
+
+        //Host Setup Popup
+        startHost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                minBet = Integer.parseInt((betSpinner.getSelectedItem().toString().substring(1)));
+                startMoney = Integer.parseInt((moneySpinner.getSelectedItem().toString().substring(1)));
+                name = hostName.getText().toString();
+                if(name.equals(""))
+                    name = "Host";
+                window.dismiss();
+                hostButton.setEnabled(false);
+                joinButton.setEnabled(false);
+                ipAddress.setEnabled(false);
+                new ServerTask().execute();
             }
         });
     }
@@ -103,7 +145,7 @@ public class ConnectActivity extends Activity {
             try {
                 serverSocket = new ServerSocket(12345);
 
-                runOnUiThread(() -> statusText.setText("Server started. Waiting for clients..."));
+                runOnUiThread(() -> statusText.setText("Server started.\nWaiting for clients..."));
 
                 Socket clientSocket = serverSocket.accept();
                 netHandle.addClientSocket(clientSocket);
@@ -174,6 +216,10 @@ public class ConnectActivity extends Activity {
                 else if(args[0].equals("PLAYER_COUNT")) {
                     playerCount = Integer.parseInt(args[1]);
                 }
+                else if(args[0].equals("SETUP")) {
+                    minBet = Integer.parseInt(args[1]);
+                    startMoney = Integer.parseInt(args[2]);
+                }
                 else if(args[0].equals("ASSIGN_ID")) {
                     netHandle.id = Integer.parseInt(args[1]);
                     Log.d("Game ID", args[1]);
@@ -188,8 +234,15 @@ public class ConnectActivity extends Activity {
             }
         }
         Intent i = new Intent(this, BlackjackGameActivity.class);
+        String name = nicknameField.getText().toString();
+        if(name.equals("") || name == null)
+            name = "player";
         i.putExtra("type", "MP");
         i.putExtra("host", "CLIENT");
+        i.putExtra("players", playerCount);
+        i.putExtra("min_bet", minBet);
+        i.putExtra("start_money", startMoney);
+        i.putExtra("my_name", name);
         startActivity(i);
         Thread.currentThread().interrupt(); // Close this activities message threads.
     }

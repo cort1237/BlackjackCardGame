@@ -82,12 +82,49 @@ class Card {
         this.suit = suit;
     }
 
+    //Create Card Object from String
+    public Card(String s) {
+        String[] args = s.split(" of ");
+        this.suit = args[1];
+        switch(args[0]) {
+            case "ace":
+                this.value = 10;
+                this.rank = 1;
+                break;
+            case "jack":
+                this.value = 10;
+                this.rank = 11;
+                break;
+            case "queen":
+                this.value = 10;
+                this.rank = 12;
+                break;
+            case "king":
+                this.value = 10;
+                this.rank = 13;
+                break;
+            default:
+                this.value = Integer.parseInt(args[0]);
+                this.rank = Integer.parseInt(args[0]);
+        }
+    }
+
     public String getSuit() {
         return suit;
     }
 
     public int getValue() {
         return value;
+    }
+
+    public int getCardBack() {
+        String filename = "cardbackblack";
+        try {
+            Field fld = R.drawable.class.getField(filename);
+            return fld.getInt(null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int getCardImage() {
@@ -113,5 +150,9 @@ class Card {
             default:
                 return Integer.toString(rank);
         }
+    }
+
+    public String toString() {
+        return getRank() + " of " + getSuit();
     }
 }

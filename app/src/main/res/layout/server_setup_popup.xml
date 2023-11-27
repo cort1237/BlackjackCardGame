@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/server_setup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#BF6A6A6A">
+
+    <androidx.constraintlayout.helper.widget.Layer
+        android:id="@+id/layer"
+        android:layout_width="252dp"
+        android:layout_height="227dp"
+        android:background="#FFFFFF"
+        android:padding="50dp"
+        app:constraint_referenced_ids="startHostButton,moneySpinner,startingAmountTextView,betSpinner,startingBetTextView,hostNameTextField,textView3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <Button
+        android:id="@+id/startHostButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Start Hosting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moneySpinner" />
+
+    <Spinner
+        android:id="@+id/moneySpinner"
+        android:layout_width="121dp"
+        android:layout_height="29dp"
+        android:entries="@array/StartingMoney"
+        android:spinnerMode="dialog"
+        app:layout_constraintBottom_toBottomOf="@+id/startingAmountTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/startingAmountTextView"
+        app:layout_constraintTop_toTopOf="@+id/startingAmountTextView" />
+
+    <TextView
+        android:id="@+id/startingAmountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Starting Money:"
+        app:layout_constraintEnd_toStartOf="@+id/betSpinner"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startingBetTextView" />
+
+    <Spinner
+        android:id="@+id/betSpinner"
+        android:layout_width="121dp"
+        android:layout_height="29dp"
+        android:dropDownSelector="@drawable/arrow_back"
+        android:entries="@array/Bets"
+        android:spinnerMode="dialog"
+        app:layout_constraintBottom_toBottomOf="@+id/startingBetTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/startingBetTextView"
+        app:layout_constraintTop_toTopOf="@+id/startingBetTextView" />
+
+    <TextView
+        android:id="@+id/startingBetTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minimum Bet:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/betSpinner"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <EditText
+        android:id="@+id/hostNameTextField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="Display Name"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/betSpinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="9dp"
+        android:text="Enter Name:"
+        app:layout_constraintBottom_toTopOf="@+id/hostNameTextField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

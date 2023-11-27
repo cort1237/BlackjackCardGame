@@ -137,7 +137,7 @@
         android:layout_marginBottom="40dp"
         android:gravity="center|center_horizontal"
         android:onClick="foldHand"
-        android:text="Fold"
+        android:text="Stand"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/main_player_hand"
         app:layout_constraintEnd_toEndOf="parent"
@@ -218,63 +218,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-    <TableLayout
-        android:id="@+id/expandTab"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-
-
-        android:background="#b5b5b5"
-        android:elevation="2dp"
-        android:visibility="gone"
-        android:paddingRight="25dp"
-        android:paddingLeft="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TableRow
-            android:id="@+id/row1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingTop="50dp">
-
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/row2"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-        </TableRow>
-        <TableRow
-            android:id="@+id/row3"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-        </TableRow>
-    </TableLayout>
-
-    <Button
-        android:id="@+id/expandButton"
-        android:layout_width="32dp"
-        android:layout_height="130dp"
-        android:layout_marginTop="276dp"
-        android:layout_marginRight="-3dp"
-        android:orientation="vertical"
-        android:text=" "
-        android:contentDescription="SlidingBox"
-
-
-        app:layout_constraintEnd_toStartOf="@+id/expandTab"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck">
-
-    </Button>
-
     <Button
         android:id="@+id/logViewButton"
         android:layout_width="wrap_content"
@@ -303,6 +246,108 @@
             android:stretchColumns="1">
         </TableLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/expandButton"
+        android:layout_width="32dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginRight="-3dp"
+        android:contentDescription="SlidingBox"
+        android:orientation="vertical"
+        android:text=" "
+
+
+        app:layout_constraintEnd_toStartOf="@+id/expandTab"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck">
+
+    </Button>
+
+    <LinearLayout
+        android:id="@+id/expandTab"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+
+        android:background="#b5b5b5"
+        android:elevation="2dp"
+        android:orientation="vertical"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:id="@+id/row1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingTop="50dp">
+
+
+            <LinearLayout
+                android:id="@+id/Rrow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/Rrow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                android:orientation="horizontal">
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/Rrow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                android:background="@android:color/transparent"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
