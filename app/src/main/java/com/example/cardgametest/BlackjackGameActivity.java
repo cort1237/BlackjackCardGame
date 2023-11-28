@@ -1070,7 +1070,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(id == 0 && visualHand.getChildCount() == 1 && !dealerTurn)
             cardImageNum = c.getCardBack();
         else
-            cardImageNum = c.getCardImage(parentContext);
+            cardImageNum = c.getCardImage();
         cardView.setImageResource(cardImageNum);
         if (visualHand != null) { //Main Screen Layout
             if (visualHand.getChildCount() == 0)
