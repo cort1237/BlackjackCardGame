@@ -23,6 +23,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
+import androidx.appcompat.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.net.Socket;
 import java.text.MessageFormat;
@@ -31,6 +34,7 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
 
+import kotlin.reflect.KFunction;
 
 
 public class BlackjackGameActivity extends AppCompatActivity {
@@ -39,6 +43,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private TextView moneyTextView;
     private TextView currentHandText;
     private TextView splitHandText;
+    private ImageView card_image;
     private final Deck deck = new Deck();
     private LinearLayout tabLayout;
     private NetworkHandler netHandle;
@@ -57,6 +62,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private int minBet = 100;
 
     private float volumeValue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +76,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         moneyTextView = findViewById(R.id.moneyTextView);
         currentHandText = findViewById(R.id.viewHand);
         splitHandText = findViewById(R.id.viewSplit);
+        card_image = findViewById(R.id.card_image);
         Button logButton = findViewById(R.id.logViewButton);
-
-
 
         players.add(new Player(0, dealerLayout, this));
 
@@ -204,7 +209,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     }
 
-
     //Adds a card to the player's Hand, and updates the Hand Layout.
     public void hit(View view){
         findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
@@ -213,6 +217,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
         mediaPlayer=MediaPlayer.create(this,R.raw.drawn);
         mediaPlayer.setVolume(volumeValue,volumeValue);
         mediaPlayer.start();
+
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_animation);
+        card_image.startAnimation(animation);
     }
 
     private void resetGame() {
