@@ -6,11 +6,13 @@ import androidx.cardview.widget.CardView;
 import androidx.gridlayout.widget.GridLayout;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 public class ShopActivity extends AppCompatActivity {
 
     private ShopItem[] items;
-    private ArrayList<ShopItem> purchasedItems = new ArrayList<ShopItem>();
+    ArrayList<ShopItem> unpurchasedItemsList = new ArrayList<>();
     private static final String TAG = "ShopActivity";
 
     private String rewardCurrency;
@@ -46,18 +48,26 @@ public class ShopActivity extends AppCompatActivity {
         });
 
         items = new ShopItem[]{
-                new ShopItem("Item 1", 10),
-                new ShopItem("Item 2", 20),
-                new ShopItem("Item 3", 15),
-                new ShopItem("Item 4", 25),
-                new ShopItem("Item 5", 40),
-                new ShopItem("Item 6", 30),
-                new ShopItem("Odd # of Items Test", 120)
+                new ShopItem("Card_Skin_1", 10),
+                new ShopItem("Card_Skin_2", 20),
+                new ShopItem("Background_1", 15),
+                new ShopItem("Background_2", 25)
                 // Add more items as needed
         };
 
-        GridLayout gridLayout = findViewById(R.id.gridLayout);
+        //clearPrefs();
 
+        //Check which items have already been purchased
+        SharedPreferences prefs = getSharedPreferences("PurchasedItems", MODE_PRIVATE);
+        for (ShopItem item : items) {
+            boolean isPurchased = prefs.getBoolean(item.getItemName(), false);
+            Log.d(TAG + " Purchased Items", item.getItemName() + " " + isPurchased);
+            if (!isPurchased) {
+                unpurchasedItemsList.add(item);
+            }
+        }
+
+        GridLayout gridLayout = findViewById(R.id.gridLayout);
 
         /*
         create onClick for each item. open an alert dialog if button has been pressed. add item to player's inventory if confirmed
@@ -71,7 +81,7 @@ public class ShopActivity extends AppCompatActivity {
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             layoutParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             layoutParams.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-            layoutParams.setMargins( margin, margin, margin,margin);
+            layoutParams.setMargins( margin, margin, margin, margin);
             cardView.setContentPadding(16, 16, 16, 16);
             cardView.setLayoutParams(layoutParams);
 
@@ -79,8 +89,11 @@ public class ShopActivity extends AppCompatActivity {
             TextView itemNameTextView = view.findViewById(R.id.itemNameTextView);
             TextView itemCostTextView = view.findViewById(R.id.itemCostTextView);
 
-            itemNameTextView.setText(items[i].getItemName());
-            itemCostTextView.setText("Cost: " + items[i].getItemCost());
+            itemNameTextView.setText(items[i].getItemName().replace("_", " "));
+            if (unpurchasedItemsList.contains(items[i]))
+                itemCostTextView.setText("Cost: " + items[i].getItemCost());
+            else
+                itemCostTextView.setText("Purchased");
 
             cardView.addView(view);
 
@@ -89,7 +102,12 @@ public class ShopActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     int position = gridLayout.indexOfChild(v);
                     Log.d(TAG + " cardView.OnClick", "Item " + (position + 1) + " clicked");
-                    showAlertDialog(v, items[position]);
+
+                    if (unpurchasedItemsList.contains(items[position])) {
+                        showPurchaseAlertDialog(v, items[position]);
+                    } else {
+                        showEquipAlertDialog(v, items[position]);
+                    }
                 }
             });
 
@@ -111,10 +129,73 @@ public class ShopActivity extends AppCompatActivity {
  */
     }
 
-    public void showAlertDialog(View v, ShopItem item) {
+    private void showEquipAlertDialog(View v, ShopItem item) {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(item.getItemName());
+        alertDialogBuilder.setTitle(item.getItemName().replace("_", " "));
+        alertDialogBuilder.setMessage("Do you wish to equip this item ?");
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Equip", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (item.getItemName().contains("Card")) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("EquippedCard", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    for (int i=0; i<items.length; i++) {
+                        if (items[i].getItemName().contains("Card")) {
+
+                            if (items[i].getItemName() == item.getItemName())
+                                editor.putBoolean(items[i].getItemName(), true);
+                            else
+                                editor.putBoolean(items[i].getItemName(), false);
+                        }
+                    }
+                    editor.apply();
+                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedCard");
+
+                    Toast.makeText(ShopActivity.this, "Equipped", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " equipped");
+
+                } else if (item.getItemName().contains("Background")) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    for (int i=0; i<items.length; i++) {
+                        if (items[i].getItemName().contains("Background")) {
+
+                            if (items[i].getItemName() == item.getItemName())
+                                editor.putBoolean(items[i].getItemName(), true);
+                            else
+                                editor.putBoolean(items[i].getItemName(), false);
+                        }
+                    }
+                    editor.putBoolean(item.getItemName(), true);
+                    editor.apply();
+                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedBackground");
+
+                    Toast.makeText(ShopActivity.this, "Equipped", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " equipped");
+                }
+            }
+        });
+
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(ShopActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+                Log.d(TAG + " showAlertDialog", "Canceled " + item.getItemName() + " purchase");
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    private void showPurchaseAlertDialog(View v, ShopItem item) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(item.getItemName().replace("_", " "));
         alertDialogBuilder.setMessage("Do you want to purchase this item for " + item.getItemCost() + "?");
 
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -122,6 +203,7 @@ public class ShopActivity extends AppCompatActivity {
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 // Check if there's enough money to cover the cost
                 if (Integer.parseInt(rewardCurrency) >= item.getItemCost()) {
                     // User has enough money, proceed with the purchase
@@ -136,10 +218,17 @@ public class ShopActivity extends AppCompatActivity {
                     Stats stats = new Stats(getApplicationContext());
                     stats.recordCurrency((int)(0-(item.getItemCost()/.1)));
 
-                    purchasedItems.add(item);
-                    Log.d(TAG + " showAlertDialog", String.valueOf(purchasedItems.size()));
+                    SharedPreferences sharedPreferences = getSharedPreferences("PurchasedItems", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(item.getItemName(), true);
+                    editor.apply();
+                    Log.d(TAG + " showAlertDialog", item.getItemName() + " PurchasedItems");
+
+                    //unpurchasedItemsList.remove(item);
+                    //Log.d(TAG + " showAlertDialog", String.valueOf(purchasedItems.size()));
                     Toast.makeText(ShopActivity.this, "Purchased", Toast.LENGTH_SHORT).show();
                     Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " purchase");
+                    recreate();
                 } else {
                     // User does not have enough money
                     Toast.makeText(ShopActivity.this, "Insufficient funds", Toast.LENGTH_SHORT).show();
@@ -157,6 +246,13 @@ public class ShopActivity extends AppCompatActivity {
         });
 
         alertDialog.show();
+    }
+
+    private void clearPrefs() {
+        SharedPreferences prefs = getSharedPreferences("PurchasedItems", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
     }
 }
 
@@ -179,3 +275,21 @@ class ShopItem {
         return itemCost;
     }
 }
+
+/* Set items to purchased
+SharedPreferences.Editor editor = getSharedPreferences("PurchasedItems", MODE_PRIVATE).edit();
+editor.putBoolean(itemName, true);
+editor.apply();
+ */
+
+/* Check if item has been purchased
+SharedPreferences prefs = getSharedPreferences("PurchasedItems", MODE_PRIVATE);
+boolean isPurchased = prefs.getBoolean(itemName, false);
+ */
+
+/*
+Add Items For Shop
+    - 2 Alternate Card Skins
+    - 2 Alternate Backgrounds
+ */
+
