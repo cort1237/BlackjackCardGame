@@ -44,6 +44,7 @@ public class ConnectActivity extends Activity {
     private int minBet;
     private int startMoney;
     private String name;
+    private boolean start = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class ConnectActivity extends Activity {
             @Override
             public void onClick(View view) {
                 playerCount = netHandle.getClientSockets().size()+1;
+                start = true;
 
                 new MessageSender().execute("SETUP : " + minBet + " : " + startMoney);
                 new MessageSender().execute("PLAYER_COUNT : " + playerCount);
@@ -147,11 +149,14 @@ public class ConnectActivity extends Activity {
 
                 runOnUiThread(() -> statusText.setText("Server started.\nWaiting for clients..."));
 
-                Socket clientSocket = serverSocket.accept();
-                netHandle.addClientSocket(clientSocket);
+                while(!start && netHandle.getClientSockets().size() < 4) {
+                    Socket clientSocket = serverSocket.accept();
+                    netHandle.addClientSocket(clientSocket);
 
-                connectionList.setText(String.format("%s\n%s", connectionList.getText(), clientSocket.getInetAddress().toString()));
-                runOnUiThread(() -> startButton.setVisibility(View.VISIBLE)); //Make play button visible after a connection.
+                    connectionList.setText(String.format("%s\n%s", connectionList.getText(), clientSocket.getInetAddress().toString()));
+                    runOnUiThread(() -> startButton.setVisibility(View.VISIBLE)); //Make play button visible after a connection.
+                }
+                Log.d("Server", "No longer accepting connections.");
 
                 //Thread clientThread = new Thread(() -> handleClientConnection(clientSocket));  //Await messages from client on a new thread.
                 //clientThread.start();

@@ -17,6 +17,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="customTextStyle" >
 
         <item name="android:textColor">#f0f0f0</item>

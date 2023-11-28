@@ -1079,6 +1079,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         else
             cardImageNum = c.getCardImage();
         cardView.setImageResource(cardImageNum);
+        cardView.setAdjustViewBounds(true);
+        cardView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         if (visualHand != null) { //Main Screen Layout
             if (visualHand.getChildCount() == 0)
                 margin = 0;

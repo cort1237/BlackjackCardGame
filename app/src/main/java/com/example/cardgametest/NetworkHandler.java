@@ -47,6 +47,7 @@ public class NetworkHandler {
             try {
                 DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
                 outputStream.writeUTF("ASSIGN_ID : " + Integer.toString(i));
+                i++;
             } catch (IOException e) {
                 e.printStackTrace();
             }

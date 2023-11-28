@@ -73,7 +73,7 @@ public class options extends AppCompatActivity {
 
 
         Slider volumeSlider = findViewById(R.id.volume_slider);
-        volumeSlider.setValue(volumeValue);
+        volumeSlider.setValue(volumeValue/100);
         volumeSlider.addOnChangeListener((slider, value, fromUser) -> volumeValue = value);
     }
 }
