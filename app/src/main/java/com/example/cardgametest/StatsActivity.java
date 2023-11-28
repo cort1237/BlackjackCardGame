@@ -23,6 +23,9 @@ public class StatsActivity extends AppCompatActivity {
         CardView totalGamesCardView = findViewById(R.id.totalGamesCardView);
         TextView totalGamesTextView = totalGamesCardView.findViewById(R.id.totalGamesTextView);
 
+        CardView pushesCardView = findViewById(R.id.pushesCardView);
+        TextView pushesTextView = pushesCardView.findViewById(R.id.pushesTextView);
+
         Stats stats = new Stats(getApplicationContext());
 
         String[] statline = stats.getData();
@@ -30,6 +33,7 @@ public class StatsActivity extends AppCompatActivity {
         //statsView.setText(String.format("W: %s\nL: %s\nTotal Rounds: %s", statline[0], statline[1], statline[2]));
         winsTextView.setText(String.format("Wins: %s", statline[0]));
         lossesTextView.setText(String.format("Losses: %s", statline[1]));
+        pushesTextView.setText(String.format("Pushes: %d" , Integer.parseInt(statline[2])-Integer.parseInt(statline[1])-Integer.parseInt(statline[0])));
         totalGamesTextView.setText(String.format("Total Games: %s", statline[2]));
 
         Button returnButton = findViewById(R.id.returnButton);

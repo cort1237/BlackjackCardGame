@@ -1,4 +1,9 @@
 package com.example.cardgametest;
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -127,8 +132,22 @@ class Card {
         }
     }
 
-    public int getCardImage() {
+    public int getCardImage(Context context) {
+
+        String[] cardSkins = {"Card_Skin_1", "Card_Skin_2"};
         String filename = "default_" + this.getRank() + "_of_" + this.getSuit();
+
+        /* For whenever we get alternate cards, havent tested
+        for (String cardSkin : cardSkins) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences("EquippedCard", MODE_PRIVATE);
+            boolean booleanValue = sharedPreferences.getBoolean("cardSkin", false); // Provide a default value if key not found
+
+            if (booleanValue) {
+                filename = cardSkin + this.getRank() + "_of_" + this.getSuit();
+            }
+        }
+         */
+
         try {
             Field fld = R.drawable.class.getField(filename);
             return fld.getInt(null);
