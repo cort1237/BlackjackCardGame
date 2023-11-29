@@ -26,6 +26,10 @@ public class ShopActivity extends AppCompatActivity {
 
     private String rewardCurrency;
 
+    //SharedPreferences bgPrefs = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
+    //SharedPreferences cardPrefs = getSharedPreferences("EquippedCard", MODE_PRIVATE);
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +62,9 @@ public class ShopActivity extends AppCompatActivity {
         //clearPrefs();
 
         //Check which items have already been purchased
-        SharedPreferences prefs = getSharedPreferences("PurchasedItems", MODE_PRIVATE);
+        SharedPreferences purchasedItemsPrefs = getSharedPreferences("PurchasedItems", MODE_PRIVATE);
         for (ShopItem item : items) {
-            boolean isPurchased = prefs.getBoolean(item.getItemName(), false);
+            boolean isPurchased = purchasedItemsPrefs.getBoolean(item.getItemName(), false);
             Log.d(TAG + " Purchased Items", item.getItemName() + " " + isPurchased);
             if (!isPurchased) {
                 unpurchasedItemsList.add(item);
@@ -92,8 +96,16 @@ public class ShopActivity extends AppCompatActivity {
             itemNameTextView.setText(items[i].getItemName());
             if (unpurchasedItemsList.contains(items[i]))
                 itemCostTextView.setText("Cost: " + items[i].getItemCost());
-            else
+            else {
+
+                SharedPreferences bgPrefs = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
+                SharedPreferences cardPrefs = getSharedPreferences("EquippedCard", MODE_PRIVATE);
+
                 itemCostTextView.setText("Purchased");
+
+                if (bgPrefs.getBoolean(items[i].getItemName(), false) || cardPrefs.getBoolean(items[i].getItemName(), false))
+                    itemCostTextView.setText("Equipped");
+            }
 
             cardView.addView(view);
 
@@ -103,10 +115,17 @@ public class ShopActivity extends AppCompatActivity {
                     int position = gridLayout.indexOfChild(v);
                     Log.d(TAG + " cardView.OnClick", "Item " + (position + 1) + " clicked");
 
+                    SharedPreferences bgPrefs = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
+                    SharedPreferences cardPrefs = getSharedPreferences("EquippedCard", MODE_PRIVATE);
+
+
                     if (unpurchasedItemsList.contains(items[position])) {
                         showPurchaseAlertDialog(v, items[position]);
                     } else {
-                        showEquipAlertDialog(v, items[position]);
+                        if (cardPrefs.getBoolean(items[position].getItemName(), false) || bgPrefs.getBoolean(items[position].getItemName(), false))
+                            showUnequipAlertDialog(v, items[position]);
+                        else
+                            showEquipAlertDialog(v, items[position]);
                     }
                 }
             });
@@ -129,6 +148,63 @@ public class ShopActivity extends AppCompatActivity {
  */
     }
 
+    private void showUnequipAlertDialog(View v, ShopItem item) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(item.getItemName());
+        alertDialogBuilder.setMessage("Do you wish to unequip this item ?");
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Unequip", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences bgPrefs = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
+                SharedPreferences cardPrefs = getSharedPreferences("EquippedCard", MODE_PRIVATE);
+
+                /*
+                if (item.getItemType().equals("Card")) {
+                    SharedPreferences.Editor editor = cardPrefs.edit();
+
+                    editor.putBoolean(item.getItemName(), false);
+                    editor.apply();
+                    Log.d("123", " " + cardPrefs.getBoolean("Black Gold", false));
+                }
+                else {
+                    SharedPreferences.Editor editor = bgPrefs.edit();
+
+                    editor.putBoolean(item.getItemName(), false);
+                    editor.apply();
+                    Log.d("123", " " + bgPrefs.getBoolean("Background 1", false));
+                }
+                */
+
+                SharedPreferences.Editor editor;
+                if (item.getItemType().equals("Card"))
+                    editor = cardPrefs.edit();
+                else editor = bgPrefs.edit();
+
+                editor.putBoolean(item.getItemName(), false);
+                editor.apply();
+
+                Toast.makeText(ShopActivity.this, "Unequipped", Toast.LENGTH_SHORT).show();
+
+                recreate();
+            }
+        });
+
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(ShopActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+                Log.d(TAG + " showAlertDialog", "Canceled unequipping" + item.getItemName());
+            }
+        });
+
+        alertDialog.show();
+    }
+
+
     private void showEquipAlertDialog(View v, ShopItem item) {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -140,10 +216,11 @@ public class ShopActivity extends AppCompatActivity {
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Equip", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences bgPrefs = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
+                SharedPreferences cardPrefs = getSharedPreferences("EquippedCard", MODE_PRIVATE);
 
                 if (item.getItemType().equals("Card")) {
-                    SharedPreferences sharedPreferences = getSharedPreferences("EquippedCard", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    SharedPreferences.Editor editor = cardPrefs.edit();
                     for (int i=0; i<items.length; i++) {
                         if (items[i].getItemType().equals("Card")) {
 
@@ -154,13 +231,12 @@ public class ShopActivity extends AppCompatActivity {
                         }
                     }
                     editor.apply();
-                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedCard " + sharedPreferences.getBoolean(item.getItemName(), false));
+                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedCard " + cardPrefs.getBoolean(item.getItemName(), false));
 
                     Toast.makeText(ShopActivity.this, "Equipped", Toast.LENGTH_SHORT).show();
 
                 } else if (item.getItemType().equals("Background")) {
-                    SharedPreferences sharedPreferences = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    SharedPreferences.Editor editor = bgPrefs.edit();
                     for (int i=0; i<items.length; i++) {
                         if (items[i].getItemType().equals("Background")) {
 
@@ -172,10 +248,12 @@ public class ShopActivity extends AppCompatActivity {
                     }
                     editor.putBoolean(item.getItemName(), true);
                     editor.apply();
-                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedBackground");
+                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedBackground "+ bgPrefs.getBoolean(item.getItemName(), false));
 
                     Toast.makeText(ShopActivity.this, "Equipped", Toast.LENGTH_SHORT).show();
                     Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " equipped");
+
+                    recreate();
                 }
             }
         });
