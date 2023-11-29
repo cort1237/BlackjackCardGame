@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,6 +77,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Button logButton = findViewById(R.id.logViewButton);
 
         players.add(new Player(0, dealerLayout, this));
+
+        float scale = this.getResources().getDisplayMetrics().density;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (scale * 50), (int) (scale * 70));
+        card_image.setLayoutParams(params);
 
 
         MP_FLAG = Objects.equals(getIntent().getStringExtra("type"), "MP");
@@ -214,8 +219,35 @@ public class BlackjackGameActivity extends AppCompatActivity {
         mediaPlayer.setVolume(volumeValue,volumeValue);
         mediaPlayer.start();
 
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_animation);
-        card_image.startAnimation(animation);
+        playHitAnimation(playerID);
+    }
+
+    private void playHitAnimation(int id){
+        Animation slide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_animation);
+
+        //players.get(0).getVisualHand().getX(); Example: Returns X of Dealer's Hand
+        //new TranslateAnimation(0, 0, 0, 0); -- Example: Create an animation programmatically
+        slide.setDuration(1000);
+        slide.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                card_image.setVisibility(View.VISIBLE);
+                card_image.setImageResource(R.drawable.cardbackblack);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                card_image.setVisibility(View.GONE);
+                card_image.setImageResource(R.drawable.cardbackblack);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        card_image.startAnimation(slide);
     }
 
     private void resetGame() {
@@ -951,11 +983,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
     String nickname;        // vr contains images and visual row contains the nickname
     Player(int money, LinearLayout row, LinearLayout vr, Context c) {
         this.money = money;
-        this.visualRow = row;
+        this.visualRow = row; //Name and money
         this.gameHand = new CardHand();
         this.parentContext = c;
         this.bet = 0;
-        this.vr = vr;
+        this.visualHand = vr; //Cards
         scale = c.getResources().getDisplayMetrics().density;
         split = false;
         stand = false;
@@ -1066,6 +1098,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
     }
 
+    public LinearLayout getVisualHand() {
+        return visualHand;
+    }
+
     private void addCardToHand(Card c, int margin, int s) {
         //Log.d("AddCardToHand", c.getSuit() + " | " + c.getRank());
         ImageView cardView = new ImageView(parentContext);
@@ -1114,9 +1150,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(vr != null) {
             this.vr.addView(cardView);
         }
-
-
-
     }
 
     public void split() {

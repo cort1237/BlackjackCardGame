@@ -102,6 +102,9 @@ public class ConnectActivity extends Activity {
             public void onClick(View view) {
                 playerCount = netHandle.getClientSockets().size()+1;
                 start = true;
+                try {
+                    serverSocket.close();
+                } catch (IOException ignore) {}
 
                 new MessageSender().execute("SETUP : " + minBet + " : " + startMoney);
                 new MessageSender().execute("PLAYER_COUNT : " + playerCount);
