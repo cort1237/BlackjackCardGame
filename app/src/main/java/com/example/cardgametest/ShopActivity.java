@@ -48,10 +48,10 @@ public class ShopActivity extends AppCompatActivity {
         });
 
         items = new ShopItem[]{
-                new ShopItem("Card_Skin_1", 10),
-                new ShopItem("Card_Skin_2", 20),
-                new ShopItem("Background_1", 15),
-                new ShopItem("Background_2", 25)
+                new ShopItem("Black Gold", 10, "Card"),
+                new ShopItem("Card Skin 2", 20, "Card"),
+                new ShopItem("Background 1", 15, "Background"),
+                new ShopItem("Background 2", 25, "Background")
                 // Add more items as needed
         };
 
@@ -89,7 +89,7 @@ public class ShopActivity extends AppCompatActivity {
             TextView itemNameTextView = view.findViewById(R.id.itemNameTextView);
             TextView itemCostTextView = view.findViewById(R.id.itemCostTextView);
 
-            itemNameTextView.setText(items[i].getItemName().replace("_", " "));
+            itemNameTextView.setText(items[i].getItemName());
             if (unpurchasedItemsList.contains(items[i]))
                 itemCostTextView.setText("Cost: " + items[i].getItemCost());
             else
@@ -132,7 +132,7 @@ public class ShopActivity extends AppCompatActivity {
     private void showEquipAlertDialog(View v, ShopItem item) {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(item.getItemName().replace("_", " "));
+        alertDialogBuilder.setTitle(item.getItemName());
         alertDialogBuilder.setMessage("Do you wish to equip this item ?");
 
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -141,11 +141,11 @@ public class ShopActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                if (item.getItemName().contains("Card")) {
+                if (item.getItemType().equals("Card")) {
                     SharedPreferences sharedPreferences = getSharedPreferences("EquippedCard", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     for (int i=0; i<items.length; i++) {
-                        if (items[i].getItemName().contains("Card")) {
+                        if (items[i].getItemType().equals("Card")) {
 
                             if (items[i].getItemName() == item.getItemName())
                                 editor.putBoolean(items[i].getItemName(), true);
@@ -154,16 +154,15 @@ public class ShopActivity extends AppCompatActivity {
                         }
                     }
                     editor.apply();
-                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedCard");
+                    Log.d(TAG + " showAlertDialog", item.getItemName() + " EquippedCard " + sharedPreferences.getBoolean(item.getItemName(), false));
 
                     Toast.makeText(ShopActivity.this, "Equipped", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " equipped");
 
-                } else if (item.getItemName().contains("Background")) {
+                } else if (item.getItemType().equals("Background")) {
                     SharedPreferences sharedPreferences = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     for (int i=0; i<items.length; i++) {
-                        if (items[i].getItemName().contains("Background")) {
+                        if (items[i].getItemType().equals("Background")) {
 
                             if (items[i].getItemName() == item.getItemName())
                                 editor.putBoolean(items[i].getItemName(), true);
@@ -195,7 +194,7 @@ public class ShopActivity extends AppCompatActivity {
     private void showPurchaseAlertDialog(View v, ShopItem item) {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(item.getItemName().replace("_", " "));
+        alertDialogBuilder.setTitle(item.getItemName());
         alertDialogBuilder.setMessage("Do you want to purchase this item for " + item.getItemCost() + "?");
 
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -262,9 +261,12 @@ class ShopItem {
     private String itemName;
     private int itemCost;
 
-    public ShopItem(String itemName, int itemCost) {
+    private String itemType;
+
+    public ShopItem(String itemName, int itemCost, String itemType) {
         this.itemName = itemName;
         this.itemCost = itemCost;
+        this.itemType = itemType;
     }
 
     public String getItemName() {
@@ -273,6 +275,10 @@ class ShopItem {
 
     public int getItemCost() {
         return itemCost;
+    }
+
+    public String getItemType() {
+        return itemType;
     }
 }
 

@@ -3,6 +3,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -134,19 +135,18 @@ class Card {
 
     public int getCardImage(Context context) {
 
-        String[] cardSkins = {"Card_Skin_1", "Card_Skin_2"};
+        String[] cardSkins = {"Black Gold", "Card_Skin_2"};
         String filename = "default_" + this.getRank() + "_of_" + this.getSuit();
 
-        /* For whenever we get alternate cards, havent tested
         for (String cardSkin : cardSkins) {
             SharedPreferences sharedPreferences = context.getSharedPreferences("EquippedCard", MODE_PRIVATE);
-            boolean booleanValue = sharedPreferences.getBoolean("cardSkin", false); // Provide a default value if key not found
+            boolean booleanValue = sharedPreferences.getBoolean(cardSkin, false);
+            Log.d("Deck.java getCardImage", booleanValue + " " + cardSkin);
 
             if (booleanValue) {
-                filename = cardSkin + this.getRank() + "_of_" + this.getSuit();
+                filename = cardSkin.replace(" ", "_").toLowerCase()+ "_" + this.getRank() + "_of_" + this.getSuit();
             }
         }
-         */
 
         try {
             Field fld = R.drawable.class.getField(filename);
