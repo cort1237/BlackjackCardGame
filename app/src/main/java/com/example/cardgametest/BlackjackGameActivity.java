@@ -23,18 +23,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import java.net.Socket;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
-
-import kotlin.reflect.KFunction;
 
 
 public class BlackjackGameActivity extends AppCompatActivity {
@@ -677,7 +673,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
                 Card c = deck.retrieveTop();
                 dealer.addCard(c);
-                runOnUiThread(() -> dealer.refreshHand());
+                runOnUiThread(dealer::refreshHand);
                 String m = 0 + "," + c.toString() + ",0";
                 sendAllMessage("DealCard", m);
             }
@@ -1063,7 +1059,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         {
             try {
                 sleep(100);
-            } catch (InterruptedException ex) {}
+            } catch (InterruptedException ignored) {}
             gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
             if (split)
                 gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, margin, 1)));
@@ -1077,7 +1073,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(id == 0 && visualHand.getChildCount() == 1 && !dealerTurn)
             cardImageNum = c.getCardBack();
         else
-            cardImageNum = c.getCardImage();
+            cardImageNum = c.getCardImage(parentContext);
         cardView.setImageResource(cardImageNum);
         cardView.setAdjustViewBounds(true);
         cardView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
