@@ -65,6 +65,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ImageView imageview = findViewById(R.id.backgroundImageView);
+        SharedPreferences background = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
+        boolean equippedBackground = background.getBoolean("Background_1", false);
+        if (equippedBackground) {
+            imageview.setImageResource(R.drawable.background_1);
+        }
+        else {
+            imageview.setImageResource(R.color.white);
+        }
+        imageview.setVisibility(View.VISIBLE);
+
         LinearLayout playerLayout = findViewById(R.id.main_player_hand);
         LinearLayout dealerLayout = findViewById(R.id.dealer_hand);
         tabLayout = findViewById(R.id.expandTab);
