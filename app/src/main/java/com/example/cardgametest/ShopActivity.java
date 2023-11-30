@@ -76,7 +76,6 @@ public class ShopActivity extends AppCompatActivity {
         /*
         create onClick for each item. open an alert dialog if button has been pressed. add item to player's inventory if confirmed
          */
-        int margin = 50;
         for (int i=0; i<items.length; i++) {
             // Loop through the items array to dynamically create CardViews
             CardView cardView = new CardView(this);
@@ -85,8 +84,8 @@ public class ShopActivity extends AppCompatActivity {
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             layoutParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             layoutParams.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-            layoutParams.setMargins( margin, margin, margin, margin);
-            cardView.setContentPadding(16, 16, 16, 16);
+            layoutParams.setMargins( 50, 50, 50, 50);
+            cardView.setContentPadding(16, 106, 16, 106);
             cardView.setLayoutParams(layoutParams);
 
             View view = getLayoutInflater().inflate(R.layout.cardview_item, null);
