@@ -20,8 +20,8 @@
 
     <style name="customTextStyle" >
 
-        <item name="android:textColor">#f0f0f0</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#e4eef0</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:padding">4dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textStyle">bold</item>

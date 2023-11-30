@@ -280,8 +280,8 @@
     <LinearLayout
         android:id="@+id/expandTab"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="#b5b5b5"
         android:elevation="2dp"
         android:orientation="vertical"
@@ -296,18 +296,32 @@
         <LinearLayout
             android:id="@+id/row1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingTop="50dp">
+            android:paddingTop="50dp"
+            >
+
+            <LinearLayout
+                android:id="@+id/Trow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                android:background="@android:color/transparent"
+                android:orientation="horizontal">
 
 
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/Rrow1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
+                android:background="#abc1c4"
+                android:padding="5dp"
 
                 android:orientation="horizontal">
 
@@ -318,18 +332,31 @@
         <LinearLayout
             android:id="@+id/row2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_weight="1"
             android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/Trow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
 
+                android:background="@android:color/transparent"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/Rrow2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
+                android:background="#abc1c4"
+                android:padding="5dp"
 
                 android:orientation="horizontal">
 
@@ -339,22 +366,34 @@
         <LinearLayout
             android:id="@+id/row3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/Trow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
 
+
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/Rrow3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
+                android:background="#abc1c4"
+                android:padding="5dp"
 
-                android:background="@android:color/transparent"
                 android:orientation="horizontal">
 
 

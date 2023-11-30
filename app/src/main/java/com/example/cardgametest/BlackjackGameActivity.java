@@ -111,14 +111,19 @@ public class BlackjackGameActivity extends AppCompatActivity {
             Log.d("playerNum", "" + playerNum);
             switch(playerNum) {
                 case 4:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row3 ) , findViewById(R.id.Rrow3),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.Trow3 ) , findViewById(R.id.Rrow3),this));
                 case 3:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row2), findViewById(R.id.Rrow2),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.Trow2), findViewById(R.id.Rrow2),this));
+                    tabLayout.removeView(findViewById(R.id.row3));
                 case 2:
-                    players.add(1, new Player(playerMoney,findViewById(R.id.row1), findViewById(R.id.Rrow1),this));
+                    players.add(1, new Player(playerMoney,findViewById(R.id.Trow1), findViewById(R.id.Rrow1),this));
+                    tabLayout.removeView(findViewById(R.id.row2));
+                    tabLayout.removeView(findViewById(R.id.row3));
                 default:
                     players.add(netHandle.id+1, new Player(playerMoney, playerLayout,this));
             }
+
+
             playerID = netHandle.id+1;
             String name = getIntent().getStringExtra("my_name");
             players.get(playerID).setNickname(name);
@@ -1155,13 +1160,14 @@ public class BlackjackGameActivity extends AppCompatActivity {
         //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
         cardView.setLayoutParams(params);
-        if(visualRow != null){
-            if(visualRow.getChildCount() < 2 ) {// add the nickname text only for the first time
-                visualRow.addView(tview);
-            }}
         if(vr != null) {
             this.vr.addView(cardView);
         }
+        if(visualRow != null){
+                visualRow.removeAllViews();
+                visualRow.addView(tview);
+        }
+
     }
 
     public void split() {
