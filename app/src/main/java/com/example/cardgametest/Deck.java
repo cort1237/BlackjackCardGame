@@ -143,7 +143,8 @@ class Card {
             boolean booleanValue = sharedPreferences.getBoolean(cardSkin, false);
             Log.d("Deck.java getCardImage", booleanValue + " " + cardSkin);
 
-            if (booleanValue) {
+            //Will rework when a second card skin is added.
+            if (booleanValue && cardSkin.equals("Black Gold")) {
                 filename = cardSkin.replace(" ", "_").toLowerCase()+ "_" + this.getRank() + "_of_" + this.getSuit();
             }
         }

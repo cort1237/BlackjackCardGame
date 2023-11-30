@@ -65,10 +65,11 @@ public class BlackjackGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Will rework once there is a second background option
         ImageView imageview = findViewById(R.id.backgroundImageView);
         SharedPreferences background = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
         boolean equippedBackground = background.getBoolean("Background 1", false);
-        Log.d("ROSS" , " " + equippedBackground);
+        Log.d("Background 1 Equipped?" , " " + equippedBackground);
         if (equippedBackground) {
             imageview.setImageResource(R.drawable.background_1);
         }
