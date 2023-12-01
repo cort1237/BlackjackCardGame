@@ -263,6 +263,7 @@ public class ShopActivity extends AppCompatActivity {
 
                     refreshTable();
                 }
+                recreate();
             }
         });
 
