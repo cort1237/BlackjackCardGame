@@ -328,6 +328,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             sendAllMessage("RESET", " ");
     }
 
+    //why
     private void hitHelper() {
         Player p = players.get(playerID);
 
