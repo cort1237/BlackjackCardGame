@@ -254,7 +254,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         else
             margin = 8;
 
-        float offset = p.getVisualHand().getX() + ((p.getVisualHand().getChildCount()-1) * card_image.getWidth()) - (((margin / (float)2) * scale) * (cardCount));
+        float offset = p.getVisualHand().getX() + ((p.getVisualHand().getChildCount()-1) * card_image.getWidth()) + (((margin / (float)2) * scale) * (cardCount));
 
         //players.get(0).getVisualHand().getX(); Example: Returns X of Dealer's Hand
         //new TranslateAnimation(0, 0, 0, 0); -- Example: Create an animation programmatically
@@ -336,7 +336,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 dealCard(p);
                 Log.d("Hit Button Test", "hit");
                 updateCurrentHand();
-                if (p.getMainTotal() >= 21)
+                if (p.getMainTotal() > 21)
                     dealerTurn();
             } else if (!p.useSplitHand) {
                 dealCard(p, 0);
@@ -541,6 +541,12 @@ public class BlackjackGameActivity extends AppCompatActivity {
             p.clearHand();
         }
 
+        findViewById(R.id.hitButton).setEnabled(true);
+        findViewById(R.id.foldButton).setEnabled(true);
+        findViewById(R.id.restart).setEnabled(false);
+        findViewById(R.id.restart).setVisibility(View.INVISIBLE);
+        findViewById(R.id.viewSplit).setVisibility(View.INVISIBLE);
+
         for (int i=0; i<2; i++)  {
             hitHelper();
             dealCard(players.get(0));
@@ -550,18 +556,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("playerHand.getTotalValue", "" + players.get(playerID).getHand().getTotalValue());
 
         //Enable Player Controls
-        findViewById(R.id.hitButton).setEnabled(true);
-        findViewById(R.id.foldButton).setEnabled(true);
-        findViewById(R.id.restart).setEnabled(false);
+
         if(players.get(playerID).getHand().isPair()){
             findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
         }
         else{
             findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
         }
-        findViewById(R.id.restart).setVisibility(View.INVISIBLE);
-        findViewById(R.id.viewSplit).setVisibility(View.INVISIBLE);
-
         updateCurrentHand();
     }
 

@@ -58,6 +58,8 @@
         android:layout_height="60dp"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="31dp"
+        android:background="@drawable/roundbutton"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_settings_24"

@@ -81,7 +81,7 @@ public class options extends AppCompatActivity {
             @NonNull
             @Override
             public String getFormattedValue(float value) {
-                return (int) value + "%";
+                return (int) (value*100) + "%";
             }
         });
 

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +45,7 @@ public class ShopActivity extends AppCompatActivity {
         TextView rewardCurrencyTextView = findViewById(R.id.rewardCurrencyTextView);
         rewardCurrencyTextView.setText(String.format("Currency: %s", rewardCurrency));
 
-        Button backButton = findViewById(R.id.backButton);
+        ImageButton backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

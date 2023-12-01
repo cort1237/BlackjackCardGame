@@ -11,10 +11,9 @@
         android:id="@+id/backgroundImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@color/white"
         android:scaleType="centerCrop"
-        android:visibility="gone"
-        />
+        android:src="@color/white"
+        android:visibility="gone" />
 
 
     <Button
@@ -58,15 +57,14 @@
 
     <LinearLayout
         android:id="@+id/main_player_hand"
-        android:layout_width="363dp"
-        android:layout_height="159dp"
+        android:layout_width="348dp"
+        android:layout_height="124dp"
         android:layout_marginBottom="40dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent">
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
 
     <LinearLayout
         android:id="@+id/dealer_hand"
@@ -103,7 +101,10 @@
         android:layout_height="60dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/roundbutton"
         android:gravity="center|center_horizontal"
+        android:scaleType="centerCrop"
+        app:tint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_settings_24"
@@ -231,15 +232,16 @@
         android:id="@+id/expandButton"
         android:layout_width="32dp"
         android:layout_height="130dp"
-        android:layout_marginTop="240dp"
         android:layout_marginRight="-3dp"
         android:contentDescription="SlidingBox"
         android:orientation="vertical"
         android:text=" "
 
 
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/expandTab"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.457"
         tools:ignore="SpeakableTextPresentCheck">
 
     </Button>
@@ -268,8 +270,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:visibility="visible">
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:id="@+id/row1"
@@ -277,8 +278,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingTop="50dp"
-            >
+            android:paddingTop="50dp">
 
             <LinearLayout
                 android:id="@+id/Trow1"
@@ -292,6 +292,7 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/Rrow1"
                 android:layout_width="wrap_content"
@@ -299,9 +300,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:background="#abc1c4"
-                android:padding="5dp"
+                android:orientation="horizontal"
 
-                android:orientation="horizontal">
+                android:padding="5dp">
 
             </LinearLayout>
 
@@ -315,6 +316,7 @@
             android:layout_centerVertical="true"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/Trow2"
                 android:layout_width="wrap_content"
@@ -327,6 +329,7 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/Rrow2"
                 android:layout_width="wrap_content"
@@ -334,9 +337,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:background="#abc1c4"
-                android:padding="5dp"
+                android:orientation="horizontal"
 
-                android:orientation="horizontal">
+                android:padding="5dp">
 
             </LinearLayout>
         </LinearLayout>
@@ -363,6 +366,7 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/Rrow3"
                 android:layout_width="wrap_content"
@@ -370,9 +374,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:background="#abc1c4"
-                android:padding="5dp"
+                android:orientation="horizontal"
 
-                android:orientation="horizontal">
+                android:padding="5dp">
 
 
             </LinearLayout>
