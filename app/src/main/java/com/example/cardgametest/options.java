@@ -1,5 +1,6 @@
 package com.example.cardgametest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.Slider;
 public class options extends AppCompatActivity {
 
@@ -73,7 +76,15 @@ public class options extends AppCompatActivity {
 
 
         Slider volumeSlider = findViewById(R.id.volume_slider);
-        volumeSlider.setValue(volumeValue/100);
+        volumeSlider.setValue(volumeValue);
+        volumeSlider.setLabelFormatter(new LabelFormatter() {
+            @NonNull
+            @Override
+            public String getFormattedValue(float value) {
+                return (int) value + "%";
+            }
+        });
+
         volumeSlider.addOnChangeListener((slider, value, fromUser) -> volumeValue = value);
     }
 }

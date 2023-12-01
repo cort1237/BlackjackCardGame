@@ -555,27 +555,20 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("dealer.getTotalValue", "" + players.get(0).getHand().getTotalValue());
         Log.d("playerHand.getTotalValue", "" + players.get(playerID).getHand().getTotalValue());
 
-        // Early version of standard Blackjack peek procedure (still needs to be tied to actual animation)
-        // Animation should play if dealer's visible card is an "Ace" or "Face" card, regardless if getTotalValue()==21
-        if(players.get(0).getHand().getTotalValue() == 21 || players.get(1).getHand().getTotalValue() == 21) {
-            dealerTurn();
+        //Enable Player Controls
+        findViewById(R.id.hitButton).setEnabled(true);
+        findViewById(R.id.foldButton).setEnabled(true);
+        findViewById(R.id.restart).setEnabled(false);
+        if(players.get(playerID).getHand().isPair()){
+            findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
         }
-        else {
-            //Enable Player Controls
-            findViewById(R.id.hitButton).setEnabled(true);
-            findViewById(R.id.foldButton).setEnabled(true);
-            findViewById(R.id.restart).setEnabled(false);
-            if(players.get(playerID).getHand().isPair()){
-                findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
-            }
-            else{
-                findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
-            }
-            findViewById(R.id.restart).setVisibility(View.INVISIBLE);
-            findViewById(R.id.viewSplit).setVisibility(View.INVISIBLE);
+        else{
+            findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
+        }
+        findViewById(R.id.restart).setVisibility(View.INVISIBLE);
+        findViewById(R.id.viewSplit).setVisibility(View.INVISIBLE);
 
-            updateCurrentHand();
-        }
+        updateCurrentHand();
     }
 
     private void setupMP() {
@@ -739,13 +732,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 } //should stats of a draw be recorded?
                 else {
                     stats.recordLoss();
+                    mediaPlayer.release();
+                    mediaPlayer = MediaPlayer.create(this, R.raw.losing);
+                    mediaPlayer.setVolume(volumeValue,volumeValue);
+                    mediaPlayer.start();
                     if (playerTotal < 21) {
                         Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " LOSS");
                         roundEnd.setMessage("PLAYER LOSES");
-                        mediaPlayer.release();
-                        mediaPlayer = MediaPlayer.create(this, R.raw.losing);
-                        mediaPlayer.setVolume(volumeValue,volumeValue);
-                        mediaPlayer.start();
                     } else {
                         Log.d("dealerTurn Test", "Final Player Total: " + playerTotal + " BUST");
                         roundEnd.setMessage("PLAYER BUST");
@@ -753,13 +746,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 }
                 roundEnd.showAtLocation(rootView, Gravity.CENTER, 0, 0);
             }
-
-//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                roundEnd.dismiss();
-//            }
-//        }, 2500);
 
             Log.d("End Stats", "Wins: " + stats.getData()[0]);
             Log.d("End Stats", "Losses: " + stats.getData()[1]);
@@ -1017,8 +1003,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 break;
             case "DealCard": //Deal the Specified Card to player id in message[0] (Always comes from host)
                 String[] parts = message.split(",");
-                msg = "Player " + parts[0] + " has drawn the " + parts[1];
                 id = Integer.parseInt(parts[0]);
+                if(id==0 && players.get(0).getHand().size() == 2) //Don't log hidden card.
+                    break;
+                msg = "Player " + parts[0] + " has drawn the " + parts[1];
                 break;
             case "Hit":
                 msg = "Player " + id + " hits.";

@@ -261,7 +261,6 @@ public class ShopActivity extends AppCompatActivity {
                     Toast.makeText(ShopActivity.this, "Equipped", Toast.LENGTH_SHORT).show();
                     Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " equipped");
 
-                    recreate();
                     refreshTable();
                 }
             }
