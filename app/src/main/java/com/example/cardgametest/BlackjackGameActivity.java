@@ -999,23 +999,23 @@ public class BlackjackGameActivity extends AppCompatActivity {
             case "SetBet":  //SetBet - Set the bet of id to `message`
                 if(Integer.parseInt(message) == 0) //Don't log bet reset
                     break;
-                msg = "Player " + id + " has bet $" + message;
+                msg = players.get(id).nickname + " (" + id + ") " + " has bet $" + message;
                 break;
             case "DealCard": //Deal the Specified Card to player id in message[0] (Always comes from host)
                 String[] parts = message.split(",");
                 id = Integer.parseInt(parts[0]);
                 if(id==0 && players.get(0).getHand().size() == 2) //Don't log hidden card.
                     break;
-                msg = "Player " + parts[0] + " has drawn the " + parts[1];
+                msg = players.get(id).nickname + " (" + id + ") " + " has drawn the " + parts[1];
                 break;
             case "Hit":
-                msg = "Player " + id + " hits.";
+                msg = players.get(id).nickname + " (" + id + ") " + " hits.";
                 break;
             case "Split":
-                msg = "Player " + id + " has split their hand.";
+                msg = players.get(id).nickname + " (" + id + ") " + " has split their hand.";
                 break;
             case "Stand":
-                msg = "Player " + id +" stands.";
+                msg = players.get(id).nickname + " (" + id + ") " +" stands.";
                 break;
             case "Bust":
                 msg = "Player "+ id +" has busted.";
