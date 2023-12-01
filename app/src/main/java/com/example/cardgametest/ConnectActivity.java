@@ -1,5 +1,6 @@
 package com.example.cardgametest;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * This Activity allows the user to initiate connections with other players using socket connections.
@@ -35,8 +35,6 @@ public class ConnectActivity extends Activity {
     private EditText nicknameField;
     private Button hostButton;
     private Button joinButton;
-    private Button backToTitleButton;
-    private Button startHost;
     private TextView connectionList;
     private Button startButton;
     private Spinner betSpinner;
@@ -57,7 +55,7 @@ public class ConnectActivity extends Activity {
         ipAddress = findViewById(R.id.ipAddress);
         hostButton = findViewById(R.id.hostButton);
         joinButton = findViewById(R.id.joinButton);
-        backToTitleButton = findViewById(R.id.backToTitleButton);
+        Button backToTitleButton = findViewById(R.id.backToTitleButton);
         connectionList = findViewById(R.id.connectionListView);
         startButton = findViewById(R.id.startGame);
         nicknameField = findViewById(R.id.nicknameField);
@@ -65,9 +63,9 @@ public class ConnectActivity extends Activity {
 
         netHandle = new NetworkHandler();
         ((GameApplication) getApplication()).setNetworkHandler(netHandle); //Store NetworkHandler in application for global use
-        PopupWindow window = new PopupWindow(LayoutInflater.from(this).inflate(R.layout.server_setup_popup, null), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+        @SuppressLint("InflateParams") PopupWindow window = new PopupWindow(LayoutInflater.from(this).inflate(R.layout.server_setup_popup, null), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
 
-        startHost = window.getContentView().findViewById(R.id.startHostButton);
+        Button startHost = window.getContentView().findViewById(R.id.startHostButton);
         betSpinner = window.getContentView().findViewById(R.id.betSpinner);
         moneySpinner = window.getContentView().findViewById(R.id.moneySpinner);
         hostName = window.getContentView().findViewById(R.id.hostNameTextField);
@@ -75,69 +73,54 @@ public class ConnectActivity extends Activity {
         /*
          *  Button Listeners
          */
-        hostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //new ServerTask().execute();
-                window.showAtLocation(findViewById(R.id.joinButton), Gravity.CENTER, 0, 0);
-            }
+        hostButton.setOnClickListener(v -> {
+            //new ServerTask().execute();
+            window.showAtLocation(findViewById(R.id.joinButton), Gravity.CENTER, 0, 0);
         });
 
-        joinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String ip = ipAddress.getText().toString();
-                new ClientTask().execute(ip);
-            }
+        joinButton.setOnClickListener(v -> {
+            String ip = ipAddress.getText().toString();
+            new ClientTask().execute(ip);
         });
 
-        backToTitleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Add code to navigate back to the TitleScreen activity here
-                finish(); // This will simply close the ConnectActivity and return to the previous activity (TitleScreen)
-            }
+        backToTitleButton.setOnClickListener(v -> {
+            // Add code to navigate back to the TitleScreen activity here
+            finish(); // This will simply close the ConnectActivity and return to the previous activity (TitleScreen)
         });
 
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playerCount = netHandle.getClientSockets().size()+1;
-                start = true;
-                try {
-                    serverSocket.close();
-                } catch (IOException ignore) {}
+        startButton.setOnClickListener(view -> {
+            playerCount = netHandle.getClientSockets().size()+1;
+            start = true;
+            try {
+                serverSocket.close();
+            } catch (IOException ignore) {}
 
-                new MessageSender().execute("SETUP : " + minBet + " : " + startMoney);
-                new MessageSender().execute("PLAYER_COUNT : " + playerCount);
-                new MessageSender().execute("initialize");
-                new MessageSender().execute("play");
-                Intent i = new Intent(ConnectActivity.this, BlackjackGameActivity.class);
-                i.putExtra("type", "MP");
-                i.putExtra("host", "HOST");
-                i.putExtra("players", playerCount);
-                i.putExtra("min_bet", minBet);
-                i.putExtra("start_money", startMoney);
-                i.putExtra("my_name", name);
-                startActivity(i);
-            }
+            new MessageSender().execute("SETUP : " + minBet + " : " + startMoney);
+            new MessageSender().execute("PLAYER_COUNT : " + playerCount);
+            new MessageSender().execute("initialize");
+            new MessageSender().execute("play");
+            Intent i = new Intent(ConnectActivity.this, BlackjackGameActivity.class);
+            i.putExtra("type", "MP");
+            i.putExtra("host", "HOST");
+            i.putExtra("players", playerCount);
+            i.putExtra("min_bet", minBet);
+            i.putExtra("start_money", startMoney);
+            i.putExtra("my_name", name);
+            startActivity(i);
         });
 
         //Host Setup Popup
-        startHost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                minBet = Integer.parseInt((betSpinner.getSelectedItem().toString().substring(1)));
-                startMoney = Integer.parseInt((moneySpinner.getSelectedItem().toString().substring(1)));
-                name = hostName.getText().toString();
-                if(name.equals(""))
-                    name = "Host";
-                window.dismiss();
-                hostButton.setEnabled(false);
-                joinButton.setEnabled(false);
-                ipAddress.setEnabled(false);
-                new ServerTask().execute();
-            }
+        startHost.setOnClickListener(v -> {
+            minBet = Integer.parseInt((betSpinner.getSelectedItem().toString().substring(1)));
+            startMoney = Integer.parseInt((moneySpinner.getSelectedItem().toString().substring(1)));
+            name = hostName.getText().toString();
+            if(name.equals(""))
+                name = "Host";
+            window.dismiss();
+            hostButton.setEnabled(false);
+            joinButton.setEnabled(false);
+            ipAddress.setEnabled(false);
+            new ServerTask().execute();
         });
     }
 

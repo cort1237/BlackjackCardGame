@@ -1,7 +1,4 @@
 package com.example.cardgametest;
-
-import android.util.Log;
-
 import java.util.*;
 
 
@@ -12,8 +9,8 @@ Create a CardHand class that will store the values of the players hand and imple
     hit(): draws another card into the players hand
  */
 public class CardHand {
-    private ArrayList<Card> hand;
-    private ArrayList<Card> secondHand;
+    private final ArrayList<Card> hand;
+    private final ArrayList<Card> secondHand;
     private int size;
     private int secondHandSize;
     private boolean split = false;
@@ -26,11 +23,6 @@ public class CardHand {
     }
 
     //When player hits, add a new card to their hand
-    public void addCard(Card newCard){
-        hand.add(newCard);
-        size = hand.size();
-    }
-
     //modified addCard to be used when hands are split
     public void addCard(Card newCard, int n){
         if(n == 0){
@@ -58,17 +50,12 @@ public class CardHand {
     public int getTotalValue() {
         int value = 0;
         int aceCounter = 0;
-        ArrayList<Card> temp = (ArrayList<Card>) hand.clone();
-        temp.sort(new Comparator<Card>() {
-            @Override
-            public int compare(Card o1, Card o2) {
-                return Integer.compare(o2.getValue(), o1.getValue());
-            }
-        });
+        ArrayList<Card> temp = new ArrayList<>(hand);
+        temp.sort((o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()));
 
         //Calculate value
         for(int i = 0; i < size; i++){
-            if(temp.get(i).getRank() != "ace"){
+            if(!temp.get(i).getRank().equals("ace")){
                 value += temp.get(i).getValue();
             }
             else{
@@ -91,24 +78,21 @@ public class CardHand {
         int value = 0;
         ArrayList<Card> temp;
         if(n == 0) {
-            temp = (ArrayList<Card>) hand.clone();
+            temp = new ArrayList<>(hand);
         } else {
-            temp = (ArrayList<Card>) secondHand.clone();
+            temp = new ArrayList<>(secondHand);
         }
 
         //Sort Aces to back using getRank
-        temp.sort(new Comparator<Card>() {
-            @Override
-            public int compare(Card o1, Card o2) {
-                if(o1.getRank().equals("ace")){
-                    return 1;
-                }
-                else if(o2.getRank().equals("ace")){
-                    return -1;
-                }
-                else{
-                    return Integer.compare(o2.getValue(), o1.getValue());
-                }
+        temp.sort((o1, o2) -> {
+            if(o1.getRank().equals("ace")){
+                return 1;
+            }
+            else if(o2.getRank().equals("ace")){
+                return -1;
+            }
+            else{
+                return Integer.compare(o2.getValue(), o1.getValue());
             }
         });
 
@@ -147,18 +131,11 @@ public class CardHand {
             return secondHand;
         }
     }
-    public Card retrieveFirstCard(){
-        return hand.get(0);
-    }
     public Card get(int i){
         return hand.get(i);
     }
     public boolean isPair(){
-        boolean pair = false;
-        if(hand.size() == 2 && hand.get(0).getValue() == hand.get(1).getValue()){
-            pair = true;
-        }
-        return pair;
+        return hand.size() == 2 && hand.get(0).getValue() == hand.get(1).getValue();
     }
     public boolean splitHand(){
         if(isPair() && size == 2) {
@@ -175,7 +152,14 @@ public class CardHand {
         return split;
     }
 
+    public int size(int s){
+        if(s == 0)
+            return size;
+        else
+            return secondHandSize;
+    }
+
     public int size(){
-        return size;
+        return size(0);
     }
 }

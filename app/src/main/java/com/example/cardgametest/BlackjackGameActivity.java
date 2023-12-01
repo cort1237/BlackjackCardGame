@@ -15,21 +15,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Space;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-
-import com.google.android.material.divider.MaterialDivider;
 
 import java.net.Socket;
 import java.text.MessageFormat;
@@ -160,7 +155,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        //get prefereneces which contains values stored from options
+        //get preferences which contains values stored from options
         SharedPreferences prefs = getSharedPreferences("options", Context.MODE_PRIVATE);
 
         if(!prefs.contains("volume")) {
@@ -217,7 +212,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //get prefereneces which contains values stored from options
+        //get preferences which contains values stored from options
         SharedPreferences prefs = getSharedPreferences("options", Context.MODE_PRIVATE);
 
         if(!prefs.contains("volume")) {
@@ -245,7 +240,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     private void playHitAnimation(int id){
-        Animation slide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_animation);
         Player p = players.get(id);
         float scale = this.getResources().getDisplayMetrics().density;
 
@@ -260,13 +254,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
         else
             margin = 8;
 
-        float offset = p.getVisualHand().getX() + ((p.getVisualHand().getChildCount()-1) * card_image.getWidth()) - (((margin / 2) * scale) * (cardCount));
+        float offset = p.getVisualHand().getX() + ((p.getVisualHand().getChildCount()-1) * card_image.getWidth()) - (((margin / (float)2) * scale) * (cardCount));
 
         //players.get(0).getVisualHand().getX(); Example: Returns X of Dealer's Hand
         //new TranslateAnimation(0, 0, 0, 0); -- Example: Create an animation programmatically
 
         //Create an animation to move the card from the top right to the specified player
-        slide = new TranslateAnimation(0, offset - card_image.getX(),
+        Animation slide = new TranslateAnimation(0, offset - card_image.getX(),
                 0, p.getVisualHand().getY() - card_image.getY());
         slide.setDuration(500);
 
@@ -777,7 +771,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(p.isSplit())
             m.append("Hand 1: ");
 
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; true; i++) {
             if (total > 21) {   //PLAYER BUSTS
                 Log.d("checkScore", "Final Player Total: " + total + " BUST");
                 stats.recordLoss();
@@ -852,7 +846,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 // Handle the received message
                 String[] args = message.split(" : ");
                 if(HOST_FLAG) {
-                    netHandle.sendToAllClients(message); //If message recieved by host echo message to all clients.
+                    netHandle.sendToAllClients(message); //If message received by host echo message to all clients.
                     interpretMessage(args);
                 }
                 //Since every message gets echoed to all clients. It will get returned to sender, this will ignore the message.
@@ -995,6 +989,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     private String generateMessage(String job, String message, int id){
         String msg = null;
+
         switch(job){
             case "SetBet":  //SetBet - Set the bet of id to `message`
                 if(Integer.parseInt(message) == 0) //Don't log bet reset
@@ -1004,7 +999,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             case "DealCard": //Deal the Specified Card to player id in message[0] (Always comes from host)
                 String[] parts = message.split(",");
                 id = Integer.parseInt(parts[0]);
-                if(id==0 && players.get(0).getHand().size() == 2) //Don't log hidden card.
+                if(id==0 && players.get(0).getHand().size() == 2 && players.get(0).getHand().get(1).toString().equals(parts[1])) //Don't log hidden card.
                     break;
                 msg = players.get(id).nickname + " (" + id + ") " + "has drawn the " + parts[1];
                 break;
@@ -1038,6 +1033,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         new MessageSender().execute(String.format(getResources().getConfiguration().getLocales().get(0), "%d : %s : %s", netHandle.id, job, message));
     }
 
+    /** @noinspection deprecation*/
+    @SuppressLint("StaticFieldLeak")
     private class MessageSender extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
@@ -1058,15 +1055,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private boolean split;
     public boolean stand;
     public boolean useSplitHand = false;
-    private LinearLayout visualHand;
+    private final LinearLayout visualHand;
     private LinearLayout visualRow;
-    private LinearLayout splitHand1;
-    private LinearLayout splitHand2;
     private final CardHand gameHand;
     private final Context parentContext;
     int id;
     boolean dealerTurn = false;
-    
+
     String nickname;        // vr contains images and visual row contains the nickname
     Player(int money, LinearLayout row, LinearLayout vr, Context c) {
         this.money = money;
@@ -1152,12 +1147,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
             return visualHand.getChildAt(gameHand.retrieveHand(0).size()-1);
     }
 
-    public void showTopCard() {
-        if(split)
-            getTopCardView(1).setVisibility(View.VISIBLE);
-        getTopCardView(0).setVisibility(View.VISIBLE);
-    }
-
     public boolean isSplit() {return split;}
 
     public void refreshHand(){
@@ -1174,7 +1163,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             visualHand.removeAllViews();
         }
         try {
-            gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
+            gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin)));
             if (split) {
                 //Add a gap for split
                 ImageView space = new ImageView(parentContext);
@@ -1182,14 +1171,16 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 space.setImageResource(R.drawable.cardbackblack);
                 space.setLayoutParams(lp);
                 space.setVisibility(View.INVISIBLE);
-                visualHand.addView(space);
+                if (visualHand != null) {
+                    visualHand.addView(space);
+                }
 
                 cardCount = gameHand.retrieveHand(1).size();
                 if (cardCount > 2)
                     secondMargin = 8 - ((cardCount + 1) * 20);
                 else
                     secondMargin = 8;
-                gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, secondMargin, 1)));
+                gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, secondMargin)));
             }
         }
         catch (ConcurrentModificationException e)
@@ -1205,7 +1196,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         return visualHand;
     }
 
-    private void addCardToHand(Card c, int margin, int s) {
+    private void addCardToHand(Card c, int margin) {
         //Log.d("AddCardToHand", c.getSuit() + " | " + c.getRank());
         ImageView cardView = new ImageView(parentContext);
         int cardImageNum;
@@ -1235,8 +1226,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
             TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
             tview.setText(MessageFormat.format("{0} - ${1}", this.nickname, this.getMoney()));
-            //cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-            //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
             cardView.setLayoutParams(params);
             visualHand.addView(cardView);

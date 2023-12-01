@@ -1,5 +1,6 @@
 package com.example.cardgametest;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +9,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 public class CustomPopupWindow {
-    private PopupWindow popupWindow;
-    private TextView messageTextView;
-    private View contentView;
+    private final PopupWindow popupWindow;
+    private final TextView messageTextView;
 
     public CustomPopupWindow(Context context) {
-        contentView = LayoutInflater.from(context).inflate(R.layout.custom_popup, null);
+        @SuppressLint("InflateParams") View contentView = LayoutInflater.from(context).inflate(R.layout.custom_popup, null);
         messageTextView = contentView.findViewById(R.id.messageTextView);
 
         // Create and configure the PopupWindow
