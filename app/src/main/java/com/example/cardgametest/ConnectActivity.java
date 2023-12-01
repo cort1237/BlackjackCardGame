@@ -16,8 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * This Activity allows the user to initiate connections with other players using socket connections.
@@ -196,6 +198,9 @@ public class ConnectActivity extends Activity {
 
                 Thread hostThread = new Thread(() -> handleClientConnection(clientSocket)); //Await messages from host on a new thread.
                 hostThread.start();
+            } catch (ConnectException e) {
+                runOnUiThread(() -> statusText.setText("Could not connect to the host."));
+                return null;
             } catch (IOException e) {
                 e.printStackTrace();
             }

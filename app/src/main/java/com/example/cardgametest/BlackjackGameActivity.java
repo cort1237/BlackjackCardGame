@@ -316,13 +316,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
         //Single Player
         if(!MP_FLAG) {
-            if (!(p.getHand().isSplit())) {
+            if (!p.isSplit()) {
                 dealCard(p);
                 Log.d("Hit Button Test", "hit");
                 updateCurrentHand();
                 if (p.getMainTotal() >= 21)
                     dealerTurn();
-            } else if (p.getHand().getTotalValue(0) < 21) {
+            } else if (!p.useSplitHand) {
                 dealCard(p, 0);
                 Log.d("Hit Button Test", "hit");
                 updateCurrentHand();
@@ -336,10 +336,10 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
         else {
             int s;
-            if (!(p.getHand().isSplit())) {
+            if (!p.isSplit()) {
                 sendAllMessage("Hit", "0");
                 s = 0;
-            } else if (p.getHand().getTotalValue(0) < 21) {
+            } else if (!p.useSplitHand) {
                 sendAllMessage("Hit", "0");
                 s = 0;
             } else {
@@ -418,6 +418,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
         Log.d("Fold Button Test", "fold");
     }
     private void foldHandHelper() {
+        Player p = players.get(playerID);
+        if(p.isSplit() && !p.useSplitHand) {
+            p.useSplitHand = true;
+            if(MP_FLAG)
+                sendAllMessage("Stand", " ");
+            return;
+        }
         if(MP_FLAG) {
             players.get(playerID).stand = true;
             sendAllMessage("Stand", " ");
@@ -602,25 +609,31 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private void disablePlayerControls() {
         findViewById(R.id.hitButton).setEnabled(false);
         findViewById(R.id.foldButton).setEnabled(false);
-        //findViewById(R.id.splitButton).setEnabled(false);
+        findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
     }
 
     private void enablePlayerControls() {
+        Player p = players.get(playerID);
+        if(!p.isSplit() && p.getHand().isPair())
+            findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
+
         findViewById(R.id.hitButton).setEnabled(true);
         findViewById(R.id.foldButton).setEnabled(true);
-        //findViewById(R.id.splitButton).setEnabled(true);
     }
 
     private void showPlayerControls() {
+        Player p = players.get(playerID);
+        if(!p.isSplit() && p.getHand().isPair())
+            findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
+
         findViewById(R.id.hitButton).setVisibility(View.VISIBLE);
         findViewById(R.id.foldButton).setVisibility(View.VISIBLE);
-        //findViewById(R.id.splitButton).setVisibility(View.VISIBLE);
     }
 
     private void hidePlayerControls() {
         findViewById(R.id.hitButton).setVisibility(View.INVISIBLE);
         findViewById(R.id.foldButton).setVisibility(View.INVISIBLE);
-        //findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.splitButton).setVisibility(View.INVISIBLE);
     }
 
     private Card dealCard(Player p, int split) {
@@ -750,35 +763,60 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private void checkScore() {
         Player dealer = players.get(0);
         Player p = players.get(playerID);
+        StringBuilder m = new StringBuilder();
 
-        if(p.getMainTotal() > 21) {
-            Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " BUST");
-            sendAllMessage("Lose", " ");
-            roundEnd.setMessage("PLAYER BUSTS");
+        int total = p.getMainTotal();
+        if(p.isSplit())
+            m.append("Hand 1: ");
 
-        }
-        else if(dealer.getMainTotal() > p.getMainTotal() && dealer.getMainTotal() <= 21) {
-            Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " LOSE");
-            Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " WIN");
-            sendAllMessage("Lose", " ");
-            roundEnd.setMessage("PLAYER LOSES");
+        for(int i = 0; i < 2; i++) {
+            if (total > 21) {   //PLAYER BUSTS
+                Log.d("checkScore", "Final Player Total: " + total + " BUST");
+                stats.recordLoss();
+                mediaPlayer.release();
+                mediaPlayer = MediaPlayer.create(this, R.raw.losing);
+                mediaPlayer.setVolume(volumeValue,volumeValue);
+                mediaPlayer.start();
+                sendAllMessage("Lose", " ");
+                m.append("PLAYER BUSTS");
 
+            } else if (dealer.getMainTotal() > total && dealer.getMainTotal() <= 21) { //PLAYER LOSES
+                Log.d("checkScore", "Final Player Total: " + total + " LOSE");
+                Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " WIN");
+                stats.recordLoss();
+                mediaPlayer.release();
+                mediaPlayer = MediaPlayer.create(this, R.raw.losing);
+                mediaPlayer.setVolume(volumeValue,volumeValue);
+                mediaPlayer.start();
+                sendAllMessage("Lose", " ");
+                m.append("PLAYER LOSES");
+
+            } else if ((dealer.getMainTotal() < total) || (dealer.getMainTotal() > 21)) { //PLAYER WINS
+                Log.d("checkScore", "Final Player Total: " + total + " WIN");
+                Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " LOSE");
+                stats.recordWin();
+                mediaPlayer.release();
+                mediaPlayer = MediaPlayer.create(this, R.raw.cheer);
+                mediaPlayer.setVolume(volumeValue,volumeValue);
+                mediaPlayer.start();
+                sendAllMessage("Win", " ");
+                if (dealer.getMainTotal() == 21)
+                    addMoney(p.getBet() * 3);
+                else
+                    addMoney(p.getBet() * 2);
+                m.append("PLAYER WINS");
+            } else { //PLAYER TIES
+                addMoney(p.getBet());
+                stats.recordPush();
+                sendAllMessage("Tie", " ");
+                m.append("PUSH");
+            }
+            if(i == 1 || !p.isSplit())
+                break;
+            m.append("\nHand 2: ");
+            total = p.getSplitTotal();
         }
-        else if ((dealer.getMainTotal() < p.getMainTotal()) || (dealer.getMainTotal() > 21)) {
-            Log.d("checkScore", "Final Player Total: " + p.getMainTotal() + " WIN");
-            Log.d("checkScore", "Final Dealer Total: " + dealer.getMainTotal() + " LOSE");
-            sendAllMessage("Win", " ");
-            if(dealer.getMainTotal() == 21)
-                addMoney(p.getBet() * 3);
-            else
-                addMoney(p.getBet() * 2);
-            roundEnd.setMessage("PLAYER WINS");
-        }
-        else {
-            addMoney(p.getBet());
-            sendAllMessage("Tie", " ");
-            roundEnd.setMessage("PUSH");
-        }
+        roundEnd.setMessage(m.toString());
         sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
         sendAllMessage("SetBet", "0");
         runOnUiThread(()-> roundEnd.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0));
@@ -871,9 +909,15 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 runOnUiThread(()->players.get(0).refreshHand());
                 break;
             case "Split":
+                players.get(id).split();
                 break;
             case "Stand":
             case "Bust":
+                if(players.get(id).isSplit() && !players.get(id).useSplitHand) {
+                    players.get(id).useSplitHand = true;
+                    nextTurn();
+                    break;
+                }
                 players.get(id).stand = true;
                 nextTurn();
                 break;
@@ -1003,6 +1047,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private final float scale;
     private boolean split;
     public boolean stand;
+    public boolean useSplitHand = false;
     private LinearLayout visualHand;
     private LinearLayout visualRow;
     private LinearLayout splitHand1;
@@ -1054,17 +1099,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     }
 
     public void clearHand() {
-        if (gameHand.isSplit()) {
-            splitHand1.removeAllViews();
-            splitHand2.removeAllViews();
-        }
-        if (visualHand != null) {
-            visualHand.removeAllViews();
-
-        }
-        else{
-            vr.removeAllViews();
-        }
+        visualHand.removeAllViews();
         gameHand.clearHand();
         split = false;
     }
@@ -1097,13 +1132,19 @@ public class BlackjackGameActivity extends AppCompatActivity {
         return gameHand.getTotalValue();
     }
 
+    public int getSplitTotal(){
+        return gameHand.getTotalValue(1);
+    }
+
+    public boolean isSplit() {return split;}
+
     public void refreshHand(){
-        int margin;
-        int cardCount = gameHand.size();
+        int margin, secondMargin;
+        int cardCount = gameHand.retrieveHand().size();
         if (gameHand.isSplit())
-            margin = 8 - ((cardCount - 3) * 80);
+            margin = 8 - ((cardCount) * 20);
         else if (cardCount > 2)
-            margin = 8 - ((cardCount - 1) * 40);
+            margin = 8 - ((cardCount - 1) * 10);
         else
             margin = 8;
         if (visualHand != null) {
@@ -1114,23 +1155,29 @@ public class BlackjackGameActivity extends AppCompatActivity {
         }
         try {
             gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
-            if (split)
-                gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, margin, 1)));
+            if (split) {
+                //Add a gap for split
+                ImageView space = new ImageView(parentContext);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int) (150 * (scale/2.5)), (int) (217 * (scale/2.5)));
+                space.setImageResource(R.drawable.cardbackblack);
+                space.setLayoutParams(lp);
+                space.setVisibility(View.INVISIBLE);
+                visualHand.addView(space);
+
+                cardCount = gameHand.retrieveHand(1).size();
+                if (cardCount > 2)
+                    secondMargin = 8 - ((cardCount + 1) * 20);
+                else
+                    secondMargin = 8;
+                gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, secondMargin, 1)));
+            }
         }
         catch (ConcurrentModificationException e)
         {
             try {
                 sleep(100);
             } catch (InterruptedException ignored) {}
-            visualHand.removeAllViews();
-            gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
-            if (split) {
-                ImageView space = new ImageView(parentContext);
-                space.setImageResource(R.drawable.cardbackblack);
-                space.setVisibility(View.INVISIBLE);
-                visualHand.addView(space);
-                gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, margin, 1)));
-            }
+            refreshHand();
         }
     }
 
@@ -1151,49 +1198,34 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if (visualHand != null) { //Main Screen Layout
             if (visualHand.getChildCount() == 0)
                 margin = 0;
-            if (margin < -130)
-                margin = -160;
-            Log.d("addCardToHand", "Margin: " + (int) ((margin / 2) * scale));
-            Log.d("addCardToHand", "PARAMS: (" + (int) (scale * 100) + ", " + (int) (scale * 130) + ")");
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (scale * 100), (int) (scale * 130));
+            if (margin < -65)
+                margin = -80;
+            Log.d("Margin: ", Integer.toString(margin));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (150 * (scale/2.5)), (int) (217 * (scale/2.5)));
 
-            params.setMargins((int) ((margin / 2) * scale), 8, 100, 8);
+            params.setMargins((int) ((margin / 2) * scale), 8, 0, 8);
             params.gravity = Gravity.START | Gravity.TOP;
             cardView.setLayoutParams(params);
             visualHand.addView(cardView);
-            /*
-            if (!split)
-
-            else {
-                Log.d("addCardToHand", "Split");
-                if (s == 0) {
-                    Log.d("addCardToHand", "Split1");
-                    splitHand1.addView(cardView);
-                    TextView t = new TextView(parentContext);
-                    t.setText("test");
-                    splitHand1.addView(t);
-                } else {
-                    Log.d("addCardToHand", "Split2");
-                    splitHand2.addView(cardView);
-                }
-            }*/
-        }  //Side Bar Layout
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 217);
-        params.setMargins(4, 8, -3, 8);
-
-
-        TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
-        tview.setText(MessageFormat.format("{0} - ${1}", this.nickname, this.getMoney()));
-        //cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-        //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-
-        cardView.setLayoutParams(params);
-        if(vr != null) {
-            this.vr.addView(cardView);
         }
-        if(visualRow != null){
+        else {//Side Bar Layout
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 217);
+            params.setMargins(4, 8, -3, 8);
+
+
+            TextView tview = new TextView(parentContext, null, 0, R.style.customTextStyle);
+            tview.setText(MessageFormat.format("{0} - ${1}", this.nickname, this.getMoney()));
+            //cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+            //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+
+            cardView.setLayoutParams(params);
+            if (vr != null) {
+                this.vr.addView(cardView);
+            }
+            if (visualRow != null) {
                 visualRow.removeAllViews();
                 visualRow.addView(tview);
+            }
         }
 
     }
@@ -1201,16 +1233,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
     public void split() {
         gameHand.splitHand();
         split = true;
-        /*splitHand1 = new LinearLayout(parentContext);
-        splitHand2 = new LinearLayout(parentContext);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.weight = 1;
-        splitHand1.setOrientation(LinearLayout.HORIZONTAL);
-        splitHand2.setOrientation(LinearLayout.HORIZONTAL);
-        splitHand1.setLayoutParams(lp);
-        splitHand2.setLayoutParams(lp);
-        visualHand.addView(splitHand1);
-        visualHand.addView(splitHand2);*/
         refreshHand();
     }
 }
