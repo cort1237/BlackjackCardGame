@@ -10,18 +10,33 @@
     <Button
         android:id="@+id/backButton"
         style="@style/defaultButtonStyle"
-        android:layout_width="50dp"
-        android:layout_height="47dp"
+        android:layout_width="82dp"
+        android:layout_height="48dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/roundbutton"
         android:drawableStart="@drawable/arrow_back"
         android:drawablePadding="@dimen/default_gap"
         android:gravity="center_vertical|start"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/shopTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Shop"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,35 +52,21 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/shopTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toEndOf="@+id/shopTextView"
         app:layout_constraintTop_toTopOf="@+id/shopTextView" />
-
-    <TextView
-        android:id="@+id/shopTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:text="Shop"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/shopScroll"
         android:layout_width="match_parent"
-        android:layout_height="704dp"
+        android:layout_height="0dp"
         android:layout_below="@+id/shopTextView"
+        android:layout_marginTop="12dp"
         android:contentDescription="Shop scroll window"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shopTextView">
 
         <androidx.gridlayout.widget.GridLayout
             android:id="@+id/gridLayout"

@@ -76,12 +76,34 @@ public class ShopActivity extends AppCompatActivity {
             }
         }
 
-        GridLayout gridLayout = findViewById(R.id.gridLayout);
+        refreshTable();
+
+
 
         /*
         create onClick for each item. open an alert dialog if button has been pressed. add item to player's inventory if confirmed
          */
-        for (int i=0; i<items.length; i++) {
+
+
+/*
+// Before attempting to dynamically create items i was manually doing this for each item:
+
+        CardView item6CardView = findViewById(R.id.item6CardView);
+        item6CardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Item 6 clicked");
+                showAlertDialog(v, "Item 6");
+            }
+        });
+
+ */
+    }
+
+    private void refreshTable() {
+        GridLayout gridLayout = findViewById(R.id.gridLayout);
+        gridLayout.removeAllViews();
+        for (ShopItem item : items) {
             // Loop through the items array to dynamically create CardViews
             CardView cardView = new CardView(this);
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
@@ -89,7 +111,7 @@ public class ShopActivity extends AppCompatActivity {
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             layoutParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             layoutParams.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-            layoutParams.setMargins( 50, 50, 50, 50);
+            layoutParams.setMargins(50, 50, 50, 50);
             cardView.setContentPadding(10, 10, 10, 10);
             cardView.setLayoutParams(layoutParams);
 
@@ -101,17 +123,17 @@ public class ShopActivity extends AppCompatActivity {
             itemNameTextView.setTextSize(13);
             itemNameTextView.setBreakStrategy(LineBreaker.BREAK_STRATEGY_SIMPLE);
             itemCostTextView.setBreakStrategy(LineBreaker.BREAK_STRATEGY_SIMPLE);
-            itemNameTextView.setText(items[i].getItemName());
-            if (unpurchasedItemsList.contains(items[i]))
-                itemCostTextView.setText("Cost: " + items[i].getItemCost());
+            itemNameTextView.setText(item.getItemName());
+            if (unpurchasedItemsList.contains(item))
+                itemCostTextView.setText("Cost: " + item.getItemCost());
             else {
 
                 SharedPreferences bgPrefs = getSharedPreferences("EquippedBackground", MODE_PRIVATE);
                 SharedPreferences cardPrefs = getSharedPreferences("EquippedCard", MODE_PRIVATE);
 
-                itemCostTextView.setText("Purchased");
+                itemCostTextView.setText("Owned");
 
-                if (bgPrefs.getBoolean(items[i].getItemName(), false) || cardPrefs.getBoolean(items[i].getItemName(), false))
+                if (bgPrefs.getBoolean(item.getItemName(), false) || cardPrefs.getBoolean(item.getItemName(), false))
                     itemCostTextView.setText("Equipped");
             }
 
@@ -130,9 +152,7 @@ public class ShopActivity extends AppCompatActivity {
                     if (unpurchasedItemsList.contains(items[position])) {
                         showPurchaseAlertDialog(v, items[position]);
                     } else {
-                        if (cardPrefs.getBoolean(items[position].getItemName(), false) || bgPrefs.getBoolean(items[position].getItemName(), false))
-                            showUnequipAlertDialog(v, items[position]);
-                        else
+                        if (!cardPrefs.getBoolean(items[position].getItemName(), false) && !bgPrefs.getBoolean(items[position].getItemName(), false))
                             showEquipAlertDialog(v, items[position]);
                     }
                 }
@@ -140,20 +160,6 @@ public class ShopActivity extends AppCompatActivity {
 
             gridLayout.addView(cardView);
         }
-
-/*
-// Before attempting to dynamically create items i was manually doing this for each item:
-
-        CardView item6CardView = findViewById(R.id.item6CardView);
-        item6CardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Item 6 clicked");
-                showAlertDialog(v, "Item 6");
-            }
-        });
-
- */
     }
 
     private void showUnequipAlertDialog(View v, ShopItem item) {
@@ -232,10 +238,7 @@ public class ShopActivity extends AppCompatActivity {
                     for (int i=0; i<items.length; i++) {
                         if (items[i].getItemType().equals("Card")) {
 
-                            if (items[i].getItemName() == item.getItemName())
-                                editor.putBoolean(items[i].getItemName(), true);
-                            else
-                                editor.putBoolean(items[i].getItemName(), false);
+                            editor.putBoolean(items[i].getItemName(), items[i].getItemName() == item.getItemName());
                         }
                     }
                     editor.apply();
@@ -248,10 +251,7 @@ public class ShopActivity extends AppCompatActivity {
                     for (int i=0; i<items.length; i++) {
                         if (items[i].getItemType().equals("Background")) {
 
-                            if (items[i].getItemName() == item.getItemName())
-                                editor.putBoolean(items[i].getItemName(), true);
-                            else
-                                editor.putBoolean(items[i].getItemName(), false);
+                            editor.putBoolean(items[i].getItemName(), items[i].getItemName() == item.getItemName());
                         }
                     }
                     editor.putBoolean(item.getItemName(), true);
@@ -262,6 +262,7 @@ public class ShopActivity extends AppCompatActivity {
                     Log.d(TAG + " showAlertDialog", "Confirmed " + item.getItemName() + " equipped");
 
                     recreate();
+                    refreshTable();
                 }
             }
         });
@@ -344,10 +345,10 @@ public class ShopActivity extends AppCompatActivity {
 // abstract class ShopItem {
 class ShopItem {
 
-    private String itemName;
-    private int itemCost;
+    private final String itemName;
+    private final int itemCost;
 
-    private String itemType;
+    private final String itemType;
 
     public ShopItem(String itemName, int itemCost, String itemType) {
         this.itemName = itemName;
