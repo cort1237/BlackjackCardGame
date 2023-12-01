@@ -7,6 +7,7 @@ import androidx.gridlayout.widget.GridLayout;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.text.LineBreaker;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -52,6 +53,8 @@ public class ShopActivity extends AppCompatActivity {
         });
 
         items = new ShopItem[]{
+                new ShopItem("Default Cards", 0, "Card"),
+                new ShopItem("Default Background", 0, "Background"),
                 new ShopItem("Black Gold", 10, "Card"),
                 new ShopItem("Card Skin 2", 20, "Card"),
                 new ShopItem("Background 1", 15, "Background"),
@@ -65,6 +68,8 @@ public class ShopActivity extends AppCompatActivity {
         SharedPreferences purchasedItemsPrefs = getSharedPreferences("PurchasedItems", MODE_PRIVATE);
         for (ShopItem item : items) {
             boolean isPurchased = purchasedItemsPrefs.getBoolean(item.getItemName(), false);
+            if(item.getItemName().equals("Default Cards") || item.getItemName().equals("Default Background"))
+                isPurchased = true;
             Log.d(TAG + " Purchased Items", item.getItemName() + " " + isPurchased);
             if (!isPurchased) {
                 unpurchasedItemsList.add(item);
@@ -85,13 +90,17 @@ public class ShopActivity extends AppCompatActivity {
             layoutParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             layoutParams.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             layoutParams.setMargins( 50, 50, 50, 50);
-            cardView.setContentPadding(16, 106, 16, 106);
+            cardView.setContentPadding(10, 10, 10, 10);
             cardView.setLayoutParams(layoutParams);
 
             View view = getLayoutInflater().inflate(R.layout.cardview_item, null);
             TextView itemNameTextView = view.findViewById(R.id.itemNameTextView);
             TextView itemCostTextView = view.findViewById(R.id.itemCostTextView);
 
+            itemCostTextView.setTextSize(13);
+            itemNameTextView.setTextSize(13);
+            itemNameTextView.setBreakStrategy(LineBreaker.BREAK_STRATEGY_SIMPLE);
+            itemCostTextView.setBreakStrategy(LineBreaker.BREAK_STRATEGY_SIMPLE);
             itemNameTextView.setText(items[i].getItemName());
             if (unpurchasedItemsList.contains(items[i]))
                 itemCostTextView.setText("Cost: " + items[i].getItemCost());

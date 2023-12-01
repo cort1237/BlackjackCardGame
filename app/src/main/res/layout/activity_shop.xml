@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,47 +10,75 @@
     <Button
         android:id="@+id/backButton"
         style="@style/defaultButtonStyle"
-        android:layout_width="44dp"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="47dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/roundbutton"
-        android:drawableLeft="@drawable/arrow_back"
+        android:drawableStart="@drawable/arrow_back"
+        android:drawablePadding="@dimen/default_gap"
         android:gravity="center_vertical|start"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/rewardCurrencyTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
+        android:layout_toEndOf="@+id/shopTextView"
         android:text="Curency: 0"
         android:textColor="@color/white"
         android:textSize="15dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/shopTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/shopTextView"
+        app:layout_constraintTop_toTopOf="@+id/shopTextView" />
 
     <TextView
         android:id="@+id/shopTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
         android:text="Shop"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/gridLayout"
+    <ScrollView
+        android:id="@+id/shopScroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="704dp"
         android:layout_below="@+id/shopTextView"
-        android:layout_margin="20dp"
-        app:columnCount="2">
+        android:contentDescription="Shop scroll window"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
 
-    </androidx.gridlayout.widget.GridLayout>
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:columnCount="2">
 
-</RelativeLayout>
+        </androidx.gridlayout.widget.GridLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
