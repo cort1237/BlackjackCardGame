@@ -247,12 +247,26 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private void playHitAnimation(int id){
         Animation slide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_animation);
         Player p = players.get(id);
+        float scale = this.getResources().getDisplayMetrics().density;
+
+        //Calculate card position
+        CardHand gameHand = p.getHand();
+        int margin;
+        int cardCount = gameHand.retrieveHand().size();
+        if (p.useSplitHand)
+            margin = 8 - ((cardCount) * 20);
+        else if (cardCount > 2)
+            margin = 8 - ((cardCount - 1) * 10);
+        else
+            margin = 8;
+
+        float offset = p.getVisualHand().getX() + ((p.getVisualHand().getChildCount()-1) * card_image.getWidth()) - (((margin / 2) * scale) * (cardCount));
 
         //players.get(0).getVisualHand().getX(); Example: Returns X of Dealer's Hand
         //new TranslateAnimation(0, 0, 0, 0); -- Example: Create an animation programmatically
 
         //Create an animation to move the card from the top right to the specified player
-        slide = new TranslateAnimation(0, (p.getVisualHand().getX() + ((p.getVisualHand().getChildCount()-1) * card_image.getWidth())) - card_image.getX(),
+        slide = new TranslateAnimation(0, offset - card_image.getX(),
                 0, p.getVisualHand().getY() - card_image.getY());
         slide.setDuration(500);
 
@@ -262,12 +276,20 @@ public class BlackjackGameActivity extends AppCompatActivity {
             public void onAnimationStart(Animation animation) {
                 card_image.setVisibility(View.VISIBLE);
                 card_image.setImageResource(R.drawable.cardbackblack);
+                if(p.useSplitHand)
+                    p.getTopCardView(1).setVisibility(View.INVISIBLE);
+                else
+                    p.getTopCardView(0).setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 card_image.setVisibility(View.GONE);
                 card_image.setImageResource(R.drawable.cardbackblack);
+                if(p.useSplitHand)
+                    p.getTopCardView(1).setVisibility(View.VISIBLE);
+                else
+                    p.getTopCardView(0).setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -1136,9 +1158,23 @@ public class BlackjackGameActivity extends AppCompatActivity {
         return gameHand.getTotalValue(1);
     }
 
+    public View getTopCardView(int s) {
+        if(!split || s == 1)
+            return visualHand.getChildAt(visualHand.getChildCount()-1);
+        else
+            return visualHand.getChildAt(gameHand.retrieveHand(0).size()-1);
+    }
+
+    public void showTopCard() {
+        if(split)
+            getTopCardView(1).setVisibility(View.VISIBLE);
+        getTopCardView(0).setVisibility(View.VISIBLE);
+    }
+
     public boolean isSplit() {return split;}
 
     public void refreshHand(){
+
         int margin, secondMargin;
         int cardCount = gameHand.retrieveHand().size();
         if (gameHand.isSplit())
