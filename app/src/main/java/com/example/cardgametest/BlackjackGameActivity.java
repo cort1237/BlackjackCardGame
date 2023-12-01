@@ -1023,7 +1023,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             default:
                 break;
         }
-        if(id==0)
+        if(msg != null && id==0)
             msg = "The Dealer " + msg.split(" ", 3)[2];
         return msg;
     }
