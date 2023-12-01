@@ -1066,8 +1066,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
     private final Context parentContext;
     int id;
     boolean dealerTurn = false;
-
-    private LinearLayout vr; // each tab in the side bar has two rows for formatting
+    
     String nickname;        // vr contains images and visual row contains the nickname
     Player(int money, LinearLayout row, LinearLayout vr, Context c) {
         this.money = money;
@@ -1174,9 +1173,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if (visualHand != null) {
             visualHand.removeAllViews();
         }
-        if( vr != null) {
-            vr.removeAllViews();
-        }
         try {
             gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
             if (split) {
@@ -1219,7 +1215,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             cardImageNum = c.getCardImage(parentContext);
         cardView.setImageResource(cardImageNum);
 
-        if (visualHand != null) { //Main Screen Layout
+        if (visualRow == null) { //Main Screen Layout
             if (visualHand.getChildCount() == 0)
                 margin = 0;
             if (margin < -65)
@@ -1243,13 +1239,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
             //LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
             cardView.setLayoutParams(params);
-            if (vr != null) {
-                this.vr.addView(cardView);
-            }
-            if (visualRow != null) {
-                visualRow.removeAllViews();
-                visualRow.addView(tview);
-            }
+            visualHand.addView(cardView);
+            visualRow.removeAllViews();
+            visualRow.addView(tview);
         }
 
     }
