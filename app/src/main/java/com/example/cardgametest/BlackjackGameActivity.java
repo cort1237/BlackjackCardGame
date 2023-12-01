@@ -301,6 +301,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
             p.clearHand();
             p.stand = false;
             p.setBet(0);
+            p.useSplitHand = false;
         }
         currentTurn = 1;
         roundEnd.dismiss();
@@ -342,6 +343,9 @@ public class BlackjackGameActivity extends AppCompatActivity {
                 dealCard(p, 0);
                 Log.d("Hit Button Test", "hit");
                 updateCurrentHand();
+                if (p.getHand().getTotalValue(0) >= 21) {
+                    p.useSplitHand = true;
+                }
             } else {
                 dealCard(p, 1);
                 updateCurrentHand();
@@ -427,8 +431,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         return Integer.parseInt(bet);
     }
 
-    //when fold button is clicked, this function will run
-    //Fold also currently crashes the app
+    //folds the users hand and goes to the next person, either dealer or next player
     public void foldHand(View view){
         foldHandHelper();
         Log.d("Fold Button Test", "fold");
@@ -961,6 +964,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         return p.getHand().getTotalValue() > 21;
     }
 
+    //logs the message into a tablelayout full of TextViews that are visible to all players during multiplayer
     @SuppressLint("SetTextI18n")
     private void logMessage(String job, String message, int id){
         String fullMessage = generateMessage(job, message, id);
@@ -988,6 +992,7 @@ public class BlackjackGameActivity extends AppCompatActivity {
         runOnUiThread(()-> logTable.addView(newRow));
     }
 
+    //generate grammatically correct messages using Players nicknames and what job they have done
     private String generateMessage(String job, String message, int id){
         String msg = null;
 
@@ -1233,7 +1238,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
             visualRow.removeAllViews();
             visualRow.addView(tview);
         }
-
     }
 
     public void split() {

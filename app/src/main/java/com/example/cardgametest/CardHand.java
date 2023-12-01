@@ -7,6 +7,8 @@ Create a CardHand class that will store the values of the players hand and imple
     retrieveHand(): return the cards in the player hands
     foldHand(): folds the players cards, stops them from playing
     hit(): draws another card into the players hand
+    getTotalValue(): returns total value of hand, correctly calculating aces
+    splitHand(): splits the hand when the hand has 2 of the same value cards
  */
 public class CardHand {
     private final ArrayList<Card> hand;
@@ -137,6 +139,7 @@ public class CardHand {
     public boolean isPair(){
         return hand.size() == 2 && hand.get(0).getValue() == hand.get(1).getValue();
     }
+    //checks if the hand is a pair and size of 2 before putting both cards into two hands
     public boolean splitHand(){
         if(isPair() && size == 2) {
             Card temp = hand.remove(0);
