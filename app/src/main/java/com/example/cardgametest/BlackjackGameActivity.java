@@ -15,17 +15,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Space;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+
+import com.google.android.material.divider.MaterialDivider;
 
 import java.net.Socket;
 import java.text.MessageFormat;
@@ -242,10 +246,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     private void playHitAnimation(int id){
         Animation slide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_animation);
+        Player p = players.get(id);
 
         //players.get(0).getVisualHand().getX(); Example: Returns X of Dealer's Hand
         //new TranslateAnimation(0, 0, 0, 0); -- Example: Create an animation programmatically
-        slide.setDuration(1000);
+
+        //Create an animation to move the card from the top right to the specified player
+        slide = new TranslateAnimation(0, (p.getVisualHand().getX() + ((p.getVisualHand().getChildCount()-1) * card_image.getWidth())) - card_image.getX(),
+                0, p.getVisualHand().getY() - card_image.getY());
+        slide.setDuration(500);
+
+
         slide.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -476,6 +487,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
     public void addMoney(Player p, int amount) {
         stats.recordCurrency(amount);
         p.setMoney(p.getMoney() + amount);
+        if(MP_FLAG && p.id == playerID)
+            sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
         runOnUiThread(this::updateMoneyText);
     }
 
@@ -489,6 +502,8 @@ public class BlackjackGameActivity extends AppCompatActivity {
         if(p.getMoney() < 0)
             p.setMoney(0);
         runOnUiThread(this::updateMoneyText);
+        if(MP_FLAG && p.id == playerID)
+            sendAllMessage("SetMoney", Integer.toString(p.getMoney()));
         Log.d("removeMoney", "Player " + p.id + " | Money: " + p.getMoney());
     }
 
@@ -1076,8 +1091,6 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     public void setId(int id) {
         this.id = id;
-        String[] nicks = {"Blackjack Bill", "Peeking Paul", "Card Countin Charles", "Strangle-Eye Saul", "Kevin" };
-        this.nickname = nicks[id];
     }
 
     public int getMainTotal() {
@@ -1088,14 +1101,13 @@ public class BlackjackGameActivity extends AppCompatActivity {
         int margin;
         int cardCount = gameHand.size();
         if (gameHand.isSplit())
-            margin = 8 - ((cardCount) * 80);
+            margin = 8 - ((cardCount - 3) * 80);
         else if (cardCount > 2)
             margin = 8 - ((cardCount - 1) * 40);
         else
             margin = 8;
         if (visualHand != null) {
             visualHand.removeAllViews();
-
         }
         if( vr != null) {
             vr.removeAllViews();
@@ -1110,9 +1122,15 @@ public class BlackjackGameActivity extends AppCompatActivity {
             try {
                 sleep(100);
             } catch (InterruptedException ignored) {}
+            visualHand.removeAllViews();
             gameHand.retrieveHand(0).forEach((card -> addCardToHand(card, margin, 0)));
-            if (split)
+            if (split) {
+                ImageView space = new ImageView(parentContext);
+                space.setImageResource(R.drawable.cardbackblack);
+                space.setVisibility(View.INVISIBLE);
+                visualHand.addView(space);
                 gameHand.retrieveHand(1).forEach((card -> addCardToHand(card, margin, 1)));
+            }
         }
     }
 
@@ -1129,27 +1147,36 @@ public class BlackjackGameActivity extends AppCompatActivity {
         else
             cardImageNum = c.getCardImage(parentContext);
         cardView.setImageResource(cardImageNum);
-        cardView.setAdjustViewBounds(true);
-        cardView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
         if (visualHand != null) { //Main Screen Layout
             if (visualHand.getChildCount() == 0)
                 margin = 0;
             if (margin < -130)
                 margin = -160;
+            Log.d("addCardToHand", "Margin: " + (int) ((margin / 2) * scale));
+            Log.d("addCardToHand", "PARAMS: (" + (int) (scale * 100) + ", " + (int) (scale * 130) + ")");
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (scale * 100), (int) (scale * 130));
-            Log.d("Margin", Integer.toString(margin));
-            params.setMargins((int) ((margin / 2) * scale), 8, 0, 8);
-            cardView.setLayoutParams(params);
 
+            params.setMargins((int) ((margin / 2) * scale), 8, 100, 8);
+            params.gravity = Gravity.START | Gravity.TOP;
+            cardView.setLayoutParams(params);
+            visualHand.addView(cardView);
+            /*
             if (!split)
-                visualHand.addView(cardView);
+
             else {
-                if (s == 1) {
+                Log.d("addCardToHand", "Split");
+                if (s == 0) {
+                    Log.d("addCardToHand", "Split1");
                     splitHand1.addView(cardView);
+                    TextView t = new TextView(parentContext);
+                    t.setText("test");
+                    splitHand1.addView(t);
                 } else {
+                    Log.d("addCardToHand", "Split2");
                     splitHand2.addView(cardView);
                 }
-            }
+            }*/
         }  //Side Bar Layout
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 217);
         params.setMargins(4, 8, -3, 8);
@@ -1173,11 +1200,17 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
     public void split() {
         gameHand.splitHand();
-        visualHand.removeAllViews();
-        splitHand1 = new LinearLayout(parentContext);
+        split = true;
+        /*splitHand1 = new LinearLayout(parentContext);
         splitHand2 = new LinearLayout(parentContext);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.weight = 1;
+        splitHand1.setOrientation(LinearLayout.HORIZONTAL);
+        splitHand2.setOrientation(LinearLayout.HORIZONTAL);
+        splitHand1.setLayoutParams(lp);
+        splitHand2.setLayoutParams(lp);
         visualHand.addView(splitHand1);
-        visualHand.addView(splitHand2);
-
+        visualHand.addView(splitHand2);*/
+        refreshHand();
     }
 }

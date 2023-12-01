@@ -34,7 +34,7 @@
     <Spinner
         android:id="@+id/moneySpinner"
         android:layout_width="121dp"
-        android:layout_height="29dp"
+        android:layout_height="48dp"
         android:entries="@array/StartingMoney"
         android:spinnerMode="dialog"
         app:layout_constraintBottom_toBottomOf="@+id/startingAmountTextView"
@@ -59,7 +59,7 @@
     <Spinner
         android:id="@+id/betSpinner"
         android:layout_width="121dp"
-        android:layout_height="29dp"
+        android:layout_height="48dp"
         android:dropDownSelector="@drawable/arrow_back"
         android:entries="@array/Bets"
         android:spinnerMode="dialog"
@@ -91,6 +91,7 @@
         android:ems="10"
         android:hint="Display Name"
         android:inputType="text"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/betSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.506"

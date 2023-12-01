@@ -66,7 +66,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent">
-
     </LinearLayout>
 
     <LinearLayout
@@ -199,28 +198,6 @@
         app:layout_constraintTop_toBottomOf="@+id/splitButton"
         app:layout_constraintVertical_bias="0.5" />
 
-    <LinearLayout
-        android:id="@+id/split_player_hand_1"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginBottom="40dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.135"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/split_player_hand_2"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginBottom="40dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.865"
-        app:layout_constraintStart_toStartOf="parent" />
-
 
     <Button
         android:id="@+id/logViewButton"
@@ -291,7 +268,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/row1"

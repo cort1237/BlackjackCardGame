@@ -44,6 +44,8 @@ public class Deck {
             throw new IllegalStateException("Deck is empty.");
         }
         Card topCard = cards.get(0);
+
+        topCard = new Card(2,2,"diamonds");
         cards.remove(0);
         return topCard;
     }

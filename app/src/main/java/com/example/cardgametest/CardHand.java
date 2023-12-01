@@ -20,8 +20,8 @@ public class CardHand {
 
     //Initializes the hand passed in cards
     public CardHand(){
-        hand = new ArrayList<Card>(2);
-        secondHand = new ArrayList<Card>(2);
+        hand = new ArrayList<>(2);
+        secondHand = new ArrayList<>(2);
         size = 0;
     }
 
