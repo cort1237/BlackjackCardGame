@@ -294,6 +294,22 @@ public class BlackjackGameActivity extends AppCompatActivity {
 
         card_image.startAnimation(slide);
     }
+    /*
+        private void animateDiagonalPan(View v) {
+            AnimatorSet animSetXY = new AnimatorSet();
+
+            ObjectAnimator y = ObjectAnimator.ofFloat(v,
+                        "translationY",v.getY(), targetY);
+
+            ObjectAnimator x = ObjectAnimator.ofFloat(v,
+                        "translationX", v.getX(), targetX);
+
+            animSetXY.playTogether(x, y);
+            animSetXY.setInterpolator(new LinearInterpolator(1f));
+            animSetXY.setDuration(300);
+            animSetXY.start();
+        }
+    */
 
     private void resetGame() {
         //for each player

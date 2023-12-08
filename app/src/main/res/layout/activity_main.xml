@@ -83,10 +83,10 @@
 
     <TextView
         android:id="@+id/moneyTextView"
-        android:layout_width="80dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="105dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="36dp"
         android:drawableStart="@drawable/baseline_attach_money_24"
         android:text="1000"
         android:textAlignment="textStart"
@@ -99,29 +99,29 @@
         android:id="@+id/optionButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="36dp"
         android:background="@drawable/roundbutton"
         android:gravity="center|center_horizontal"
         android:scaleType="centerCrop"
-        app:tint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_settings_24"
+        app:tint="#FFFFFF"
         tools:ignore="MissingConstraints, SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/restart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="32dp"
         android:gravity="center|center_horizontal"
         android:onClick="resetGame"
         android:text="Reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/optionButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.036" />
+        app:layout_constraintVertical_bias="0.052" />
 
     <Button
         android:id="@+id/splitButton"
@@ -166,10 +166,10 @@
 
     <TextView
         android:id="@+id/betTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="60dp"
+        android:layout_width="78dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="72dp"
         android:text="@string/bet_value"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
